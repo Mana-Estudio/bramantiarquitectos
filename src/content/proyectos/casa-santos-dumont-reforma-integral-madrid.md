@@ -19,7 +19,6 @@ galeria:
     estancia: "detalle"
 antes: []
 comparaciones: []
-videos: []
 wpId: 16309
 ---
 

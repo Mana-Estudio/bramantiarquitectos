@@ -19,7 +19,6 @@ galeria:
     estancia: "almacenaje"
 antes: []
 comparaciones: []
-videos: []
 wpId: 8769
 ---
 

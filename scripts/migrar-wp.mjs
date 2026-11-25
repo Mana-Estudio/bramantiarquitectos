@@ -669,6 +669,7 @@ async function migrarProyectos(paginas) {
     const archivo = path.join(CONTENIDO, 'proyectos', `${conf.slug}.md`);
     if (existsSync(archivo) && !FORCE) { log('existe, no se pisa:', path.relative(RAIZ, archivo)); continue; }
     const r = await procesarFicha({ pagina, conf, coleccion: 'proyectos', archivo });
+    if (r.videos.length) aviso(`${conf.nombre}: videos de YouTube ${r.videos.join(', ')} → revisar que estén en src/content/videos.json`);
     const portada = elegirPortada(r.galeria, conf.portada);
     const { md, usadas } = cuerpoConFotos(r.bloques, r.galeria.filter((g) => g !== portada));
     const tipos = [...conf.tipos];
@@ -695,7 +696,6 @@ async function migrarProyectos(paginas) {
       galeria: r.galeria.filter((g) => g !== portada && !usadas.has(g.src)).map(sinBloque),
       antes: r.antes.map(sinBloque),
       comparaciones: emparejar(r.antes, r.galeria, conf.emparejarEnOrden),
-      videos: r.videos,
       wpId: pagina.id,
     };
     if (r.enVenta) aviso(`${conf.nombre}: la página actual la ofrece en venta${r.precio ? ` (${r.precio} €)` : ''}; confirmar si va también en Promociones`);
@@ -710,6 +710,7 @@ async function migrarPromociones(paginas) {
     const archivo = path.join(CONTENIDO, 'promociones', `${conf.slug}.md`);
     if (existsSync(archivo) && !FORCE) { log('existe, no se pisa:', path.relative(RAIZ, archivo)); continue; }
     const r = await procesarFicha({ pagina, conf, coleccion: 'promociones', archivo });
+    if (r.videos.length) aviso(`${conf.nombre}: videos de YouTube ${r.videos.join(', ')} → revisar que estén en src/content/videos.json`);
     const portada = elegirPortada(r.galeria, conf.portada);
     const { md, usadas } = cuerpoConFotos(r.bloques, r.galeria.filter((g) => g !== portada));
     const yoast = pagina.yoast_head_json ?? {};
@@ -730,7 +731,6 @@ async function migrarPromociones(paginas) {
       portada: portada?.src,
       portadaAlt: portada?.alt,
       galeria: r.galeria.filter((g) => g !== portada && !usadas.has(g.src)).map(sinBloque),
-      videos: r.videos,
       wpId: pagina.id,
     };
     await escribir(archivo, frontmatter(datos) + '\n' + md + '\n');

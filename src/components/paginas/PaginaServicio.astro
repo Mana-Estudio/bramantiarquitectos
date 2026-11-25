@@ -7,7 +7,8 @@ import Faqs from '../Faqs.astro';
 import TarjetaProyecto from '../TarjetaProyecto.astro';
 import TarjetaArticulo from '../TarjetaArticulo.astro';
 import CtaFinal from '../CtaFinal.astro';
-import { proyectos as todos, articulos, faqs as faqsDe, promociones } from '../../lib/contenido';
+import Videos from '../Videos.astro';
+import { proyectos as todos, articulos, faqs as faqsDe, promociones, videos } from '../../lib/contenido';
 import { UI, RUTAS, RUTAS_SERVICIO, type TipoProyecto } from '../../lib/i18n';
 import { whatsapp, type Idioma } from '../../lib/sitio';
 import { migas as migasLd, preguntas } from '../../lib/jsonld';
@@ -37,6 +38,7 @@ const temas: Record<TipoProyecto, RegExp> = {
   interiorismo: /interiorismo|iluminar|molduras|japandi|microcemento|tarima|mood|biof/i,
   'obra-nueva': /obra nueva|passivhaus|cobiax|plano|sat[eé]lites|majadahonda/i,
 };
+const videosServicio = await videos((v) => v.servicios.includes(servicio));
 const relacionados = es ? (await articulos()).filter((a) => temas[servicio].test(a.data.title)).slice(0, 3) : [];
 
 const textoWhatsapp = es ? `Hola, me interesa vuestro servicio de ${d.nombre.toLowerCase()}.` : `Hello, I am interested in your ${d.nombre.toLowerCase()} service.`;
@@ -155,6 +157,8 @@ const tituloHtml = d.titulo.replace(/\*(.+?)\*/g, '<em>$1</em>');
       </div>
     </section>
   )}
+
+  <Videos videos={videosServicio} idioma={idioma} id="videos-servicio" fondo="tinta" />
 
   <Faqs faqs={preguntasServicio} titulo={es ? `Preguntas sobre ${d.nombre.toLowerCase()}` : 'Frequently asked questions'} />
 

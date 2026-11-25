@@ -32,8 +32,6 @@ Cada decisión debía estar a la altura del conjunto.
 
 > “Este tipo de encargo no se resuelve mirando catálogos. O encuentras quién lo puede hacer o no lo haces.”
 
-[Ver el vídeo en YouTube](https://youtu.be/x73JnPMmogY)
-
 ## Cuando la arquitectura necesita oficio
 
 Es en ese punto donde aparece la colaboración con la [**Real Fábrica de Tapices**](https://realfabricadetapices.com/).

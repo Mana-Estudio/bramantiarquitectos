@@ -19,8 +19,6 @@ galeria:
   - src: "../../assets/promociones/los-satelites/los-satelites-detalle-02.png"
     alt: "Los Satélites: detalle de la vivienda"
     estancia: "detalle"
-videos:
-  - "https://youtu.be/k-KYMgyo9p4"
 wpId: 9011
 ---
 

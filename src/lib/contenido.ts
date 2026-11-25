@@ -22,6 +22,13 @@ export async function articulos(): Promise<Articulo[]> {
   return (await getCollection('journal')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 
+export type VideoDatos = CollectionEntry<'videos'>['data'];
+
+/** Videos filtrados por relación (proyecto, promoción, artículo, servicio, página o destacado). */
+export async function videos(filtro: (v: VideoDatos) => boolean = () => true) {
+  return (await getCollection('videos')).filter((v) => filtro(v.data)).sort((a, b) => a.data.orden - b.data.orden);
+}
+
 export async function faqs(ambito: string) {
   return (await getCollection('faqs')).filter((f) => f.data.ambitos.includes(ambito)).sort((a, b) => a.data.orden - b.data.orden);
 }

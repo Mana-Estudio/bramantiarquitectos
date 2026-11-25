@@ -1,0 +1,148 @@
+---
+// Video con fachada: portada propia (sin pedir nada a YouTube) y el reproductor
+// (youtube-nocookie) se carga solo al pulsar. Sin JS, el enlace abre el video en YouTube.
+// Los archivos propios usan <video> nativo con preload="none".
+import { getImage } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import Foto from './Foto.astro';
+import type { Idioma } from '../lib/sitio';
+
+interface Props {
+  video: CollectionEntry<'videos'>;
+  idioma?: Idioma;
+  sizes?: string;
+  nivel?: 'h2' | 'h3' | 'p';
+}
+const { video, idioma = 'es', sizes = '(min-width: 60rem) 45vw, 100vw', nivel = 'h3' } = Astro.props;
+const es = idioma === 'es';
+const v = video.data;
+const titulo = es ? v.titulo : v.tituloEn;
+const descripcion = es ? v.descripcion : v.descripcionEn;
+const alt = es ? v.posterAlt : v.posterAltEn;
+const vertical = v.formato === 'vertical';
+const Nivel = nivel;
+const poster = v.archivo ? await getImage({ src: v.poster, width: vertical ? 720 : 1280, format: 'webp', quality: 75 }) : null;
+const etiquetaPlay = es ? `Reproducir: ${titulo}` : `Play: ${titulo}`;
+---
+
+<figure class:list={['video', { vertical }]}>
+  {v.youtube ? (
+    <a
+      class="video-marco foto"
+      href={`https://www.youtube.com/watch?v=${v.youtube}`}
+      data-youtube={v.youtube}
+      data-titulo={titulo}
+      aria-label={etiquetaPlay}
+      data-evento="video"
+      data-evento-detalle={video.id}
+      rel="noopener"
+      target="_blank"
+    >
+      <Foto src={v.poster} alt={alt} sizes={sizes} anchos={vertical ? [360, 540, 720] : [480, 800, 1200]} />
+      <span class="video-play" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
+      </span>
+    </a>
+  ) : (
+    <div class="video-marco foto">
+      <video controls preload="none" playsinline poster={poster?.src} width={vertical ? 720 : 1280} height={vertical ? 1280 : 720} aria-label={titulo}>
+        <source src={v.archivo} type="video/mp4" />
+        <a href={v.archivo}>{es ? 'Descargar el video' : 'Download the video'}</a>
+      </video>
+    </div>
+  )}
+  <figcaption>
+    <Nivel class="video-titulo">{titulo}</Nivel>
+    {descripcion && <p class="secundario">{descripcion}</p>}
+    <p class="video-meta secundario">
+      {v.youtube ? 'YouTube' : es ? 'Video' : 'Video'}{v.duracion && <> · {v.duracion}</>}{v.autor && <> · {v.autor}</>}
+    </p>
+  </figcaption>
+</figure>
+
+<script>
+  import '../scripts/video';
+</script>
+
+<style>
+  .video {
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: start;
+  }
+  .video-marco {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    background: var(--tinta);
+  }
+  .vertical .video-marco {
+    aspect-ratio: 9 / 16;
+  }
+  .video-marco :global(img) {
+    transition:
+      transform 900ms var(--curva),
+      opacity var(--t-media) var(--curva);
+  }
+  a.video-marco::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(28 26 23 / 0.35), transparent 45%);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    a.video-marco:hover :global(img) {
+      transform: scale(1.03);
+    }
+  }
+  .video-play {
+    position: absolute;
+    left: var(--espacio-s);
+    bottom: var(--espacio-s);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 50%;
+    background: var(--piedra);
+    color: var(--tinta);
+    transition: transform var(--t-rapida) var(--curva);
+  }
+  a.video-marco:hover .video-play,
+  a.video-marco:focus-visible .video-play {
+    transform: scale(1.08);
+  }
+  .video-play svg {
+    margin-left: 3px;
+  }
+  .video-marco :global(iframe),
+  .video-marco video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: var(--tinta);
+  }
+  .video-marco video {
+    object-fit: cover;
+  }
+  figcaption {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .video-titulo {
+    font-family: var(--titulos);
+    font-size: var(--paso-2);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+  .video-meta {
+    font-size: var(--paso--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>

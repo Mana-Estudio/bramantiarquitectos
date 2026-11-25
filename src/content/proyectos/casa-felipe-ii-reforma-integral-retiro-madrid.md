@@ -36,7 +36,6 @@ comparaciones:
     despues: "../../assets/proyectos/casa-felipe-ii/casa-felipe-ii-salon-02.jpg"
     despuesAlt: "Estado del salón vista 2 después de la reforma Casa Felipe II, Madrid"
     estancia: "salon"
-videos: []
 wpId: 15827
 ---
 

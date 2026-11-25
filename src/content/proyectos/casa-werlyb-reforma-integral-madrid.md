@@ -53,8 +53,6 @@ comparaciones:
     despues: "../../assets/proyectos/casa-werlyb/casa-werlyb-bano-01.jpg"
     despuesAlt: "Estado del baño después de la reforma Casa Werlyb, Madrid"
     estancia: "bano"
-videos:
-  - "https://youtu.be/750hsBAzjW0"
 wpId: 15362
 ---
 

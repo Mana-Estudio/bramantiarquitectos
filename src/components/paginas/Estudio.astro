@@ -4,6 +4,8 @@ import Foto from '../Foto.astro';
 import Migas from '../Migas.astro';
 import Proceso from '../Proceso.astro';
 import CtaFinal from '../CtaFinal.astro';
+import Videos from '../Videos.astro';
+import { videos } from '../../lib/contenido';
 import { UI, RUTAS } from '../../lib/i18n';
 import { SITIO, TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
 import { migas as migasLd } from '../../lib/jsonld';
@@ -23,6 +25,8 @@ const migas = [
   { nombre: t.inicio, url: r.inicio },
   { nombre: t.estudio, url: r.estudio },
 ];
+
+const videosEstudio = await videos((v) => v.paginas.includes('estudio'));
 
 const pilares = es
   ? [
@@ -163,6 +167,15 @@ const equipo = [
       </div>
     </div>
   </section>
+
+  <Videos
+    videos={videosEstudio}
+    idioma={idioma}
+    id="videos-estudio"
+    fondo="lino"
+    etiqueta={es ? 'Oficio' : 'Craft'}
+    titulo={es ? 'Arquitectura y artesanía.' : 'Architecture and craft.'}
+  />
 
   <section class="seccion grupo" aria-labelledby="grupo-titulo">
     <div class="contenedor grilla">

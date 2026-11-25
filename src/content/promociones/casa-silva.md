@@ -28,8 +28,6 @@ galeria:
   - src: "../../assets/promociones/casa-silva/casa-silva-detalle-05.jpg"
     alt: "Casa Silva: detalle de la vivienda"
     estancia: "detalle"
-videos:
-  - "https://youtu.be/zv7-a4YJ5cs"
 wpId: 9524
 ---
 

@@ -12,6 +12,7 @@ updated: "2026-11-25"
 
 - **Estadísticas sin cookies:** medimos las visitas de forma agregada con Cloudflare Web Analytics, que no instala cookies ni identifica a las personas usuarias.
 - **Formulario de contacto:** para evitar el spam usamos Cloudflare Turnstile solo en la página de contacto. Puede almacenar en tu navegador información técnica estrictamente necesaria para comprobar que el envío no lo hace un robot. Este tipo de almacenamiento está exento de consentimiento según el artículo 22.2 de la LSSI.
+- **Videos de YouTube:** se muestran con una imagen propia y no se carga nada de YouTube al visitar la página. Solo si pulsas reproducir se carga el reproductor de YouTube en su modo de privacidad mejorada (youtube-nocookie.com); desde ese momento Google Ireland Limited puede almacenar información en tu navegador según su propia política. Los videos alojados en esta web no usan cookies.
 - **Enlaces a terceros:** si sigues un enlace a WhatsApp, Instagram, YouTube o Google Maps, esos servicios aplican sus propias políticas de cookies.
 
 **3. ¿Cómo puedo gestionar las cookies?** Puedes permitir, bloquear o eliminar las cookies desde la configuración de tu navegador. Bloquearlas no afecta a la navegación por esta web.

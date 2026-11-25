@@ -38,8 +38,6 @@ galeria:
   - src: "../../assets/promociones/proyecto-omega/proyecto-omega-terraza-02.webp"
     alt: "Estado de la vivienda, zona exterior después de la reforma Proyecto Omega, Madrid"
     estancia: "terraza"
-videos:
-  - "https://youtu.be/FSTAEuc0fBc"
 wpId: 9402
 ---
 

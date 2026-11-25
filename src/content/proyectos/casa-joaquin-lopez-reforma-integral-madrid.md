@@ -26,7 +26,6 @@ galeria:
     estancia: "salon"
 antes: []
 comparaciones: []
-videos: []
 wpId: 6599
 ---
 

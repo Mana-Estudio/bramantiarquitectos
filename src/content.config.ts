@@ -40,7 +40,6 @@ const proyectos = defineCollection({
           }),
         )
         .default([]),
-      videos: z.array(z.url()).default([]),
       wpId: z.number().optional(),
     }),
 });
@@ -87,7 +86,6 @@ const promociones = defineCollection({
       portada: image(),
       portadaAlt: z.string(),
       galeria: z.array(z.object({ src: image(), alt: z.string(), estancia: z.string().default('detalle') })).default([]),
-      videos: z.array(z.url()).default([]),
       wpId: z.number().optional(),
     }),
 });
@@ -165,4 +163,38 @@ const legales = defineCollection({
   }),
 });
 
-export const collections = { proyectos, proyectosEn, promociones, servicios, journal, faqs, resenas, legales };
+/**
+ * Videos. Los de YouTube se muestran con una portada propia y solo cargan el reproductor
+ * (youtube-nocookie) al pulsar. Los archivos propios van en public/videos/.
+ * Cada video se relaciona con un proyecto, una promoción, un artículo, servicios o páginas.
+ */
+const videos = defineCollection({
+  loader: file('./src/content/videos.json'),
+  schema: ({ image }) =>
+    z
+      .object({
+        youtube: z.string().regex(/^[\w-]{11}$/).optional(),
+        archivo: z.string().regex(/^\/videos\/.+\.mp4$/).optional(),
+        titulo: z.string(),
+        tituloEn: z.string(),
+        descripcion: z.string().optional(),
+        descripcionEn: z.string().optional(),
+        autor: z.string().optional(),
+        poster: image(),
+        posterAlt: z.string(),
+        posterAltEn: z.string(),
+        formato: z.enum(['horizontal', 'vertical']),
+        duracion: z.string().optional(),
+        proyecto: z.string().optional(),
+        promocion: z.string().optional(),
+        articulo: z.string().optional(),
+        servicios: z.array(z.enum(TIPOS)).default([]),
+        paginas: z.array(z.string()).default([]),
+        testimonio: z.boolean().default(false),
+        destacado: z.boolean().default(false),
+        orden: z.number(),
+      })
+      .refine((v) => Boolean(v.youtube) !== Boolean(v.archivo), { message: 'Cada video lleva youtube o archivo (uno solo)' }),
+});
+
+export const collections = { proyectos, proyectosEn, promociones, servicios, journal, faqs, resenas, legales, videos };

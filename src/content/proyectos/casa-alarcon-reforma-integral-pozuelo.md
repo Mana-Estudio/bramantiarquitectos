@@ -20,7 +20,6 @@ galeria:
     estancia: "bano"
 antes: []
 comparaciones: []
-videos: []
 wpId: 6104
 ---
 

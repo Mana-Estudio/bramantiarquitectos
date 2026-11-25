@@ -28,14 +28,17 @@ Lo que falta para pasar de la demo a producción. Donde no había un dato, la de
 - [ ] **Antes/después:** en Casa Felipe II las fotos "antes" no indican la estancia, así que los pares del slider se armaron en orden. Revisar que coincidan. Elara y Werlyb se emparejaron por estancia.
 - [ ] Datos que faltan en algunas fichas (solo se muestran si existen): año de Casa Elara, Santos Dumont y Werlyb… y m² de los proyectos más antiguos.
 - [ ] **Inglés:** revisar la traducción (home, 3 servicios, Estudio, Contacto y los 10 proyectos). La hizo Maná; los relatos largos (Elara, Santos Dumont) están resumidos. Confirmar si quieren mantener el inglés.
-- [ ] **Vídeos:** se enlazan a YouTube (sin iframes, por rendimiento y privacidad). El vídeo testimonial `Opinion_Werlyb.mp4` y el short de "Nuestras creaciones" no se migraron.
+- [ ] **Videos con la marca anterior:** en YouTube, "Proyecto Werlyb", "Proyecto Alcalá" (Casa Silva) y "Proyecto Omega" llevan el nombre de la marca anterior en el título y en la miniatura. En la web se usan títulos y portadas propios, pero al reproducirlos YouTube muestra su título y, probablemente, la cortinilla del video. Hay que renombrarlos en el canal y, si es posible, reexportarlos sin la marca anterior.
+- [ ] **Permisos de los testimonios:** "Mi nueva casa" es un video del canal de Jorge Casanovas (@werlyb), y la opinión en video (`casa-werlyb-opinion.mp4`, migrado de la web actual y alojado en la nueva) lo muestra con su nombre. Confirmar que se pueden seguir usando.
+- [ ] **Equipo en los videos:** en el video de Casa Werlyb aparece "Marta Varela, Arquitecta". No figura en el brief: confirmar si forma parte del equipo para sumarla a la página de Estudio.
+- [ ] **Videos nuevos:** cualquier video nuevo se suma en `src/content/videos.json` (ver README). Si tienen versiones en mejor calidad o portadas propias, mejor que las fotos de proyecto que se usan hoy como portada.
 - [ ] **Reseñas:** la web actual no guarda el enlace de cada reseña; todas enlazan a la ficha de Google del estudio. Confirmar que se pueden mostrar con nombre.
 - [ ] **Journal:** hay artículos con datos fechados (2024, "otoño 2025", ayudas del Plan Rehabilita). Revisar cuáles actualizar. Las categorías se simplificaron a Arquitectura, Construcción e Interiorismo.
 - [ ] **Newsletter "Ecos de Bramanti":** la web actual tiene un botón; no se migró. ¿Sigue activa?
 - [ ] **Redes:** la página de Facebook sigue con el nombre de la marca anterior y por eso no se enlaza. Existe también la cuenta de Instagram anterior. Conviene renombrarlas o cerrarlas.
 
 ### Legal
-- [ ] **Revisión legal** de la política de privacidad (se reescribió la sección 6: encargados Cloudflare y proveedor de mail, sin cookies de Google) y de la política de cookies (reescrita: la web nueva no usa cookies de terceros).
+- [ ] **Revisión legal** de la política de privacidad (se reescribió la sección 6: encargados Cloudflare y proveedor de mail, sin cookies de Google) y de la política de cookies (reescrita: la web nueva no usa cookies de terceros). Revisar también el criterio para YouTube: el reproductor solo se carga cuando la persona pulsa reproducir, y la web lo avisa debajo de cada bloque de videos.
 - [ ] Confirmar el **proveedor de envío de mail** para nombrarlo en la política (por defecto, Resend).
 - [ ] Aviso legal y términos: se migraron tal cual. Verificar datos registrales.
 

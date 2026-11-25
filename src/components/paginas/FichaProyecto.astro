@@ -8,7 +8,8 @@ import Galeria from '../Galeria.astro';
 import AntesDespues from '../AntesDespues.astro';
 import TarjetaProyecto from '../TarjetaProyecto.astro';
 import CtaFinal from '../CtaFinal.astro';
-import { proyectos as todos, relacionados } from '../../lib/contenido';
+import Videos from '../Videos.astro';
+import { proyectos as todos, relacionados, videos } from '../../lib/contenido';
 import { UI, RUTAS, RUTAS_SERVICIO, TIPOS, ZONAS_EN, numero } from '../../lib/i18n';
 import type { Idioma } from '../../lib/sitio';
 import { migas as migasLd, obra } from '../../lib/jsonld';
@@ -26,6 +27,9 @@ const en = es ? undefined : await getEntry('proyectosEn', proyecto.id);
 const lista = await todos();
 const indice = lista.findIndex((p) => p.id === proyecto.id) + 1;
 const otros = relacionados(proyecto, lista, 3);
+const delProyecto = await videos((v) => v.proyecto === proyecto.id);
+const videosObra = delProyecto.filter((v) => !v.data.testimonio);
+const testimonios = delProyecto.filter((v) => v.data.testimonio);
 
 const { Content } = await render(es || !en ? proyecto : en);
 const zona = es ? d.zona : (en?.data.zona ?? ZONAS_EN[d.zona] ?? d.zona);
@@ -132,16 +136,25 @@ const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
           <a class="enlace-flecha" href={`/contacto/?proyecto=${proyecto.id}#presupuesto`} data-evento="presupuesto" data-evento-detalle="venta">Solicitar información</a>
         </aside>
       )}
-      {d.videos.length > 0 && (
-        <p class="videos">
-          {d.videos.map((v, i) => (
-            <a class="enlace-flecha" href={v} rel="noopener" target="_blank">{es ? 'Ver el vídeo en YouTube' : 'Watch the video on YouTube'}{d.videos.length > 1 ? ` (${i + 1})` : ''}</a>
-          ))}
-        </p>
-      )}
     </section>
 
+    <Videos
+      videos={videosObra}
+      idioma={idioma}
+      id="videos-proyecto"
+      titulo={es ? `${d.nombre}, en vídeo.` : `${d.nombre} on video.`}
+    />
+
     <AntesDespues pares={pares} extra={extraAntes} idioma={idioma} />
+
+    <Videos
+      videos={testimonios}
+      idioma={idioma}
+      id="videos-testimonio"
+      fondo="tinta"
+      etiqueta={es ? 'Testimonio' : 'Testimonial'}
+      titulo={es ? 'Lo cuenta quien vive aquí.' : 'In the words of the person who lives here.'}
+    />
 
     <Galeria fotos={galeria} titulo={es ? `${d.nombre}, en detalle` : `${d.nombre} in detail`} idioma={idioma} />
 
@@ -240,8 +253,7 @@ const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
       align-self: start;
     }
     .relato,
-    .aviso-venta,
-    .videos {
+    .aviso-venta {
       grid-column: 7 / -1;
     }
   }
@@ -254,11 +266,6 @@ const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
     justify-items: start;
     padding: var(--espacio-m);
     background: var(--lino);
-  }
-  .videos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--espacio-m);
   }
   .relacionados-cabecera {
     display: flex;

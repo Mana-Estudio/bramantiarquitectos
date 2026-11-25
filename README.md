@@ -41,6 +41,7 @@ src/
     journal/          Los 40 artículos migrados (URL en la raíz: /<slug>/)
     legales/          Aviso legal, privacidad, cookies, términos
     faqs.json         Preguntas frecuentes (con su ámbito: general, contacto, interiorismo…)
+    videos.json       Videos (YouTube o mp4 propio) y en qué páginas aparecen
     resenas.json      Reseñas de Google migradas
   assets/             Fotos (proyectos/, promociones/, journal/, paginas/) y logo (marca/)
   components/         Piezas reutilizables · components/paginas/ = páginas completas en es/en
@@ -51,7 +52,7 @@ src/
   scripts/            JS de cliente (vanilla): menú, filtros, lightbox, antes/después, formulario
   styles/global.css   Tokens, tipografía y utilidades
 worker/index.ts       Worker de Cloudflare: POST /api/contacto (Turnstile + mail)
-public/               _headers (CSP y seguridad), _redirects (301), favicon
+public/               _headers (CSP y seguridad), _redirects (301), favicon, videos/ (mp4 propios)
 scripts/              migrar-wp.mjs y verificar-urls.mjs
 ```
 
@@ -84,7 +85,6 @@ galeria:
     estancia: "cocina"
 antes: []                                           # fotos del estado previo (mismo formato)
 comparaciones: []                                   # pares para el slider antes/después
-videos: []                                          # enlaces de YouTube (se muestran como enlace, sin iframe)
 ---
 
 ## El origen
@@ -100,6 +100,38 @@ se muestra a ancho completo dentro del relato:
 
 Las promociones funcionan igual en `src/content/promociones/` (con el campo `url`, que define su dirección) y los artículos en `src/content/journal/`.
 
+## Cómo agregar un video
+
+Los videos viven en `src/content/videos.json`. Cada uno aparece solo en las páginas con las que está relacionado.
+
+1. Guardar una portada en `src/assets/videos/` (una foto del proyecto o un fotograma; mejor sin textos encima).
+2. Sumar una entrada a `videos.json`:
+
+```json
+{
+  "id": "casa-ejemplo",
+  "youtube": "ID_DE_11_CARACTERES",
+  "titulo": "Casa Ejemplo, en vídeo",
+  "tituloEn": "Casa Ejemplo on video",
+  "descripcion": "Una frase sobre el video.",
+  "descripcionEn": "One sentence about the video.",
+  "poster": "../assets/videos/casa-ejemplo.jpg",
+  "posterAlt": "Descripción de la portada",
+  "posterAltEn": "Cover description",
+  "formato": "horizontal",
+  "proyecto": "casa-ejemplo-reforma-integral-madrid",
+  "servicios": ["reforma-integral"],
+  "destacado": false,
+  "orden": 9
+}
+```
+
+- `formato`: `horizontal` o `vertical` (shorts y videos grabados con el móvil).
+- Relación: `proyecto`, `promocion` o `articulo` (el slug), `servicios` (sale en esas páginas de servicio), `paginas: ["estudio"]`, `testimonio: true` (va en el bloque "Lo cuenta quien vive aquí" de la ficha) y `destacado: true` (sale en la home).
+- Para un video propio en lugar de YouTube: subir el `.mp4` a `public/videos/` (máximo 25 MB por archivo en Cloudflare) y usar `"archivo": "/videos/nombre.mp4"` en lugar de `"youtube"`.
+
+Los videos de YouTube se muestran con la portada propia y el reproductor (`youtube-nocookie.com`) se carga recién al pulsar reproducir: la página no le pide nada a YouTube hasta entonces. Sin JS, la portada enlaza al video en YouTube.
+
 ## Cómo editar textos
 
 | Qué | Dónde |
@@ -113,6 +145,8 @@ Las promociones funcionan igual en `src/content/promociones/` (con el campo `url
 | Textos legales | `src/content/legales/*.md` |
 | Opciones del formulario (tipos, plazos, franjas de inversión) | `src/lib/contacto.ts` |
 | Menú, botones y etiquetas de interfaz | `src/lib/i18n.ts` |
+| Videos | `src/content/videos.json` y portadas en `src/assets/videos/` |
+| Tipografías (Archivo para títulos, la familia del logotipo; Manrope para texto) | `astro.config.mjs` (`fonts`) y escala en `src/styles/global.css` |
 
 ## Migración desde WordPress
 

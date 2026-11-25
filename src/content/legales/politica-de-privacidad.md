@@ -46,7 +46,7 @@ Los datos que le solicitamos son adecuados, pertinentes y estrictamente necesari
 - **Cloudflare, Inc.:** alojamiento de la web, protección del formulario frente a spam (Turnstile) y estadísticas de uso agregadas sin cookies (Web Analytics). Puede implicar transferencias a Estados Unidos amparadas en el Data Privacy Framework UE-EE.UU. y en cláusulas contractuales tipo.
 - **Proveedor de envío de correo del formulario:** remite a Bramantia Index S.L los datos que nos envías desde el formulario de contacto. *(Pendiente de confirmar el proveedor definitivo antes de publicar.)*
 
-Si nos escribes por WhatsApp, el tratamiento de esa conversación se rige además por las condiciones de WhatsApp Ireland Limited.
+Si nos escribes por WhatsApp, el tratamiento de esa conversación se rige además por las condiciones de WhatsApp Ireland Limited. Si decides reproducir un video de YouTube, el reproductor (Google Ireland Limited) se carga en ese momento y se aplica su política de privacidad; hasta entonces, la web no le envía ningún dato.
 
 **7\. ¿Cuáles son sus derechos cuando nos facilita sus datos?** Los derechos de protección de datos que podrán ejercer las personas interesadas, cuando procedan, son:
 

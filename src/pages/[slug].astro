@@ -8,7 +8,8 @@ import Foto from '../components/Foto.astro';
 import Migas from '../components/Migas.astro';
 import TarjetaArticulo from '../components/TarjetaArticulo.astro';
 import CtaFinal from '../components/CtaFinal.astro';
-import { articulos, articulosRelacionados, minutosLectura, CATEGORIAS, tituloCorto } from '../lib/contenido';
+import Video from '../components/Video.astro';
+import { articulos, articulosRelacionados, minutosLectura, CATEGORIAS, tituloCorto, videos } from '../lib/contenido';
 import { fecha } from '../lib/i18n';
 import { TEXTO_WHATSAPP } from '../lib/sitio';
 import { articulo as articuloLd, migas as migasLd } from '../lib/jsonld';
@@ -23,6 +24,7 @@ const d = entrada.data;
 const { Content } = await render(entrada);
 const minutos = minutosLectura(entrada.body);
 const relacionados = articulosRelacionados(entrada, todos, 3);
+const videosArticulo = await videos((v) => v.articulo === entrada.id);
 const url = `/${entrada.id}/`;
 const titulo = tituloCorto(d.title);
 const migas = [
@@ -71,6 +73,11 @@ const og = d.cover ? await getImage({ src: d.cover, width: 1200, height: 630, fi
 
     <div class="contenedor articulo-cuerpo">
       <div class="prosa">
+        {videosArticulo.map((v) => (
+          <div class="articulo-video">
+            <Video video={v} nivel="p" sizes="(min-width: 68rem) 40rem, 100vw" />
+          </div>
+        ))}
         <Content />
       </div>
       <aside class="articulo-cta fondo-lino">
@@ -131,6 +138,11 @@ const og = d.cover ? await getImage({ src: d.cover, width: 1200, height: 630, fi
   }
   .articulo-cuerpo .prosa {
     font-size: var(--paso-0);
+  }
+  .articulo-video {
+    margin-bottom: var(--espacio-l);
+    padding-bottom: var(--espacio-l);
+    border-bottom: 1px solid var(--linea);
   }
   .articulo-cta {
     display: grid;

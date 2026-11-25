@@ -17,7 +17,6 @@ portadaAlt: "Estado de la vivienda, almacenamiento después de la reforma Casa G
 galeria: []
 antes: []
 comparaciones: []
-videos: []
 wpId: 5816
 ---
 

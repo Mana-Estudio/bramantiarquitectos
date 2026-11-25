@@ -8,7 +8,8 @@ import TarjetaArticulo from '../TarjetaArticulo.astro';
 import Proceso from '../Proceso.astro';
 import Resenas from '../Resenas.astro';
 import CtaFinal from '../CtaFinal.astro';
-import { proyectos as todosProyectos, articulos } from '../../lib/contenido';
+import Videos from '../Videos.astro';
+import { proyectos as todosProyectos, articulos, videos } from '../../lib/contenido';
 import { RUTAS, RUTAS_SERVICIO } from '../../lib/i18n';
 import { SITIO, whatsapp, TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
 import hero from '../../assets/paginas/hero-casa-felipe-ii-salon.jpg';
@@ -25,6 +26,7 @@ const destacados = proyectos.filter((p) => p.data.destacado).slice(0, 6);
 const traducciones = new Map((await getCollection('proyectosEn')).map((p) => [p.id, p]));
 const servicios = (await getCollection('servicios')).filter((s) => s.data.idioma === idioma).sort((a, b) => a.data.orden - b.data.orden);
 const ultimos = (await articulos()).slice(0, 3);
+const videosDestacados = await videos((v) => v.destacado);
 const fabrica = (await getEntry('journal', 'arquitectura-artesania-diseno-medida-real-fabrica-tapices'))?.id ?? '';
 ---
 
@@ -134,6 +136,16 @@ const fabrica = (await getEntry('journal', 'arquitectura-artesania-diseno-medida
       </div>
     </div>
   </section>
+
+  <Videos
+    videos={videosDestacados}
+    idioma={idioma}
+    id="videos-inicio"
+    fondo="tinta"
+    titulo={es ? 'Proyectos en movimiento.' : 'Projects in motion.'}
+    texto={es ? 'Recorridos por obras terminadas y por los talleres con los que trabajamos.' : 'Walkthroughs of finished homes and of the workshops we collaborate with.'}
+    enlace={{ href: r.proyectos, texto: es ? 'Ver todos los proyectos' : 'See all projects' }}
+  />
 
   <Proceso idioma={idioma} />
 

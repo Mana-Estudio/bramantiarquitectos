@@ -56,7 +56,6 @@ comparaciones:
     despues: "../../assets/proyectos/casa-elara/casa-elara-cocina-01.jpg"
     despuesAlt: "Estado de la cocina después de la reforma en la calle Alcalá, Madrid"
     estancia: "cocina"
-videos: []
 wpId: 16550
 ---
 
