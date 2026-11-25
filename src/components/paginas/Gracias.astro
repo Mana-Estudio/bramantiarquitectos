@@ -1,0 +1,111 @@
+---
+import Base from '../../layouts/Base.astro';
+import TarjetaProyecto from '../TarjetaProyecto.astro';
+import Icono from '../Icono.astro';
+import { proyectos as todos } from '../../lib/contenido';
+import { RUTAS } from '../../lib/i18n';
+import { whatsapp, TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const es = idioma === 'es';
+const lista = await todos();
+const destacados = lista.filter((p) => p.data.destacado).slice(0, 3);
+const pasos = es
+  ? [
+      ['Revisamos tu consulta', 'La lee una persona del estudio, no un sistema automático.'],
+      ['Te contactamos', 'Por teléfono o email, para aclarar dudas y concretar el siguiente paso.'],
+      ['Primera reunión', 'Si el proyecto encaja, quedamos para conocer la vivienda y lo que necesitas.'],
+    ]
+  : [
+      ['We review your enquiry', 'It is read by a person at the studio, not an automated system.'],
+      ['We get in touch', 'By phone or email, to answer questions and agree the next step.'],
+      ['First meeting', 'If the project is a good fit, we meet to see the home and understand what you need.'],
+    ];
+---
+
+<Base
+  idioma={idioma}
+  titulo={es ? 'Gracias por tu consulta' : 'Thank you for your enquiry'}
+  descripcion={es ? 'Hemos recibido tu consulta. Te contactaremos para concretar el siguiente paso.' : 'We have received your enquiry and will be in touch to agree the next step.'}
+  noindex
+>
+  <section class="contenedor gracias">
+    <p class="etiqueta">{es ? 'Consulta recibida' : 'Enquiry received'}</p>
+    <h1>{es ? <>Gracias. <em>Ya la tenemos.</em></> : <>Thank you. <em>We have it.</em></>}</h1>
+    <ol role="list" class="pasos">
+      {pasos.map(([titulo, texto], i) => (
+        <li>
+          <span class="numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <h2>{titulo}</h2>
+          <p class="secundario">{texto}</p>
+        </li>
+      ))}
+    </ol>
+    <p class="secundario">
+      {es ? '¿Es urgente?' : 'Is it urgent?'}{' '}
+      <a href={whatsapp(TEXTO_WHATSAPP[idioma])} data-evento="whatsapp" data-evento-detalle="gracias"><Icono nombre="whatsapp" class="icono-linea" /> {es ? 'Escríbenos por WhatsApp' : 'Message us on WhatsApp'}</a>
+    </p>
+  </section>
+
+  <section class="seccion" aria-labelledby="mientras-titulo">
+    <div class="contenedor">
+      <h2 id="mientras-titulo" class="mientras">{es ? <>Mientras tanto, <em>algunos proyectos.</em></> : <>In the meantime, <em>some projects.</em></>}</h2>
+      <div class="lista">
+        {destacados.map((p) => <TarjetaProyecto proyecto={p} indice={lista.findIndex((x) => x.id === p.id) + 1} idioma={idioma} sizes="(min-width: 60rem) 30vw, 100vw" />)}
+      </div>
+      <a class="enlace-flecha" href={RUTAS[idioma].proyectos}>{es ? 'Ver todos los proyectos' : 'See all projects'}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .gracias {
+    display: grid;
+    gap: var(--espacio-l);
+    padding-block: var(--espacio-2xl);
+  }
+  .gracias h1 {
+    font-size: clamp(3rem, 1.6rem + 6vw, 7.5rem);
+  }
+  .pasos {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  .pasos li {
+    display: grid;
+    gap: var(--espacio-2xs);
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .pasos h2 {
+    font-size: var(--paso-3);
+  }
+  @media (min-width: 48rem) {
+    .pasos {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .gracias a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+  }
+  .mientras {
+    font-size: var(--paso-5);
+    margin-bottom: var(--espacio-xl);
+  }
+  .lista {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+    margin-bottom: var(--espacio-l);
+  }
+  @media (min-width: 48rem) {
+    .lista {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

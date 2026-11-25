@@ -16,7 +16,7 @@ Casa Werlyb was born from the need to turn a space into a home that is functiona
 
 The intervention follows one clear idea: order the space to gain flow, light and balance. The architecture is pared back to the essentials so each room relates naturally to the whole.
 
-## The atmosphere
+## The feel
 
 The new layout opens up the home and creates a continuous connection between the social areas: a generous living and dining room with an integrated kitchen that flows straight onto a large terrace, designed as a flexible space for small gatherings, larger events and outdoor filming.
 

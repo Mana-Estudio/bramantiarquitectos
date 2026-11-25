@@ -1,0 +1,11 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ListadoJournal from '../../../components/paginas/ListadoJournal.astro';
+import { CATEGORIAS, type Categoria } from '../../../lib/contenido';
+
+export const getStaticPaths = (() => (Object.keys(CATEGORIAS) as Categoria[]).map((categoria) => ({ params: { categoria }, props: { categoria } }))) satisfies GetStaticPaths;
+
+const { categoria } = Astro.props;
+---
+
+<ListadoJournal categoria={categoria} />

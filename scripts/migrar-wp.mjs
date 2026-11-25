@@ -114,10 +114,10 @@ function decode(s = '') {
 /** Saca toda mención a la marca anterior. */
 function sinMarcaVieja(s) {
   return s
-    .replace(/https?:\/\/(www\.)?atmospherearquitectos\.com\/?/gi, '/')
-    .replace(/atmosphere\s+arquitectos/gi, 'Bramanti Arquitectos')
-    .replace(/atmospherearquitectos/gi, 'bramantiarquitectos')
-    .replace(/atmosphere/gi, 'Bramanti');
+    .replace(/https?:\/\/(www\.)?atmos?pherearquitectos\.com\/?/gi, '/')
+    .replace(/atmos?phere\s+arquitectos/gi, 'Bramanti Arquitectos')
+    .replace(/atmos?pherearquitectos/gi, 'bramantiarquitectos')
+    .replace(/atmos?phere/gi, 'Bramanti');
 }
 
 function limpiarTexto(s) {
@@ -410,7 +410,7 @@ function faqsDeToggle($, w) {
 const CATEGORIAS = { arquitectura: 'arquitectura', construccion: 'construccion', interiorismo: 'interiorismo', 'arte-y-decoracion': 'arquitectura', 'el-papel-del-arquitecto': 'arquitectura', 'inteligencia-espacial': 'arquitectura', 'tendencias-interiorismo': 'interiorismo', uncategorized: 'arquitectura' };
 
 function slugPost(slug) {
-  return slug.replace(/-con-atmosphere-arquitectos$/, '');
+  return slug.replace(/-con-atmos?phere-arquitectos$/, '');
 }
 
 async function migrarJournal(posts, cats) {

@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import { proyectos as todos } from '../lib/contenido';
+
+const destacados = (await todos()).filter((p) => p.data.destacado).slice(0, 3);
+---
+
+<Base titulo="Página no encontrada" descripcion="La página que buscas no existe o ha cambiado de dirección." noindex>
+  <section class="contenedor no-encontrada">
+    <p class="etiqueta">Error 404</p>
+    <h1>Esta página <em>no existe.</em></h1>
+    <p class="entradilla">Puede que la dirección haya cambiado o que el enlace tenga un error. Estos caminos te pueden servir:</p>
+    <ul role="list" class="caminos">
+      <li><a href="/nuestras-creaciones/"><span class="titulo">Proyectos</span><span class="secundario">Reformas integrales e interiorismo en Madrid</span></a></li>
+      <li><a href="/reformas-integrales-madrid/"><span class="titulo">Reformas integrales</span><span class="secundario">Qué incluye y cómo trabajamos</span></a></li>
+      <li><a href="/blog/"><span class="titulo">Journal</span><span class="secundario">Guías y artículos del estudio</span></a></li>
+      <li><a href="/contacto/"><span class="titulo">Contacto</span><span class="secundario">Cuéntanos tu proyecto</span></a></li>
+    </ul>
+    <p class="secundario">
+      Proyectos recientes: {destacados.map((p, i) => (
+        <>
+          <a href={`/nuestras-creaciones/${p.id}/`}>{p.data.nombre}</a>{i < destacados.length - 1 ? ', ' : '.'}
+        </>
+      ))}
+    </p>
+    <p lang="en" class="secundario">Page not found. <a href="/en/">Go to the English homepage</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .no-encontrada {
+    display: grid;
+    gap: var(--espacio-l);
+    padding-block: var(--espacio-2xl) var(--espacio-3xl);
+  }
+  .no-encontrada h1 {
+    font-size: clamp(3rem, 1.6rem + 6vw, 7.5rem);
+  }
+  .caminos {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .caminos a {
+    display: grid;
+    gap: 0.2rem;
+    padding-block: var(--espacio-s);
+    border-bottom: 1px solid var(--linea);
+    text-decoration: none;
+  }
+  .caminos .titulo {
+    font-size: var(--paso-3);
+  }
+  .caminos a:hover .titulo {
+    font-style: italic;
+  }
+  @media (min-width: 60rem) {
+    .caminos {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--separacion);
+    }
+  }
+</style>

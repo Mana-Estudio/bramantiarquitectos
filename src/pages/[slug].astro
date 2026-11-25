@@ -1,0 +1,172 @@
+---
+// Artículos del journal. Conservan sus URLs actuales en la raíz: /<slug>/
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import Migas from '../components/Migas.astro';
+import TarjetaArticulo from '../components/TarjetaArticulo.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { articulos, articulosRelacionados, minutosLectura, CATEGORIAS, tituloCorto } from '../lib/contenido';
+import { fecha } from '../lib/i18n';
+import { TEXTO_WHATSAPP } from '../lib/sitio';
+import { articulo as articuloLd, migas as migasLd } from '../lib/jsonld';
+
+export const getStaticPaths = (async () => {
+  const todos = await articulos();
+  return todos.map((entrada) => ({ params: { slug: entrada.id }, props: { entrada, todos } }));
+}) satisfies GetStaticPaths;
+
+const { entrada, todos } = Astro.props;
+const d = entrada.data;
+const { Content } = await render(entrada);
+const minutos = minutosLectura(entrada.body);
+const relacionados = articulosRelacionados(entrada, todos, 3);
+const url = `/${entrada.id}/`;
+const titulo = tituloCorto(d.title);
+const migas = [
+  { nombre: 'Inicio', url: '/' },
+  { nombre: 'Journal', url: '/blog/' },
+  { nombre: titulo, url },
+];
+const og = d.cover ? await getImage({ src: d.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' }) : null;
+---
+
+<Base
+  titulo={d.seoTitle ?? titulo}
+  descripcion={d.description}
+  imagen={d.cover}
+  tipoOg="article"
+  jsonld={[
+    migasLd(migas),
+    articuloLd({ titulo, descripcion: d.description, url, imagen: og ? new URL(og.src, Astro.site).href : undefined, publicado: d.date, actualizado: d.updated }),
+  ]}
+>
+  <article class="articulo">
+    <header class="contenedor articulo-cabecera">
+      <Migas items={migas} />
+      <div class="articulo-titulo">
+        <p class="etiqueta">
+          <a href={`/blog/categoria/${d.categoria}/`}>{CATEGORIAS[d.categoria]}</a>
+        </p>
+        <h1>{titulo}</h1>
+        <p class="articulo-meta secundario">
+          <time datetime={d.date.toISOString().slice(0, 10)}>{fecha(d.date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{minutos} min de lectura</span>
+          <span aria-hidden="true">·</span>
+          <span>Bramanti Arquitectos</span>
+        </p>
+      </div>
+    </header>
+
+    {d.cover && (
+      <div class="contenedor">
+        <div class="articulo-portada foto">
+          <Foto src={d.cover} alt={d.coverAlt ?? ''} sizes="(min-width: 90rem) 84rem, 100vw" anchos={[640, 960, 1280, 1600]} prioridad />
+        </div>
+      </div>
+    )}
+
+    <div class="contenedor articulo-cuerpo">
+      <div class="prosa">
+        <Content />
+      </div>
+      <aside class="articulo-cta fondo-lino">
+        <p class="etiqueta sin-linea">¿Lo hablamos?</p>
+        <p class="titulo-3">Si estás pensando en reformar o construir en Madrid, cuéntanos tu proyecto.</p>
+        <div class="botones">
+          <a class="boton" href="/contacto/#presupuesto" data-evento="presupuesto" data-evento-detalle="articulo">Pedir valoración</a>
+          <a class="boton boton-linea" href="/nuestras-creaciones/">Ver proyectos</a>
+        </div>
+      </aside>
+    </div>
+  </article>
+
+  {relacionados.length > 0 && (
+    <section class="seccion relacionados" aria-labelledby="relacionados-titulo">
+      <div class="contenedor">
+        <h2 id="relacionados-titulo">Sigue <em>leyendo.</em></h2>
+        <div class="relacionados-lista">
+          {relacionados.map((a) => <TarjetaArticulo articulo={a} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaFinal whatsappTexto={TEXTO_WHATSAPP.es} />
+</Base>
+
+<style>
+  .articulo-cabecera {
+    padding-block: var(--espacio-m) var(--espacio-xl);
+  }
+  .articulo-titulo {
+    display: grid;
+    gap: var(--espacio-s);
+    margin-top: var(--espacio-l);
+    max-width: 62rem;
+  }
+  .articulo-titulo h1 {
+    font-size: clamp(2.4rem, 1.5rem + 3.8vw, 5.2rem);
+  }
+  .articulo-titulo .etiqueta a {
+    text-decoration: none;
+  }
+  .articulo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: var(--paso--1);
+  }
+  .articulo-portada {
+    aspect-ratio: 16 / 9;
+    max-height: 80vh;
+  }
+  .articulo-cuerpo {
+    display: grid;
+    gap: var(--espacio-2xl);
+    padding-block: var(--espacio-2xl);
+  }
+  .articulo-cuerpo .prosa {
+    font-size: var(--paso-0);
+  }
+  .articulo-cta {
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: start;
+    padding: var(--espacio-m);
+  }
+  .articulo-cta .titulo-3 {
+    font-size: var(--paso-2);
+  }
+  @media (min-width: 68rem) {
+    .articulo-cuerpo {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      column-gap: var(--espacio-2xl);
+    }
+    .articulo-cuerpo .prosa {
+      margin-left: auto;
+      margin-right: 0;
+    }
+    .articulo-cta {
+      position: sticky;
+      top: calc(var(--alto-header-compacto) + var(--espacio-l));
+      align-self: start;
+    }
+  }
+  .relacionados h2 {
+    font-size: var(--paso-5);
+    margin-bottom: var(--espacio-xl);
+  }
+  .relacionados-lista {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  @media (min-width: 48rem) {
+    .relacionados-lista {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

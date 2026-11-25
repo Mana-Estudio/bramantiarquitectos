@@ -40,7 +40,7 @@ const proyectos = defineCollection({
           }),
         )
         .default([]),
-      videos: z.array(z.string().url()).default([]),
+      videos: z.array(z.url()).default([]),
       wpId: z.number().optional(),
     }),
 });
@@ -87,7 +87,7 @@ const promociones = defineCollection({
       portada: image(),
       portadaAlt: z.string(),
       galeria: z.array(z.object({ src: image(), alt: z.string(), estancia: z.string().default('detalle') })).default([]),
-      videos: z.array(z.string().url()).default([]),
+      videos: z.array(z.url()).default([]),
       wpId: z.number().optional(),
     }),
 });
@@ -151,7 +151,7 @@ const resenas = defineCollection({
     fecha: z.string().optional(),
     fuente: z.string(),
     estrellas: z.number().min(1).max(5),
-    url: z.string().url().nullable(),
+    url: z.url().nullable(),
   }),
 });
 

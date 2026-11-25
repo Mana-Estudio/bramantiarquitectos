@@ -1,10 +1,8 @@
 ---
-title: "Política de Privacidad"
-updated: "2026-09-14"
+title: "Política de privacidad"
+updated: "2026-11-25"
 wpId: 6423
 ---
-
-Fecha de última actualización: \[18/03/2026\]
 
 ## Política de privacidad
 
@@ -24,7 +22,7 @@ Siguiendo los principios de licitud, lealtad y transparencia, ponemos a su dispo
 - **Clientes:** Gestionar la relación comercial y/o profesional, facilitar ofertas de nuestros servicios y/o productos de su interés.
 - **Proveedores:** Gestionar la relación comercial y/o profesional.
 - **Candidatos:** Gestionar el proceso de selección de personal.
-- **Usuarios web:** Gestionar el análisis de sus datos de navegación.
+- **Usuarios web:** Responder a las consultas enviadas desde el formulario de contacto y obtener estadísticas agregadas de uso de la web, sin cookies.
 
 **3\. ¿Cuál es la legitimación para el tratamiento de sus datos?** La base legal para el tratamiento de sus datos personales, dependiendo de la categoría de interesado de que se trate, puede ser:
 
@@ -43,12 +41,12 @@ Los datos que le solicitamos son adecuados, pertinentes y estrictamente necesari
 - Los bancos y entidades financieras para el cobro de los servicios contratados y/o productos comprados.
 - Administraciones públicas con competencia en los sectores de la actividad de Bramantia Index S.L, cuando así lo establezca la normativa vigente.
 
-**6\. ¿Se efectúan transferencias internacionales de los datos?** Bramantia Index S.L podría realizar desde este Sitio web transferencias internacionales de datos derivados de la aceptación de las cookies:
+**6\. ¿Se efectúan transferencias internacionales de los datos?** Esta web no utiliza cookies de análisis ni de publicidad de terceros. Para prestar el servicio, Bramantia Index S.L cuenta con los siguientes encargados del tratamiento:
 
-- Google Llc y Google Ireland Limited transfieren datos a Estados Unidos en base al consentimiento del usuario al aceptar las cookies.
-- Al aceptar las cookies de estas entidades el usuario consiente que sus datos personales que puedan recabarse a través de la carga y lectura de las cookies sean transferidos a Estados Unidos, país en el que se ofrece un nivel de protección equiparable al europeo, solo en aquellas empresas estadounidenses incluidas en la lista de privacidad de datos UE-EE.UU., en el conocido como “Data Privacy Framework” (en adelante, “DPF”).
+- **Cloudflare, Inc.:** alojamiento de la web, protección del formulario frente a spam (Turnstile) y estadísticas de uso agregadas sin cookies (Web Analytics). Puede implicar transferencias a Estados Unidos amparadas en el Data Privacy Framework UE-EE.UU. y en cláusulas contractuales tipo.
+- **Proveedor de envío de correo del formulario:** remite a Bramantia Index S.L los datos que nos envías desde el formulario de contacto. *(Pendiente de confirmar el proveedor definitivo antes de publicar.)*
 
-En caso de que las empresas estadounidenses no estén adheridas al DPF, se entenderán que las mismas no garantizan un nivel de protección equiparable al europeo. En caso de que el usuario no consienta esta transferencia internacional de datos a Estados Unidos deberá rechazar estas cookies no prestándose ni obteniéndose las funcionalidades o servicios que se ofrecen con estas cookies. Puedes informarte de las transferencias a terceros países que, en su caso, realizan los terceros identificados en la política de cookies en sus correspondientes políticas.
+Si nos escribes por WhatsApp, el tratamiento de esa conversación se rige además por las condiciones de WhatsApp Ireland Limited.
 
 **7\. ¿Cuáles son sus derechos cuando nos facilita sus datos?** Los derechos de protección de datos que podrán ejercer las personas interesadas, cuando procedan, son:
 

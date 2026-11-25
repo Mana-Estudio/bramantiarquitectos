@@ -17,7 +17,7 @@ The goal was not to "modernise". It was to refine.
 
 The full renovation and interior design project updates the home while keeping its classic character, combining contemporary elements with a selection of textures and soft contrasts. Design decisions follow three principles: continuity between classic and contemporary, warm lighting, and materials that tie the rooms together.
 
-## The atmosphere
+## The feel
 
 - Effortless elegance
 - Calm, warm light
