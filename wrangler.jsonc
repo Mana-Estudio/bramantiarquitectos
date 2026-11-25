@@ -1,0 +1,22 @@
+{
+  // Cloudflare Workers: sitio estático (dist) + un Worker chico para /api/*.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bramantiarquitectos",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    // Solo /api/* pasa por el Worker; el resto lo sirve Cloudflare directo (con _headers y _redirects).
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true },
+  "vars": {
+    // Valores públicos. Los secretos (RESEND_API_KEY, TURNSTILE_SECRET) van con `wrangler secret put`.
+    "MAIL_TO": "info@bramantiarquitectos.com",
+    "MAIL_FROM": "Web Bramanti Arquitectos <web@bramantiarquitectos.com>",
+    "SITE_URL": "https://bramantiarquitectos.com"
+  }
+}
