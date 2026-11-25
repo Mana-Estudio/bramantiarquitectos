@@ -11,9 +11,12 @@ duracion: "3 meses"
 estado: "obra terminada"
 destacado: false
 orden: 7
-portada: "../../assets/proyectos/casa-arteaga/casa-arteaga-detalle-01.jpg"
+portada: "../../assets/proyectos/casa-arteaga/casa-arteaga-detalle-02.jpg"
 portadaAlt: "Casa Arteaga: detalle tras la reforma"
-galeria: []
+galeria:
+  - src: "../../assets/proyectos/casa-arteaga/casa-arteaga-almacenaje-01.jpg"
+    alt: "Armario empotrado a medida con puertas blancas y módulos de almacenaje en madera"
+    estancia: "almacenaje"
 antes: []
 comparaciones: []
 videos: []
@@ -29,7 +32,7 @@ Renovación completa de la distribución, ampliando el programa y readaptando es
 En esta fase se estudia la normativa urbanística, protección del edificio, elementos singulares, normas de la comunidad. También se realiza un estudio de detalle de las necesidades reales, almacenaje, estilo de vida, cocina abierta  
 o semiabierta…
 
-![Armario empotrado a medida con puertas blancas y módulos de almacenaje en madera](../../assets/proyectos/casa-arteaga/casa-arteaga-almacenaje-01.jpg)
+![Casa Arteaga: detalle tras la reforma](../../assets/proyectos/casa-arteaga/casa-arteaga-detalle-01.jpg)
 
 ## Propuesta
 
@@ -39,5 +42,3 @@ vivienda, junto una materialidad por cada estancia y un cálculo de instalacione
 ## Resultado
 
 Una vez definido el proyecto, se ejecutan los trabajos con una dirección de obra exhaustiva hasta los repasos y detalles finales. Por último, con la implantación del mobiliario según el proyecto de interiorismo, el resultado es una vivienda única y personalizada para poder entrar a vivir y estrenar el nuevo hogar.
-
-![Casa Arteaga: detalle tras la reforma](../../assets/proyectos/casa-arteaga/casa-arteaga-detalle-02.jpg)

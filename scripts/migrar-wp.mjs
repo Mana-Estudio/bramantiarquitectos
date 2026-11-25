@@ -39,28 +39,30 @@ const ANCHO_OBJETIVO = 1536; // tamaño mínimo deseado del máster que bajamos
 // Datos verificados (brief del cliente). Lo que no está acá se extrae de la página.
 // ---------------------------------------------------------------------------
 const PROYECTOS = [
-  { slug: 'casa-elara-reforma-barrio-salamanca', nombre: 'Casa Elara', corto: 'casa-elara', zona: 'Barrio de Salamanca', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral', superficie: '138 m²', destacado: true },
-  { slug: 'casa-felipe-ii-reforma-integral-retiro-madrid', nombre: 'Casa Felipe II', corto: 'casa-felipe-ii', zona: 'Retiro', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo', superficie: '+140 m²', anio: 2022, destacado: true, emparejarEnOrden: true },
-  { slug: 'casa-santos-dumont-reforma-integral-madrid', nombre: 'Casa Santos Dumont', corto: 'casa-santos-dumont', zona: 'Madrid Río', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo', superficie: '87 m²', destacado: true },
-  { slug: 'casa-werlyb-reforma-integral-madrid', nombre: 'Casa Werlyb', corto: 'casa-werlyb', zona: 'Madrid', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo', destacado: true },
-  { slug: 'casa-odonnell-reforma-integral-madrid', nombre: 'Casa O’Donnell', corto: 'casa-odonnell', zona: 'Barrio de Salamanca', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral', destacado: true },
-  { slug: 'casa-goya-reforma-integral-salamanca-madrid', nombre: 'Casa Goya', corto: 'casa-goya', zona: 'Barrio de Salamanca', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral', destacado: true },
-  { slug: 'casa-arteaga-reforma-integral-madrid', nombre: 'Casa Arteaga', corto: 'casa-arteaga', zona: 'Esteban de Arteaga', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral' },
-  { slug: 'casa-alarcon-reforma-integral-pozuelo', nombre: 'Casa Alarcón', corto: 'casa-alarcon', zona: 'Pozuelo de Alarcón', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo' },
-  { slug: 'casa-panes-reforma-integral-madrid', nombre: 'Casa María Panés', corto: 'casa-maria-panes', zona: 'Centro de Madrid', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo' },
-  { slug: 'casa-joaquin-lopez-reforma-integral-madrid', nombre: 'Casa Joaquín López', corto: 'casa-joaquin-lopez', zona: 'Madrid', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo' },
+  { slug: 'casa-elara-reforma-barrio-salamanca', nombre: 'Casa Elara', corto: 'casa-elara', portada: 'casa-elara-cocina-01', zona: 'Barrio de Salamanca', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral', superficie: '138 m²', destacado: true },
+  { slug: 'casa-felipe-ii-reforma-integral-retiro-madrid', nombre: 'Casa Felipe II', corto: 'casa-felipe-ii', portada: 'casa-felipe-ii-salon-01', zona: 'Retiro', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo', superficie: '+140 m²', anio: 2022, destacado: true, emparejarEnOrden: true },
+  { slug: 'casa-santos-dumont-reforma-integral-madrid', nombre: 'Casa Santos Dumont', corto: 'casa-santos-dumont', portada: 'casa-santos-dumont-salon-02', zona: 'Madrid Río', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo', superficie: '87 m²', destacado: true },
+  { slug: 'casa-werlyb-reforma-integral-madrid', nombre: 'Casa Werlyb', corto: 'casa-werlyb', portada: 'casa-werlyb-cocina-03', zona: 'Madrid', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo', destacado: true },
+  { slug: 'casa-odonnell-reforma-integral-madrid', nombre: 'Casa O’Donnell', corto: 'casa-odonnell', portada: 'casa-odonnell-salon-01', zona: 'Barrio de Salamanca', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral', destacado: true },
+  { slug: 'casa-goya-reforma-integral-salamanca-madrid', nombre: 'Casa Goya', corto: 'casa-goya', portada: 'casa-goya-cocina-01', zona: 'Barrio de Salamanca', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral', destacado: true },
+  { slug: 'casa-arteaga-reforma-integral-madrid', nombre: 'Casa Arteaga', corto: 'casa-arteaga', portada: 'casa-arteaga-detalle-02', zona: 'Esteban de Arteaga', tipos: ['reforma-integral'], tipoTexto: 'Reforma integral' },
+  { slug: 'casa-alarcon-reforma-integral-pozuelo', nombre: 'Casa Alarcón', corto: 'casa-alarcon', portada: 'casa-alarcon-salon-01', zona: 'Pozuelo de Alarcón', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo' },
+  { slug: 'casa-panes-reforma-integral-madrid', nombre: 'Casa María Panés', corto: 'casa-maria-panes', portada: 'casa-maria-panes-salon-01', zona: 'Centro de Madrid', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo' },
+  { slug: 'casa-joaquin-lopez-reforma-integral-madrid', nombre: 'Casa Joaquín López', corto: 'casa-joaquin-lopez', portada: 'casa-joaquin-lopez-cocina-01', zona: 'Madrid', tipos: ['reforma-integral', 'interiorismo'], tipoTexto: 'Reforma integral e interiorismo' },
 ];
 
 const PROMOCIONES = [
-  { slug: 'casa-silva', wpSlug: 'casa-silva-reforma-integral-madrid', url: '/nuestras-creaciones/casa-silva-reforma-integral-madrid/', nombre: 'Casa Silva', corto: 'casa-silva', zona: 'Barrio de Salamanca', tipo: 'Vivienda reformada en venta', operacion: 'Apartamento en venta', estado: 'obra terminada', datos: { superficieConstruida: '90 m²', terraza: '28 m²' } },
-  { slug: 'los-satelites', wpSlug: 'ventapromocionlossatelites', url: '/ventapromocionlossatelites/', nombre: 'Los Satélites', corto: 'los-satelites', zona: 'Majadahonda', tipo: 'Obra nueva · vivienda unifamiliar', operacion: 'Promoción en venta', estado: 'render', datos: {} },
-  { slug: 'proyecto-omega', wpSlug: 'venta-proyecto-omega', url: '/venta-proyecto-omega/', nombre: 'Proyecto Omega', corto: 'proyecto-omega', zona: 'Majadahonda (Los Satélites)', tipo: 'Obra nueva · vivienda unifamiliar', operacion: 'Venta de proyecto', estado: 'render', datos: {} },
+  { slug: 'casa-silva', wpSlug: 'casa-silva-reforma-integral-madrid', url: '/nuestras-creaciones/casa-silva-reforma-integral-madrid/', nombre: 'Casa Silva', corto: 'casa-silva', portada: 'casa-silva-cocina-01', zona: 'Barrio de Salamanca', tipo: 'Vivienda reformada en venta', operacion: 'Apartamento en venta', estado: 'obra terminada', datos: { superficieConstruida: '90 m²', terraza: '28 m²' } },
+  { slug: 'los-satelites', wpSlug: 'ventapromocionlossatelites', url: '/ventapromocionlossatelites/', nombre: 'Los Satélites', corto: 'los-satelites', portada: 'los-satelites-salon-01', zona: 'Majadahonda', tipo: 'Obra nueva · vivienda unifamiliar', operacion: 'Promoción en venta', estado: 'render', datos: {} },
+  { slug: 'proyecto-omega', wpSlug: 'venta-proyecto-omega', url: '/venta-proyecto-omega/', nombre: 'Proyecto Omega', corto: 'proyecto-omega', portada: 'proyecto-omega-terraza-01', zona: 'Majadahonda (Los Satélites)', tipo: 'Obra nueva · vivienda unifamiliar', operacion: 'Venta de proyecto', estado: 'render', datos: {} },
 ];
 
 const LEGALES = ['aviso-legal', 'politica-de-privacidad', 'politica-de-cookies', 'terminos-y-condiciones'];
 
 // Imágenes sueltas de páginas institucionales (home, estudio, servicios).
 const IMAGENES_PAGINAS = [
+  // Hero de la home: Casa Felipe II, salón (en el tamaño más grande disponible hasta ~2560 px).
+  { pagina: 'casa-felipe-ii-reforma-integral-retiro-madrid', archivo: 'FELIPE-II-JAVIER-BRAVO-4.', nombre: 'hero-casa-felipe-ii-salon', ancho: 2048 },
   { pagina: 'estudio-de-arquitectura-en-madrid', archivo: 'f6240231ebbb6b4b9f8c4312aa81c545', nombre: 'estudio-vision-integral' },
   { pagina: 'estudio-arquitectura-madrid', archivo: 'eef8164981c4f53e7f485c00cc236354', nombre: 'proceso-inmersion' },
   { pagina: 'estudio-arquitectura-madrid', archivo: '0430eb84a42b7766894e5929b5d8bf7c', nombre: 'proceso-abstraccion' },
@@ -233,21 +235,21 @@ function idDeImagen($, img) {
   return null;
 }
 
-function elegirTamano(m) {
+function elegirTamano(m, anchoMinimo = ANCHO_OBJETIVO) {
   const tamanos = Object.entries(m.media_details?.sizes ?? {})
     .map(([nombre, s]) => ({ nombre, ancho: s.width, alto: s.height, url: s.source_url }))
     .filter((s) => s.url && !/architecturer|et-pb|inspiro|site_icon|elementor_custom/.test(s.nombre));
   if (m.media_details?.width) tamanos.push({ nombre: 'full', ancho: m.media_details.width, alto: m.media_details.height, url: m.source_url });
-  const grandes = tamanos.filter((s) => s.ancho >= ANCHO_OBJETIVO || s.alto >= ANCHO_OBJETIVO).sort((a, b) => a.ancho - b.ancho);
+  const grandes = tamanos.filter((s) => s.ancho >= anchoMinimo || s.alto >= anchoMinimo).sort((a, b) => a.ancho - b.ancho);
   if (grandes.length) return grandes[0];
   return tamanos.sort((a, b) => b.ancho - a.ancho)[0] ?? { url: m.source_url, ancho: 0, alto: 0 };
 }
 
 const descargados = new Map(); // destino → promesa
-async function bajarMedio(id, carpeta, nombreBase) {
+async function bajarMedio(id, carpeta, nombreBase, anchoMinimo = ANCHO_OBJETIVO) {
   const m = medios.get(id);
   if (!m) return null;
-  const t = elegirTamano(m);
+  const t = elegirTamano(m, anchoMinimo);
   const ext = (path.extname(new URL(t.url).pathname) || '.jpg').toLowerCase().replace('.jpeg', '.jpg');
   const destino = path.join(ASSETS, carpeta, `${nombreBase}${ext}`);
   if (!descargados.has(destino)) {
@@ -525,7 +527,7 @@ async function procesarFicha({ pagina, conf, coleccion, archivo }) {
 
   const cerrar = () => { if (actual.titulo || actual.partes.length) bloques.push(actual); };
 
-  for (const { w, tipo, cont, texto } of ws) {
+  for (const [indice, { w, tipo, cont, texto }] of ws.entries()) {
     if (tipo === 'heading' && FIN_CONTENIDO.test(texto)) {
       if (/oportunidad|disponible|nuevo hogar|PROMOCIÓN DISPONIBLE/i.test(texto)) enVenta = true;
       break;
@@ -545,11 +547,14 @@ async function procesarFicha({ pagina, conf, coleccion, archivo }) {
     if (tipo === 'video') { const yt = youtubeDe(w); if (yt) videos.push(yt); continue; }
     if (tipo === 'toggle') { faqs.push(...faqsDeToggle($, w)); continue; }
     if (tipo === 'image') {
+      if (ws[indice + 1]?.tipo === 'counter') continue; // ícono del contador
       for (const img of w.find('img').toArray()) {
         const src = $(img).attr('src') ?? '';
         if (/Group-1111|logotipo/i.test(src)) continue;
         const id = idDeImagen($, img);
         if (!id) continue;
+        const ancho = medios.get(id)?.media_details?.width ?? 0;
+        if (ancho && ancho < 300) continue; // íconos sueltos
         const alt = limpiarAlt($(img).attr('alt'));
         let f = fase;
         if (/despu[eé]s/i.test(alt)) f = 'despues';
@@ -623,7 +628,10 @@ function cuerpoConFotos(bloques, galeria, maxPorBloque = 1) {
   return { md, usadas };
 }
 
-function elegirPortada(galeria) {
+function elegirPortada(galeria, preferida) {
+  const elegida = preferida && galeria.find((g) => g.src.includes(`/${preferida}.`));
+  if (elegida) return elegida;
+  if (preferida) aviso(`no encontré la portada ${preferida}`);
   return galeria.find((g) => g.ancho > g.alto * 1.2 && g.estancia !== 'plano' && g.estancia !== 'fachada')
     ?? galeria.find((g) => g.estancia !== 'plano') ?? galeria[0];
 }
@@ -651,7 +659,7 @@ async function migrarProyectos(paginas) {
     const archivo = path.join(CONTENIDO, 'proyectos', `${conf.slug}.md`);
     if (existsSync(archivo) && !FORCE) { log('existe, no se pisa:', path.relative(RAIZ, archivo)); continue; }
     const r = await procesarFicha({ pagina, conf, coleccion: 'proyectos', archivo });
-    const portada = elegirPortada(r.galeria);
+    const portada = elegirPortada(r.galeria, conf.portada);
     const { md, usadas } = cuerpoConFotos(r.bloques, r.galeria.filter((g) => g !== portada));
     const tipos = [...conf.tipos];
     if (r.datos.conInteriorismo && !tipos.includes('interiorismo')) tipos.push('interiorismo');
@@ -692,7 +700,7 @@ async function migrarPromociones(paginas) {
     const archivo = path.join(CONTENIDO, 'promociones', `${conf.slug}.md`);
     if (existsSync(archivo) && !FORCE) { log('existe, no se pisa:', path.relative(RAIZ, archivo)); continue; }
     const r = await procesarFicha({ pagina, conf, coleccion: 'promociones', archivo });
-    const portada = elegirPortada(r.galeria);
+    const portada = elegirPortada(r.galeria, conf.portada);
     const { md, usadas } = cuerpoConFotos(r.bloques, r.galeria.filter((g) => g !== portada));
     const yoast = pagina.yoast_head_json ?? {};
     const descripcion = recortar(limpiarTexto(decode(yoast.description || '')) || r.resumen || conf.nombre, 155);
@@ -803,7 +811,7 @@ async function migrarImagenesPaginas(paginas) {
   for (const img of IMAGENES_PAGINAS) {
     const id = [...medios.values()].find((m) => m.source_url.includes(img.archivo))?.id;
     if (!id) { aviso(`no encontré la imagen ${img.archivo}`); continue; }
-    await bajarMedio(id, 'paginas', img.nombre);
+    await bajarMedio(id, 'paginas', img.nombre, img.ancho);
   }
   for (const l of LOGOS) {
     const id = [...medios.values()].find((m) => m.source_url.endsWith(l.archivo))?.id;

@@ -11,8 +11,8 @@ superficie: "87 m²"
 estado: "obra terminada"
 destacado: true
 orden: 3
-portada: "../../assets/proyectos/casa-santos-dumont/casa-santos-dumont-dormitorio-01.png"
-portadaAlt: "Estado de la habitación después de la reforma en la Madrid Rio, Madrid"
+portada: "../../assets/proyectos/casa-santos-dumont/casa-santos-dumont-salon-02.jpg"
+portadaAlt: "Estado del salón vista al ventanal después de la reforma en la Madrid Rio, Madrid"
 galeria:
   - src: "../../assets/proyectos/casa-santos-dumont/casa-santos-dumont-detalle-01.jpg"
     alt: "Casa Santos Dumont: detalle tras la reforma"
@@ -65,7 +65,7 @@ Esta filosofía se traduce en una arquitectura donde cada decisión responde al 
 
 La zona privada se compone de tres dormitorios equilibrados, uno de ellos con balcón privado de suelo a techo. Todas las estancias cuentan con armarios empotrados y se incorpora un lavadero independiente que aporta funcionalidad al día a día.
 
-![Estado del salón vista al ventanal después de la reforma en la Madrid Rio, Madrid](../../assets/proyectos/casa-santos-dumont/casa-santos-dumont-salon-02.jpg)
+![Estado de la habitación después de la reforma en la Madrid Rio, Madrid](../../assets/proyectos/casa-santos-dumont/casa-santos-dumont-dormitorio-01.png)
 
 ## Una propuesta estética con identidad propia
 

@@ -14,31 +14,22 @@ datos:
   banos: 3
   habitaciones: 5
 orden: 3
-portada: "../../assets/promociones/proyecto-omega/proyecto-omega-salon-01.webp"
-portadaAlt: "Estado de la vivienda, salón después de la reforma Proyecto Omega, Madrid"
+portada: "../../assets/promociones/proyecto-omega/proyecto-omega-terraza-01.webp"
+portadaAlt: "Estado de la vivienda, piscina después de la reforma Proyecto Omega, Madrid"
 galeria:
   - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-01.png"
-    alt: "Proyecto Omega: plano de la vivienda"
-    estancia: "plano"
-  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-detalle-02.png"
-    alt: "Proyecto Omega: detalle de la vivienda"
-    estancia: "detalle"
-  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-detalle-03.png"
-    alt: "Proyecto Omega: detalle de la vivienda"
-    estancia: "detalle"
-  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-02.png"
     alt: "Plano General,Proyecto Omega, Madrid"
     estancia: "plano"
-  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-03.webp"
+  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-02.webp"
     alt: "Plano del Interior,Proyecto Omega, Madrid"
     estancia: "plano"
-  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-04.webp"
+  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-03.webp"
     alt: "Proyecto Omega: plano de la vivienda"
     estancia: "plano"
-  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-05.webp"
+  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-04.webp"
     alt: "Plano del Sótano, Proyecto Omega, Madrid"
     estancia: "plano"
-  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-06.png"
+  - src: "../../assets/promociones/proyecto-omega/proyecto-omega-plano-05.png"
     alt: "Plano de las terrazas y espacios exteriores, Proyecto Omega, Madrid"
     estancia: "plano"
   - src: "../../assets/promociones/proyecto-omega/proyecto-omega-dormitorio-01.webp"
@@ -57,8 +48,6 @@ wpId: 9402
 Proyecto de **vivienda unifamiliar ubicada** en la **exclusiva** urbanización **Los Satélites, Majadahonda**, Madrid.
 
 *Planimetría planta baja*
-
-![Proyecto Omega: detalle de la vivienda](../../assets/promociones/proyecto-omega/proyecto-omega-detalle-01.png)
 
 ## Elegancia funcional en su máxima expresión.
 
@@ -86,11 +75,13 @@ Con **más de 120m2 disponibles**, las **dos terrazas** y los **amplios espacios
 
 Sumérgete en un **estilo de vida único**, donde la **elegancia** y la **comodidad** se fusionan en cada rincón de esta impresionante **vivienda unifamiliar**. Diseñada para elevar tus sentidos y satisfacer tus más altas expectativas, nuestra creación arquitectónica redefine el concepto de **hogar**.
 
+![Estado de la vivienda, salón después de la reforma Proyecto Omega, Madrid](../../assets/promociones/proyecto-omega/proyecto-omega-salon-01.webp)
+
 ## Acerca de la propiedad
 
 Con una generosa **parcela de más de 727m2** y una s**uperficie útil de 520m2**, te espera un mundo de posibilidades para disfrutar al máximo del espacio exterior. Desde las **dos amplias terrazas** hasta los **espacios exteriores**, aquí encontrarás el escenario perfecto para crear recuerdos inolvidables bajo el sol o las estrellas. Además, con **tres baños** y **cinco habitaciones**, cada rincón ha sido diseñado pensando en tu **comodidad y bienestar**. Descubre la vida al aire libre en su máxima expresión en esta magnífica propiedad.
 
-![Estado de la vivienda, vista desde fuera después de la reforma Proyecto Omega, Madrid](../../assets/promociones/proyecto-omega/proyecto-omega-detalle-04.webp)
+![Estado de la vivienda, vista desde fuera después de la reforma Proyecto Omega, Madrid](../../assets/promociones/proyecto-omega/proyecto-omega-detalle-01.webp)
 
 ## Tu tranquilidad nos importa
 
@@ -99,8 +90,6 @@ La **urbanización** Los Satélites es un oasis de **tranquilidad** y **segurida
 - Vigilancia 24 horas, control de acceso y circuito cerrado de televisión para tu tranquilidad y la de tu familia.
 - Entorno natural privilegiado con amplias zonas verdes, parques infantiles y pistas deportivas.
 - Excelentes comunicaciones: A poca distancia de Madrid, con acceso directo a la A-6 y transporte público.
-
-![Estado de la vivienda, piscina después de la reforma Proyecto Omega, Madrid](../../assets/promociones/proyecto-omega/proyecto-omega-terraza-01.webp)
 
 ## La ubicación perfecta
 

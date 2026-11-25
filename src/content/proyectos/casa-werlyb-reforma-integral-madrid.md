@@ -11,12 +11,9 @@ anio: 2023
 estado: "obra terminada"
 destacado: true
 orden: 4
-portada: "../../assets/proyectos/casa-werlyb/casa-werlyb-detalle-01.png"
-portadaAlt: "Casa Werlyb: detalle tras la reforma"
+portada: "../../assets/proyectos/casa-werlyb/casa-werlyb-cocina-03.jpg"
+portadaAlt: "Salón y cocina reformados con isla, muebles de madera y luz natural"
 galeria:
-  - src: "../../assets/proyectos/casa-werlyb/casa-werlyb-cocina-03.jpg"
-    alt: "Salón y cocina reformados con isla, muebles de madera y luz natural"
-    estancia: "cocina"
   - src: "../../assets/proyectos/casa-werlyb/casa-werlyb-despacho-01.jpg"
     alt: "Vista del setup de la reforma Casa Werlyb, Madrid"
     estancia: "despacho"
@@ -72,6 +69,8 @@ Casa Werlyb nace de la necesidad de transformar un espacio en un hogar, funciona
 ## La idea
 
 La intervención se articula a partir de una idea clara: ordenar el espacio para ganar fluidez, luz y equilibrio. La arquitectura se depura hasta lo esencial, permitiendo que cada estancia dialogue con el conjunto de forma natural.
+
+![Casa Werlyb: detalle tras la reforma](../../assets/proyectos/casa-werlyb/casa-werlyb-detalle-01.png)
 
 ## El ambiente
 

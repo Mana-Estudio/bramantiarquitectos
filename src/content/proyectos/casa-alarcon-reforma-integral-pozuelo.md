@@ -12,9 +12,12 @@ duracion: "3 meses"
 estado: "obra terminada"
 destacado: false
 orden: 8
-portada: "../../assets/proyectos/casa-alarcon/casa-alarcon-bano-02.jpg"
-portadaAlt: "Estado de la vivienda, baño vista 2 después de la reforma Pozuelo de Alarcón, Madrid"
-galeria: []
+portada: "../../assets/proyectos/casa-alarcon/casa-alarcon-salon-01.jpg"
+portadaAlt: "Estado de la vivienda, salón después de la reforma Pozuelo de Alarcón, Madrid"
+galeria:
+  - src: "../../assets/proyectos/casa-alarcon/casa-alarcon-bano-02.jpg"
+    alt: "Estado de la vivienda, baño vista 2 después de la reforma Pozuelo de Alarcón, Madrid"
+    estancia: "bano"
 antes: []
 comparaciones: []
 videos: []
@@ -41,5 +44,3 @@ vivienda, junto una materialidad por cada estancia y un cálculo de instalacione
 
 Una vez definido el proyecto, se ejecutan los trabajos con una dirección de obra exhaustiva hasta los repasos y detalles finales. Por  
 último, con la implantación del mobiliario según el proyecto de interiorismo, el resultado es una vivienda única y personalizada para poder entrar a vivir y estrenar el nuevo hogar.
-
-![Estado de la vivienda, salón después de la reforma Pozuelo de Alarcón, Madrid](../../assets/proyectos/casa-alarcon/casa-alarcon-salon-01.jpg)

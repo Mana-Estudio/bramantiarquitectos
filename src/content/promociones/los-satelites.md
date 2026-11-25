@@ -13,24 +13,12 @@ datos:
   habitaciones: 5
   banos: 3
 orden: 2
-portada: "../../assets/promociones/los-satelites/los-satelites-detalle-01.png"
-portadaAlt: "Los Satélites: detalle de la vivienda"
+portada: "../../assets/promociones/los-satelites/los-satelites-salon-01.jpg"
+portadaAlt: "Estado de la vivienda, salón después de la reforma Los Satélites Majadahonda, Madrid"
 galeria:
-  - src: "../../assets/promociones/los-satelites/los-satelites-plano-01.png"
-    alt: "Los Satélites: plano de la vivienda"
-    estancia: "plano"
-  - src: "../../assets/promociones/los-satelites/los-satelites-detalle-03.png"
+  - src: "../../assets/promociones/los-satelites/los-satelites-detalle-02.png"
     alt: "Los Satélites: detalle de la vivienda"
     estancia: "detalle"
-  - src: "../../assets/promociones/los-satelites/los-satelites-detalle-04.png"
-    alt: "Los Satélites: detalle de la vivienda"
-    estancia: "detalle"
-  - src: "../../assets/promociones/los-satelites/los-satelites-detalle-05.png"
-    alt: "Los Satélites: detalle de la vivienda"
-    estancia: "detalle"
-  - src: "../../assets/promociones/los-satelites/los-satelites-salon-01.jpg"
-    alt: "Estado de la vivienda, salón después de la reforma Los Satélites Majadahonda, Madrid"
-    estancia: "salon"
 videos:
   - "https://youtu.be/k-KYMgyo9p4"
 wpId: 9011
@@ -44,7 +32,7 @@ Desde el luminoso salón hasta la moderna cocina ha sido pensada para aportarte 
 
 Pero la experiencia no termina en el interior: al salir, te esperan un acogedor porche y un espacioso jardín trasero donde podrás disfrutar de momentos de serenidad y compartir gratos momentos con tus seres queridos. Dos plazas de aparcamiento cubiertas y una refrescante piscina completan este entorno exterior diseñado para tu comodidad y entretenimiento.
 
-![Los Satélites: detalle de la vivienda](../../assets/promociones/los-satelites/los-satelites-detalle-02.png)
+![Los Satélites: detalle de la vivienda](../../assets/promociones/los-satelites/los-satelites-detalle-01.png)
 
 ## Planta primera
 

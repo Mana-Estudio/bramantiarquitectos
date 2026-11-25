@@ -13,8 +13,8 @@ datos:
   superficieConstruida: "90 m²"
   terraza: "28 m²"
 orden: 1
-portada: "../../assets/promociones/casa-silva/casa-silva-detalle-01.jpg"
-portadaAlt: "Casa Silva: detalle de la vivienda"
+portada: "../../assets/promociones/casa-silva/casa-silva-cocina-01.jpg"
+portadaAlt: "Casa Silva: cocina de la vivienda"
 galeria:
   - src: "../../assets/promociones/casa-silva/casa-silva-detalle-02.jpg"
     alt: "Casa Silva: detalle de la vivienda"
@@ -43,7 +43,7 @@ Casa Silva ofrece **90 m² construidos de vivienda** y **28 m² de terraza priva
 
 El edificio, con portal señorial, portero físico y dos ascensores, aporta el carácter propio de las fincas madrileñas consolidadas, tamizado por la reforma contemporánea del espacio interior. La obra está completamente finalizada. La vivienda se **entrega en llave en mano**, en el momento óptimo para decidir el interiorismo.
 
-![Casa Silva: cocina de la vivienda](../../assets/promociones/casa-silva/casa-silva-cocina-01.jpg)
+![Casa Silva: detalle de la vivienda](../../assets/promociones/casa-silva/casa-silva-detalle-01.jpg)
 
 ## Disfruta de la ubicación perfecta
 
