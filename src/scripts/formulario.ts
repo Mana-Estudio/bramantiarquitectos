@@ -13,6 +13,21 @@ if (form) {
   const campoProyecto = form.querySelector<HTMLInputElement>('[data-campo-proyecto]');
   const nombres: Record<string, string> = JSON.parse(form.dataset.proyectos ?? '{}');
 
+  // Turnstile (≈ 28 KB) se carga recién cuando la persona empieza a completar el formulario.
+  let turnstileCargado = false;
+  const cargarTurnstile = () => {
+    if (turnstileCargado) return;
+    turnstileCargado = true;
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    s.async = true;
+    document.head.append(s);
+  };
+  form.addEventListener('focusin', cargarTurnstile, { once: true });
+  form.addEventListener('pointerdown', cargarTurnstile, { once: true });
+  form.addEventListener('change', cargarTurnstile, { once: true });
+  if (new URLSearchParams(location.search).has('proyecto') || location.hash === '#presupuesto') cargarTurnstile();
+
   // Mensajes de error en el idioma de la página (data-error en cada campo).
   form.addEventListener(
     'invalid',
@@ -38,18 +53,16 @@ if (form) {
   };
 
   const mostrarPaso = (n: number, enfocar = true) => {
-    pasos.forEach((p, i) => (p.hidden = i !== n - 1));
-    if (indicador) {
-      indicador.hidden = false;
-      indicador.textContent = es ? `Paso ${n} de 2` : `Step ${n} of 2`;
-    }
+    form.classList.toggle('en-paso-2', n === 2);
+    if (indicador) indicador.textContent = es ? `Paso ${n} de 2` : `Step ${n} of 2`;
     if (enfocar) pasos[n - 1]?.querySelector<HTMLElement>('legend')?.focus();
   };
 
-  // Con JS: dos pasos.
-  form.querySelectorAll<HTMLElement>('[data-solo-js]').forEach((el) => (el.hidden = false));
+  // Con JS: dos pasos (el estado inicial ya lo pinta el CSS con @media (scripting: enabled)).
   mostrarPaso(1, false);
-  form.querySelector('[data-siguiente]')?.addEventListener('click', () => {
+  form.querySelector('[data-siguiente]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    cargarTurnstile();
     if (valido(pasos[0])) {
       mostrarPaso(2);
       track('formulario-paso-2');

@@ -30,7 +30,7 @@ const L = (o: { es: string; en: string }) => o[idioma];
   data-idioma={idioma}
   novalidate
 >
-  <p class="paso-indicador" data-indicador aria-live="polite" hidden>{es ? 'Paso 1 de 2' : 'Step 1 of 2'}</p>
+  <p class="paso-indicador" data-indicador aria-live="polite">{es ? 'Paso 1 de 2' : 'Step 1 of 2'}</p>
   <p class="referencia" data-referencia hidden></p>
 
   <fieldset class="paso" data-paso="1">
@@ -77,12 +77,12 @@ const L = (o: { es: string; en: string }) => o[idioma];
       </div>
     </div>
 
-    <div class="paso-acciones" data-solo-js hidden>
-      <button type="button" class="boton" data-siguiente>{es ? 'Siguiente: tus datos' : 'Next: your details'}</button>
+    <div class="paso-acciones" data-solo-js>
+      <a href="#paso-2" class="boton" data-siguiente>{es ? 'Siguiente: tus datos' : 'Next: your details'}</a>
     </div>
   </fieldset>
 
-  <fieldset class="paso" data-paso="2">
+  <fieldset class="paso" data-paso="2" id="paso-2">
     <legend class="titulo-3" tabindex="-1">{es ? 'Tus datos' : 'Your details'}</legend>
 
     <div class="campos-fila">
@@ -146,14 +146,13 @@ const L = (o: { es: string; en: string }) => o[idioma];
     <p class="estado" data-estado role="status" aria-live="polite"></p>
 
     <div class="paso-acciones">
-      <button type="button" class="boton boton-linea" data-atras data-solo-js hidden>{es ? 'Atrás' : 'Back'}</button>
+      <button type="button" class="boton boton-linea" data-atras data-solo-js>{es ? 'Atrás' : 'Back'}</button>
       <button type="submit" class="boton" data-enviar data-evento="formulario-enviado">{es ? 'Enviar consulta' : 'Send enquiry'}</button>
     </div>
     <p class="ayuda">{es ? 'Te respondemos por email o teléfono. Los campos con * son obligatorios.' : 'We will reply by email or phone. Fields marked * are required.'}</p>
   </fieldset>
 </form>
 
-<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
   import '../scripts/formulario';
 </script>
@@ -173,6 +172,26 @@ const L = (o: { es: string; en: string }) => o[idioma];
   }
   .paso[hidden] {
     display: none;
+  }
+  /* Sin JS: un solo formulario largo. Con JS: dos pasos, ya resueltos al pintar (CLS 0). */
+  [data-solo-js],
+  .paso-indicador {
+    display: none;
+  }
+  @media (scripting: enabled) {
+    .paso-indicador {
+      display: block;
+    }
+    .paso-acciones[data-solo-js] {
+      display: flex;
+    }
+    button[data-solo-js] {
+      display: inline-flex;
+    }
+    .formulario:not(.en-paso-2):not(:has(#paso-2:target)) .paso[data-paso='2'],
+    .formulario.en-paso-2 .paso[data-paso='1'] {
+      display: none;
+    }
   }
   .paso legend {
     font-size: var(--paso-3);

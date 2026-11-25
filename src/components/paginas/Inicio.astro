@@ -195,8 +195,12 @@ const fabrica = (await getEntry('journal', 'arquitectura-artesania-diseno-medida
 <style>
   .hero {
     display: grid;
-    min-height: calc(100svh - var(--alto-header));
     border-bottom: 1px solid var(--linea);
+  }
+  @media (min-width: 60rem) {
+    .hero {
+      min-height: calc(100svh - var(--alto-header));
+    }
   }
   .hero-texto {
     display: grid;
@@ -210,7 +214,9 @@ const fabrica = (await getEntry('journal', 'arquitectura-artesania-diseno-medida
   }
   .hero-foto {
     position: relative;
-    min-height: 60svh;
+    order: -1;
+    height: 58svh;
+    min-height: 20rem;
   }
   .hero-foto .foto {
     position: absolute;
@@ -242,6 +248,8 @@ const fabrica = (await getEntry('journal', 'arquitectura-artesania-diseno-medida
       padding-right: var(--espacio-xl);
     }
     .hero-foto {
+      order: 0;
+      height: auto;
       min-height: auto;
     }
   }

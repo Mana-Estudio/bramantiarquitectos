@@ -29,6 +29,6 @@ const widths = [...new Set(disponibles)].sort((a, b) => a - b);
   loading={prioridad ? 'eager' : 'lazy'}
   fetchpriority={prioridad ? 'high' : 'auto'}
   decoding={prioridad ? 'sync' : 'async'}
-  quality={72}
+  quality={prioridad ? 60 : 72}
   class={clase}
 />

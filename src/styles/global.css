@@ -274,7 +274,7 @@ small {
 .numero {
   font-family: var(--titulos);
   font-size: var(--paso-2);
-  color: var(--bronce);
+  color: var(--bronce-texto);
   font-variant-numeric: tabular-nums;
 }
 .entradilla {

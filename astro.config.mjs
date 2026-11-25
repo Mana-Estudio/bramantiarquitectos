@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import { appendFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { parDe } from './src/lib/rutas.mjs';
 
 const SITE = process.env.SITE_URL ?? 'https://bramantiarquitectos.com';
@@ -19,7 +19,14 @@ function noindexEnStaging() {
           logger.info('ENTORNO=produccion: sin noindex');
           return;
         }
-        await appendFile(new URL('_headers', dir), '\n# Staging (agregado en el build): que Google no indexe la demo\n/*\n  X-Robots-Tag: noindex, nofollow\n');
+        // Va dentro del bloque /* existente: si hubiera dos bloques /*, el segundo pisa al primero.
+        const archivo = new URL('_headers', dir);
+        const actual = await readFile(archivo, 'utf8').catch(() => '');
+        const linea = '  X-Robots-Tag: noindex, nofollow';
+        const nuevo = /^\/\*\s*$/m.test(actual)
+          ? actual.replace(/^\/\*\s*$/m, `/*\n${linea}`)
+          : `${actual}\n/*\n${linea}\n`;
+        await writeFile(archivo, nuevo);
         logger.info('staging: X-Robots-Tag noindex agregado a _headers');
       },
     },
@@ -41,26 +48,29 @@ export default defineConfig({
     // Sin dominios remotos: todas las imágenes son locales.
     responsiveStyles: false,
   },
+  // Fuentes autoalojadas desde los paquetes de Fontsource (nada de Google Fonts remoto, por RGPD).
+  // Solo el subconjunto latino: cubre español e inglés y permite precargar exactamente 3 archivos.
   fonts: [
     {
-      provider: fontProviders.npm(),
+      provider: fontProviders.local(),
       name: 'Instrument Serif',
       cssVariable: '--fuente-titulos',
-      weights: [400],
-      styles: ['normal', 'italic'],
-      subsets: ['latin'],
       fallbacks: ['Georgia', 'serif'],
-      options: { package: '@fontsource/instrument-serif' },
+      options: {
+        variants: [
+          { src: ['@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2'], weight: '400', style: 'normal' },
+          { src: ['@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2'], weight: '400', style: 'italic' },
+        ],
+      },
     },
     {
-      provider: fontProviders.npm(),
-      name: 'Manrope Variable',
+      provider: fontProviders.local(),
+      name: 'Manrope',
       cssVariable: '--fuente-texto',
-      weights: ['200 800'],
-      styles: ['normal'],
-      subsets: ['latin'],
-      fallbacks: ['system-ui', 'sans-serif'],
-      options: { package: '@fontsource-variable/manrope' },
+      fallbacks: ['Arial', 'sans-serif'],
+      options: {
+        variants: [{ src: ['@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2'], weight: '200 800', style: 'normal' }],
+      },
     },
   ],
   integrations: [
