@@ -56,6 +56,6 @@ La ejecución se realiza a partir del proyecto, con dirección de obra y revisi�
 
 Este caso muestra cómo distribución, iluminación y elementos a medida se relacionan dentro de una reforma integral. Cada vivienda necesita su propia valoración de alcance y condiciones.
 
-[Conoce el servicio de reformas integrales en Madrid](/reformas-integrales-madrid/) o [cuéntanos tu proyecto](/tu-reforma-integral-en-madrid/#valoracion).
+[Conoce el servicio de reformas integrales en Madrid](/reformas-integrales-madrid/) o [cuéntanos tu proyecto](/contacto/?proyecto=casa-joaquin-lopez-reforma-integral-madrid#presupuesto).
 
 ![Casa Joaquín López: detalle tras la reforma](../../assets/proyectos/casa-joaquin-lopez/casa-joaquin-lopez-detalle-03.jpg)

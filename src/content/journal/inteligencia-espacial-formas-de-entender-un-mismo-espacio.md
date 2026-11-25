@@ -151,8 +151,7 @@ En Bramanti Arquitectos creemos que el verdadero valor de la arquitectura no est
 
 Porque un mismo espacio puede entenderse de muchas formas.
 
-La diferencia está en si responde al mercado…  
-o si responde a la persona.
+La diferencia está en si responde al mercado… o si responde a la persona.
 
 Si quieres descubrir cómo aplicamos esta visión en nuestros proyectos, te invitamos a conocer nuestras **[Creaciones](/nuestas-creaciones/)** y explorar casos reales como Casa Elara.
 

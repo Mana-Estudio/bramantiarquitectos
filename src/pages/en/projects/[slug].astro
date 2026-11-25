@@ -1,0 +1,16 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import FichaProyecto from '../../../components/paginas/FichaProyecto.astro';
+import { proyectos } from '../../../lib/contenido';
+
+// Solo se publican en inglés los proyectos que tienen traducción en src/content/proyectos/en/.
+export const getStaticPaths = (async () => {
+  const traducidos = new Set((await getCollection('proyectosEn')).map((p) => p.id));
+  return (await proyectos()).filter((p) => traducidos.has(p.id)).map((proyecto) => ({ params: { slug: proyecto.id }, props: { proyecto } }));
+}) satisfies GetStaticPaths;
+
+const { proyecto } = Astro.props;
+---
+
+<FichaProyecto proyecto={proyecto} idioma="en" />

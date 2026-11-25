@@ -30,17 +30,14 @@ Renovación del estilo clásico con toques modernos. En esta vivienda se ha cons
 
 ## Anteproyecto
 
-En esta fase se estudia la normativa urbanística, protección del edificio, elementos singulares, normas de la comunidad. También se realiza un estudio de detalle de las necesidades reales, almacenaje, estilo de vida, cocina abierta  
-o semiabierta…
+En esta fase se estudia la normativa urbanística, protección del edificio, elementos singulares, normas de la comunidad. También se realiza un estudio de detalle de las necesidades reales, almacenaje, estilo de vida, cocina abierta o semiabierta…
 
 ![Estado de la vivienda, baño vista 1 después de la reforma Pozuelo de Alarcón, Madrid](../../assets/proyectos/casa-alarcon/casa-alarcon-bano-01.jpg)
 
 ## Propuesta
 
-En base a lo estudiado en la fase de Anteproyecto, se proporcionan propuestas de distribución adaptadas al propietario de la  
-vivienda, junto una materialidad por cada estancia y un cálculo de instalaciones.
+En base a lo estudiado en la fase de Anteproyecto, se proporcionan propuestas de distribución adaptadas al propietario de la vivienda, junto con una materialidad por cada estancia y un cálculo de instalaciones.
 
 ## Resultado
 
-Una vez definido el proyecto, se ejecutan los trabajos con una dirección de obra exhaustiva hasta los repasos y detalles finales. Por  
-último, con la implantación del mobiliario según el proyecto de interiorismo, el resultado es una vivienda única y personalizada para poder entrar a vivir y estrenar el nuevo hogar.
+Una vez definido el proyecto, se ejecutan los trabajos con una dirección de obra exhaustiva hasta los repasos y detalles finales. Por último, con la implantación del mobiliario según el proyecto de interiorismo, el resultado es una vivienda única y personalizada para poder entrar a vivir y estrenar el nuevo hogar.

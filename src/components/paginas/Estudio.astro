@@ -1,0 +1,361 @@
+---
+import Base from '../../layouts/Base.astro';
+import Foto from '../Foto.astro';
+import Migas from '../Migas.astro';
+import Proceso from '../Proceso.astro';
+import CtaFinal from '../CtaFinal.astro';
+import { UI, RUTAS } from '../../lib/i18n';
+import { SITIO, TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
+import { migas as migasLd } from '../../lib/jsonld';
+import vision from '../../assets/paginas/estudio-vision-integral.jpg';
+import inmersion from '../../assets/paginas/proceso-inmersion.jpg';
+import abstraccion from '../../assets/paginas/proceso-abstraccion.jpg';
+import materializacion from '../../assets/paginas/proceso-materializacion.jpg';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const es = idioma === 'es';
+const t = UI[idioma];
+const r = RUTAS[idioma];
+const migas = [
+  { nombre: t.inicio, url: r.inicio },
+  { nombre: t.estudio, url: r.estudio },
+];
+
+const pilares = es
+  ? [
+      { t: 'Arquitectura para personas', x: 'Diseñamos a partir de la comprensión profunda de las personas y su forma de habitar, y traducimos ideas y necesidades en una arquitectura coherente y precisa.' },
+      { t: 'Visión artística', x: 'La sensibilidad estética y el rigor técnico conviven en equilibrio para dar forma a proyectos bien pensados y correctamente ejecutados.' },
+      { t: 'Acompañamiento y control', x: 'Acompañamos todo el proceso como único interlocutor, con claridad, control y fidelidad entre diseño y obra.' },
+      { t: 'Innovación y eficiencia', x: 'Integramos eficiencia energética y tecnología de forma discreta para crear viviendas confortables, sostenibles y preparadas para el futuro.' },
+    ]
+  : [
+      { t: 'Architecture for people', x: 'We design from a deep understanding of people and the way they live, translating ideas and needs into coherent, precise architecture.' },
+      { t: 'Artistic vision', x: 'Aesthetic sensitivity and technical rigour work in balance to shape well-thought-out, well-built projects.' },
+      { t: 'Guidance and control', x: 'We accompany the whole process as your single point of contact, with clarity, control and fidelity between design and construction.' },
+      { t: 'Innovation and efficiency', x: 'We integrate energy efficiency and technology discreetly to create comfortable, sustainable, future-ready homes.' },
+    ];
+
+// Equipo: nombres verificados en las reseñas de Google. Apellidos, cargos, fotos y bios: PENDIENTES.md.
+const equipo = [
+  { nombre: 'Adrián', rol: es ? 'Arquitecto' : 'Architect' },
+  { nombre: 'Antonio', rol: es ? 'Cargo por confirmar' : 'Role to be confirmed' },
+];
+---
+
+<Base
+  idioma={idioma}
+  titulo={es ? 'Estudio de arquitectura en Madrid' : 'Architecture studio in Madrid'}
+  descripcion={es
+    ? 'Bramanti Arquitectos: estudio de arquitectura, interiorismo y construcción en Madrid. Materia y luz, un único interlocutor y un proceso cuidado.'
+    : 'Bramanti Arquitectos: architecture, interior design and construction studio in Madrid. Materials and light, one point of contact and a careful process.'}
+  imagen={vision}
+  jsonld={[migasLd(migas)]}
+>
+  <section class="contenedor estudio-cabecera">
+    <Migas items={migas} idioma={idioma} />
+    <div class="estudio-intro">
+      <h1>{es ? <>Diseñar. Construir. <em>Habitar.</em></> : <>Design. Build. <em>Inhabit.</em></>}</h1>
+      <p class="entradilla">
+        {es
+          ? 'Bramanti Arquitectos es un estudio de arquitectura, interiorismo y construcción en Madrid que concibe cada proyecto como un recorrido integral y a medida, desde la idea inicial hasta su materialización final.'
+          : 'Bramanti Arquitectos is an architecture, interior design and construction studio in Madrid that approaches each project as a complete, tailored journey, from the first idea to the finished building.'}
+      </p>
+    </div>
+  </section>
+
+  <section class="seccion manifiesto fondo-tinta" aria-labelledby="manifiesto-titulo">
+    <div class="contenedor grilla">
+      <p class="etiqueta manifiesto-etiqueta">{es ? 'Manifiesto' : 'Manifesto'}</p>
+      <h2 id="manifiesto-titulo" class="manifiesto-titulo">{es ? <>Materia <em>y luz.</em></> : <>Material <em>and light.</em></>}</h2>
+      <div class="manifiesto-texto flujo">
+        {es ? (
+          <>
+            <p class="entradilla">Cada proyecto nace de un recorrido silencioso y consciente: un tránsito desde la intuición hasta la forma construida, donde pensamiento, espacio y materia se ordenan hasta convertirse en arquitectura.</p>
+            <p>Nuestra arquitectura nace del equilibrio entre pensamiento, técnica y sensibilidad. La forma de habitar, el contexto y la materia dialogan desde el inicio para dar lugar a espacios con sentido y permanencia.</p>
+            <p>El resultado es una arquitectura serena y coherente. Espacios con identidad, concebidos para ser vividos y creados para perdurar.</p>
+          </>
+        ) : (
+          <>
+            <p class="entradilla">Every project begins as a quiet, deliberate journey from intuition to built form, where thought, space and material gradually fall into place and become architecture.</p>
+            <p>Our architecture is born from a balance of thought, technique and sensitivity. The way of living, the context and the materials are in dialogue from the very start, creating spaces with meaning and permanence.</p>
+            <p>The result is calm, coherent architecture: spaces with identity, made to be lived in and built to last.</p>
+          </>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion pilares" aria-labelledby="pilares-titulo">
+    <div class="contenedor grilla">
+      <div class="pilares-foto foto">
+        <Foto src={vision} alt={es ? 'Sombra de una reja de forja proyectada sobre un suelo de baldosa' : 'Shadow of a wrought-iron railing on a tiled floor'} sizes="(min-width: 60rem) 40vw, 100vw" anchos={[480, 800, 1200]} />
+      </div>
+      <div class="pilares-texto">
+        <p class="etiqueta">{es ? 'Arquitectura humana' : 'Human architecture'}</p>
+        <h2 id="pilares-titulo">{es ? <>Nuestra forma de <em>entender la arquitectura.</em></> : <>How we <em>understand architecture.</em></>}</h2>
+        <ul role="list" class="pilares-lista">
+          {pilares.map((p) => (
+            <li>
+              <h3>{p.t}</h3>
+              <p class="secundario">{p.x}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <Proceso idioma={idioma} />
+
+  <div class="proceso-fotos contenedor">
+    {[inmersion, abstraccion, materializacion].map((img, i) => (
+      <div class="foto">
+        <Foto src={img} alt={es ? ['Manos trabajando sobre una mesa de madera', 'Muestras de materiales sobre una mesa', 'Herramientas y piedra durante la obra'][i] : ['Hands working on a wooden table', 'Material samples on a table', 'Tools and stone during the works'][i]} sizes="(min-width: 48rem) 30vw, 100vw" anchos={[480, 800]} />
+      </div>
+    ))}
+  </div>
+
+  <section class="seccion equipo" aria-labelledby="equipo-titulo">
+    <div class="contenedor">
+      <header class="cabecera-bloque">
+        <p class="etiqueta">{es ? 'Equipo' : 'Team'}</p>
+        <h2 id="equipo-titulo">{es ? <>Las personas <em>detrás de cada obra.</em></> : <>The people <em>behind every project.</em></>}</h2>
+      </header>
+      <ul role="list" class="equipo-lista">
+        {equipo.map((p) => (
+          <li class="persona">
+            <div class="persona-foto" aria-hidden="true"><span class="titulo">{p.nombre.charAt(0)}</span></div>
+            <h3>{p.nombre}</h3>
+            <p class="secundario">{p.rol}</p>
+            <p class="chip">{es ? 'Foto y bio pendientes' : 'Photo and bio pending'}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="seccion fondo-lino tecnica" aria-labelledby="tecnica-titulo">
+    <div class="contenedor grilla">
+      <header class="tecnica-cabecera">
+        <p class="etiqueta">{es ? 'Confort y tecnología invisible' : 'Comfort and invisible technology'}</p>
+        <h2 id="tecnica-titulo">Passivhaus <em>{es ? 'y domótica.' : '& home automation.'}</em></h2>
+      </header>
+      <div class="tecnica-texto flujo">
+        <p class="entradilla">
+          {es
+            ? 'Integramos innovación constructiva, eficiencia energética y tecnología invisible para crear hogares confortables y preparados para el futuro.'
+            : 'We combine construction innovation, energy efficiency and invisible technology to create comfortable, future-ready homes.'}
+        </p>
+        <p class="secundario">
+          {es
+            ? 'Diseñamos viviendas con criterios Passivhaus y hogares inteligentes donde la técnica mejora la calidad de vida sin interferir en la estética del espacio: aislamiento, ventilación eficiente, control solar y domótica pensados desde el proyecto.'
+            : 'We design homes to Passivhaus criteria and smart homes where technology improves quality of life without intruding on the space: insulation, efficient ventilation, solar control and home automation planned from the outset.'}
+        </p>
+        {es && (
+          <ul role="list" class="tecnica-enlaces">
+            <li><a class="enlace-flecha" href="/ahorrar-calefaccion-domotica-passivhaus/">Domótica y Passivhaus para ahorrar calefacción</a></li>
+            <li><a class="enlace-flecha" href="/domotica-en-el-diseno-arquitectonico-integrando-tecnologia-para-un-hogar-inteligente/">Domótica en el diseño arquitectónico</a></li>
+          </ul>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion grupo" aria-labelledby="grupo-titulo">
+    <div class="contenedor grilla">
+      <header class="grupo-cabecera">
+        <p class="etiqueta">{es ? 'Colaboraciones' : 'Collaborations'}</p>
+        <h2 id="grupo-titulo">{SITIO.colaboraciones.join(' · ')}</h2>
+      </header>
+      <div class="grupo-texto flujo">
+        <p>
+          {es
+            ? 'Colaboramos con oficios y artesanos porque el detalle construido es parte del proyecto, no un añadido.'
+            : 'We work with craftspeople because built detail is part of the project, not an add-on.'}
+        </p>
+        <h3>Grupo Bramanti</h3>
+        <p class="secundario">
+          {es
+            ? 'Bramanti es un ecosistema de profesionales especializados en diseño, arquitectura, mercado inmobiliario y tecnología aplicada al hogar: disciplinas complementarias que trabajan de forma coordinada para crear hogares personalizados, eficientes y preparados para el futuro.'
+            : 'Bramanti is an ecosystem of professionals specialised in design, architecture, real estate and home technology: complementary disciplines working together to create personal, efficient, future-ready homes.'}
+        </p>
+        <a class="enlace-flecha" href={SITIO.grupo} rel="noopener" target="_blank">grupobramanti.com</a>
+        <p class="secundario">
+          {es ? 'Estudio y showroom:' : 'Studio and showroom:'} {SITIO.direccion.calle}, {SITIO.direccion.cp} {SITIO.direccion.ciudad}. <a href={SITIO.comoLlegar} rel="noopener" target="_blank">{es ? 'Cómo llegar' : 'Get directions'}</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal idioma={idioma} whatsappTexto={TEXTO_WHATSAPP[idioma]} />
+</Base>
+
+<style>
+  .estudio-cabecera {
+    padding-block: var(--espacio-m) var(--espacio-2xl);
+  }
+  .estudio-intro {
+    display: grid;
+    gap: var(--espacio-m);
+    margin-top: var(--espacio-l);
+  }
+  .estudio-intro h1 {
+    font-size: clamp(3rem, 1.4rem + 6.4vw, 8rem);
+  }
+  @media (min-width: 60rem) {
+    .estudio-intro {
+      grid-template-columns: 7fr 5fr;
+      align-items: end;
+      gap: var(--espacio-xl);
+    }
+  }
+  .manifiesto .grilla {
+    row-gap: var(--espacio-m);
+  }
+  .manifiesto-etiqueta,
+  .manifiesto-titulo,
+  .manifiesto-texto {
+    grid-column: 1 / -1;
+  }
+  .manifiesto-titulo {
+    font-size: var(--paso-6);
+  }
+  @media (min-width: 60rem) {
+    .manifiesto-titulo {
+      grid-column: 1 / span 6;
+    }
+    .manifiesto-texto {
+      grid-column: 7 / -1;
+    }
+  }
+  .pilares .grilla {
+    row-gap: var(--espacio-xl);
+  }
+  .pilares-foto {
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 5;
+  }
+  .pilares-texto {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: start;
+  }
+  .pilares-texto h2 {
+    font-size: var(--paso-5);
+    margin-bottom: var(--espacio-m);
+  }
+  .pilares-lista {
+    display: grid;
+    gap: var(--espacio-m);
+  }
+  .pilares-lista li {
+    display: grid;
+    gap: var(--espacio-2xs);
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea);
+  }
+  .pilares-lista h3 {
+    font-size: var(--paso-2);
+  }
+  @media (min-width: 60rem) {
+    .pilares-foto {
+      grid-column: 1 / span 5;
+      position: sticky;
+      top: calc(var(--alto-header-compacto) + var(--espacio-l));
+      align-self: start;
+    }
+    .pilares-texto {
+      grid-column: 7 / -1;
+    }
+  }
+  .proceso-fotos {
+    display: grid;
+    gap: var(--separacion);
+    padding-block: var(--espacio-xl) 0;
+  }
+  .proceso-fotos .foto {
+    aspect-ratio: 4 / 3;
+  }
+  @media (min-width: 48rem) {
+    .proceso-fotos {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .proceso-fotos .foto:nth-child(2) {
+      margin-top: var(--espacio-xl);
+    }
+  }
+  .cabecera-bloque {
+    display: grid;
+    gap: var(--espacio-s);
+    margin-bottom: var(--espacio-xl);
+  }
+  .cabecera-bloque h2,
+  .tecnica-cabecera h2,
+  .grupo-cabecera h2 {
+    font-size: var(--paso-5);
+  }
+  .equipo-lista {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  }
+  .persona {
+    display: grid;
+    gap: var(--espacio-2xs);
+    justify-items: start;
+  }
+  .persona-foto {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    display: grid;
+    place-items: center;
+    background: var(--lino);
+    margin-bottom: var(--espacio-xs);
+  }
+  .persona-foto span {
+    font-size: var(--paso-6);
+    color: var(--gris-osc);
+  }
+  .persona h3 {
+    font-size: var(--paso-3);
+  }
+  .tecnica .grilla,
+  .grupo .grilla {
+    row-gap: var(--espacio-l);
+  }
+  .tecnica-cabecera,
+  .tecnica-texto,
+  .grupo-cabecera,
+  .grupo-texto {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: start;
+  }
+  .tecnica-enlaces {
+    display: grid;
+    gap: 0.25rem;
+    justify-items: start;
+  }
+  .grupo-texto h3 {
+    font-size: var(--paso-3);
+    margin-top: var(--espacio-m);
+  }
+  .grupo-texto .enlace-flecha {
+    justify-self: start;
+  }
+  @media (min-width: 60rem) {
+    .tecnica-cabecera,
+    .grupo-cabecera {
+      grid-column: 1 / span 5;
+    }
+    .tecnica-texto,
+    .grupo-texto {
+      grid-column: 7 / -1;
+    }
+  }
+</style>

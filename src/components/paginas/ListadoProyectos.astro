@@ -1,0 +1,250 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import TarjetaProyecto from '../TarjetaProyecto.astro';
+import Migas from '../Migas.astro';
+import CtaFinal from '../CtaFinal.astro';
+import { proyectos as todos } from '../../lib/contenido';
+import { TIPOS, ZONAS_EN, RUTAS, RUTAS_SERVICIO, slug, type TipoProyecto } from '../../lib/i18n';
+import { TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
+import { migas as migasLd } from '../../lib/jsonld';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const es = idioma === 'es';
+const r = RUTAS[idioma];
+
+const proyectos = await todos();
+const traducciones = new Map((await getCollection('proyectosEn')).map((p) => [p.id, p]));
+const tipos = Object.keys(TIPOS) as TipoProyecto[];
+const conteoTipo = (t: TipoProyecto) => proyectos.filter((p) => p.data.tipos.includes(t)).length;
+const zonas = [...new Set(proyectos.map((p) => p.data.zona))].sort((a, b) => a.localeCompare(b, 'es'));
+const ritmo = (i: number) => ['a', 'b', 'c', 'd'][i % 4];
+const migas = [
+  { nombre: es ? 'Inicio' : 'Home', url: r.inicio },
+  { nombre: es ? 'Proyectos' : 'Projects', url: r.proyectos },
+];
+---
+
+<Base
+  idioma={idioma}
+  titulo={es ? 'Proyectos de reforma e interiorismo en Madrid' : 'Renovation and interior design projects'}
+  descripcion={es
+    ? 'Reformas integrales e interiorismo de Bramanti Arquitectos en el Barrio de Salamanca, Retiro, Madrid Río, Pozuelo y el centro de Madrid.'
+    : 'Full renovations and interior design by Bramanti Arquitectos in Salamanca, Retiro, Madrid Río, Pozuelo and central Madrid.'}
+  imagen={proyectos[0]?.data.portada}
+  jsonld={[migasLd(migas)]}
+>
+  <section class="contenedor cabecera">
+    <Migas items={migas} idioma={idioma} />
+    <div class="cabecera-grilla">
+      <h1>{es ? <>Nuestras <em>creaciones.</em></> : <>Our <em>work.</em></>}</h1>
+      <p class="entradilla">
+        {es
+          ? 'Reformas integrales e interiorismo en Madrid. Cada proyecto parte de una forma de vivir y de lo que la casa ya tenía para ofrecer.'
+          : 'Full renovations and interior design in Madrid. Each project starts from a way of living and from what the home already had to offer.'}
+      </p>
+    </div>
+  </section>
+
+  <section class="contenedor listado" aria-labelledby="listado-titulo">
+    <h2 id="listado-titulo" class="visualmente-oculto">{es ? 'Listado de proyectos' : 'Project list'}</h2>
+
+    <form class="filtros" data-filtros hidden aria-label={es ? 'Filtrar proyectos' : 'Filter projects'} action={r.proyectos} method="get">
+      <fieldset class="filtro-tipos">
+        <legend class="etiqueta sin-linea">{es ? 'Tipo' : 'Type'}</legend>
+        <label class="opcion">
+          <input type="radio" name="tipo" value="" checked />
+          <span>{es ? 'Todos' : 'All'} <small>({proyectos.length})</small></span>
+        </label>
+        {tipos.map((t) => (
+          <label class="opcion">
+            <input type="radio" name="tipo" value={t} />
+            <span>{TIPOS[t][idioma]} <small>({conteoTipo(t)})</small></span>
+          </label>
+        ))}
+      </fieldset>
+      <div class="filtro-zona">
+        <label class="etiqueta sin-linea" for="filtro-zona">{es ? 'Zona' : 'Area'}</label>
+        <select id="filtro-zona" name="zona">
+          <option value="">{es ? 'Todas las zonas' : 'All areas'}</option>
+          {zonas.map((z) => <option value={slug(z)}>{es ? z : (ZONAS_EN[z] ?? z)}</option>)}
+        </select>
+      </div>
+      <p class="contador" data-contador aria-live="polite" data-singular={es ? 'proyecto' : 'project'} data-plural={es ? 'proyectos' : 'projects'}>
+        {proyectos.length} {es ? 'proyectos' : 'projects'}
+      </p>
+    </form>
+
+    <div class="grilla-proyectos" data-grilla>
+      {proyectos.map((p, i) => (
+        <div class="celda" data-ritmo={ritmo(i)}>
+          <TarjetaProyecto
+            proyecto={p}
+            indice={i + 1}
+            idioma={idioma}
+            nivel="h3"
+            tipoTextoEn={traducciones.get(p.id)?.data.tipoTexto}
+            formato={ritmo(i) === 'a' || ritmo(i) === 'd' ? 'horizontal' : 'vertical'}
+            sizes="(min-width: 60rem) 55vw, 100vw"
+          />
+        </div>
+      ))}
+    </div>
+
+    <div class="vacio" data-vacio hidden>
+      <p class="titulo-3">{es ? 'No hay proyectos con ese filtro.' : 'No projects match this filter.'}</p>
+      <p class="secundario">
+        {es ? <>Nuestras viviendas de obra nueva están en <a href="/promociones/">Promociones</a> y en el servicio de <a href={RUTAS_SERVICIO['obra-nueva'].es}>obra nueva</a>.</>
+            : <>Our new-build homes are on the <a href="/promociones/" hreflang="es">properties for sale</a> page and in our <a href={RUTAS_SERVICIO['obra-nueva'].en}>new build</a> service.</>}
+      </p>
+      <button type="button" class="boton boton-linea" data-limpiar>{es ? 'Ver todos los proyectos' : 'Show all projects'}</button>
+    </div>
+  </section>
+
+  <CtaFinal idioma={idioma} whatsappTexto={TEXTO_WHATSAPP[idioma]} />
+</Base>
+
+<script>
+  import '../../scripts/filtros';
+</script>
+
+<style>
+  .cabecera {
+    padding-block: var(--espacio-m) var(--espacio-xl);
+  }
+  .cabecera-grilla {
+    display: grid;
+    gap: var(--espacio-m);
+    margin-top: var(--espacio-l);
+    align-items: end;
+  }
+  @media (min-width: 60rem) {
+    .cabecera-grilla {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+  .listado {
+    padding-bottom: var(--espacio-3xl);
+  }
+  .filtros {
+    display: grid;
+    gap: var(--espacio-m);
+    align-items: end;
+    padding-block: var(--espacio-m);
+    margin-bottom: var(--espacio-xl);
+    border-block: 1px solid var(--linea);
+  }
+  .filtros[hidden] {
+    display: none;
+  }
+  .filtro-tipos {
+    border: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .filtro-tipos legend {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .opcion {
+    position: relative;
+  }
+  .opcion input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+  .opcion span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: 2.75rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 999px;
+    font-size: var(--paso--1);
+  }
+  .opcion small {
+    color: var(--gris);
+  }
+  .opcion input:checked + span {
+    background: var(--tinta);
+    border-color: var(--tinta);
+    color: var(--piedra);
+  }
+  .opcion input:checked + span small {
+    color: inherit;
+  }
+  .opcion input:focus-visible + span {
+    outline: 2px solid var(--tinta);
+    outline-offset: 3px;
+  }
+  .filtro-zona {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .filtro-zona select {
+    min-height: 2.75rem;
+    min-width: 14rem;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 0;
+    background: var(--piedra)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%231c1a17' stroke-width='1.5'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E")
+      no-repeat right 1rem center;
+    appearance: none;
+    font-size: var(--paso--1);
+  }
+  .contador {
+    font-size: var(--paso--1);
+    color: var(--gris);
+  }
+  @media (min-width: 60rem) {
+    .filtros {
+      grid-template-columns: 1fr auto auto;
+    }
+  }
+
+  .grilla-proyectos {
+    display: grid;
+    gap: var(--espacio-2xl) var(--separacion);
+  }
+  .celda[hidden] {
+    display: none;
+  }
+  @media (min-width: 48rem) {
+    .grilla-proyectos {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .celda[data-ritmo='a'] {
+      grid-column: 1 / span 7;
+    }
+    .celda[data-ritmo='b'] {
+      grid-column: 9 / span 4;
+      margin-top: var(--espacio-3xl);
+    }
+    .celda[data-ritmo='c'] {
+      grid-column: 2 / span 4;
+    }
+    .celda[data-ritmo='d'] {
+      grid-column: 6 / span 7;
+      margin-top: var(--espacio-2xl);
+    }
+  }
+  .vacio {
+    display: grid;
+    gap: var(--espacio-s);
+    justify-items: start;
+    max-width: 36rem;
+    padding-block: var(--espacio-xl);
+  }
+  .vacio[hidden] {
+    display: none;
+  }
+</style>

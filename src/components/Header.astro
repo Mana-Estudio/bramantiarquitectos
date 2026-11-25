@@ -233,11 +233,11 @@ const contacto = `${r.contacto}#presupuesto`;
     width: 1.6rem;
     height: 1.6rem;
   }
-  .menu-movil .icono-cerrar,
-  .menu-movil[open] .icono-abrir {
+  .menu-movil :global(.icono-cerrar),
+  .menu-movil[open] :global(.icono-abrir) {
     display: none;
   }
-  .menu-movil[open] .icono-cerrar {
+  .menu-movil[open] :global(.icono-cerrar) {
     display: block;
   }
   .menu-movil-panel {

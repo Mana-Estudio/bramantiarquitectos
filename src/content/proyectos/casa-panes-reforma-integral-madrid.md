@@ -30,15 +30,13 @@ Renovación del estilo clásico con toques modernos. En esta vivienda se ha cons
 
 ## Anteproyecto
 
-En esta fase se estudia la normativa urbanística, protección del edificio, elementos singulares, normas de la comunidad. También se realiza un estudio de detalle de las necesidades reales, almacenaje, estilo de vida, cocina abierta  
-o semiabierta…
+En esta fase se estudia la normativa urbanística, protección del edificio, elementos singulares, normas de la comunidad. También se realiza un estudio de detalle de las necesidades reales, almacenaje, estilo de vida, cocina abierta o semiabierta…
 
 ![Estado de la vivienda, cocina después de la reforma Proyecto Casa María Panes, Madrid](../../assets/proyectos/casa-maria-panes/casa-maria-panes-cocina-01.jpg)
 
 ## Propuesta
 
-En base a lo estudiado en la fase de Anteproyecto, se proporcionan propuestas de distribución adaptadas al propietario de la  
-vivienda, junto una materialidad por cada estancia y un cálculo de instalaciones.
+En base a lo estudiado en la fase de Anteproyecto, se proporcionan propuestas de distribución adaptadas al propietario de la vivienda, junto con una materialidad por cada estancia y un cálculo de instalaciones.
 
 ## Resultado
 

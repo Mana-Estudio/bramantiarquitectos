@@ -1,0 +1,97 @@
+---
+import Foto from './Foto.astro';
+import { TIPOS, ZONAS_EN, numero, slug as aSlug, RUTAS } from '../lib/i18n';
+import type { Proyecto } from '../lib/contenido';
+import type { Idioma } from '../lib/sitio';
+
+interface Props {
+  proyecto: Proyecto;
+  indice: number;
+  idioma?: Idioma;
+  sizes?: string;
+  formato?: 'vertical' | 'horizontal';
+  /** Título accesible del proyecto en inglés (si existe la traducción). */
+  tipoTextoEn?: string;
+  nivel?: 'h2' | 'h3';
+}
+
+const { proyecto, indice, idioma = 'es', sizes = '(min-width: 68rem) 40vw, (min-width: 40rem) 50vw, 100vw', formato = 'vertical', tipoTextoEn, nivel = 'h3' } = Astro.props;
+const d = proyecto.data;
+const href = RUTAS[idioma].proyecto(proyecto.id);
+const zona = idioma === 'es' ? d.zona : (ZONAS_EN[d.zona] ?? d.zona);
+const tipo = idioma === 'es' ? d.tipoTexto : (tipoTextoEn ?? d.tipos.map((t) => TIPOS[t].en).join(' & '));
+const Nivel = nivel;
+const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
+---
+
+<article
+  class:list={['tarjeta-proyecto', formato]}
+  data-proyecto
+  data-tipos={d.tipos.join(' ')}
+  data-zona={aSlug(d.zona)}
+>
+  <a href={href} class="tarjeta-enlace">
+    <div class="foto tarjeta-foto" data-vt={vt}>
+      <Foto src={d.portada} alt={d.portadaAlt} sizes={sizes} anchos={[400, 640, 960, 1280]} />
+      {d.estado === 'render' && <span class="chip tarjeta-estado">Render</span>}
+    </div>
+    <div class="tarjeta-pie">
+      <span class="numero" aria-hidden="true">{numero(indice)}</span>
+      <div>
+        <Nivel class="tarjeta-nombre">{d.nombre}</Nivel>
+        <p class="tarjeta-meta secundario">{zona} · {tipo}</p>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .tarjeta-enlace {
+    display: grid;
+    gap: var(--espacio-s);
+    text-decoration: none;
+  }
+  .tarjeta-foto {
+    position: relative;
+    aspect-ratio: 4 / 5;
+  }
+  .horizontal .tarjeta-foto {
+    aspect-ratio: 3 / 2;
+  }
+  .tarjeta-foto :global(img) {
+    transition: transform 900ms var(--curva);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tarjeta-enlace:hover .tarjeta-foto :global(img) {
+      transform: scale(1.03);
+    }
+  }
+  .tarjeta-estado {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: var(--piedra);
+    color: var(--tinta);
+  }
+  .tarjeta-pie {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--espacio-s);
+    align-items: baseline;
+    padding-top: var(--espacio-2xs);
+    border-top: 1px solid var(--linea);
+  }
+  .tarjeta-nombre {
+    font-family: var(--titulos);
+    font-size: var(--paso-3);
+    line-height: 1.1;
+    font-weight: 400;
+  }
+  .tarjeta-enlace:hover .tarjeta-nombre {
+    font-style: italic;
+  }
+  .tarjeta-meta {
+    margin-top: 0.25rem;
+    font-size: var(--paso--1);
+  }
+</style>

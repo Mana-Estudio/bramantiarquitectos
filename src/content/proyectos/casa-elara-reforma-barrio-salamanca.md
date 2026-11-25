@@ -68,7 +68,7 @@ En el número 124 de la Calle de Alcalá, en pleno Barrio de Salamanca, nace Cas
 No es un proyecto que parta de cero.  
 Es un proyecto que parte de la memoria.
 
-Tal como se plantea en el origen del proyecto, el objetivo no era añadir, sino reinterpretar una historia existente y traducirla en una nueva forma de habitar .
+Tal como se plantea en el origen del proyecto, el objetivo no era añadir, sino reinterpretar una historia existente y traducirla en una nueva forma de habitar.
 
 ![fachada casa Elara, calle Alcalá 124](../../assets/proyectos/casa-elara/casa-elara-fachada-01.png)
 
@@ -111,8 +111,7 @@ La iluminación artificial no compite con ella, sino que la acompaña:
 No hay exceso.  
 No hay protagonismo innecesario.
 
-Solo una intención clara:  
-hacer que el espacio se entienda mejor.
+Solo una intención clara: hacer que el espacio se entienda mejor.
 
 ![Estado de la cocina después de la reforma en la calle Alcalá, Madrid](../../assets/proyectos/casa-elara/casa-elara-cocina-02.jpg)
 
@@ -122,7 +121,7 @@ En Casa Elara, el interiorismo no busca destacar por partes.
 
 Funciona como un sistema.
 
-Tal como se detalla en el proyecto, la selección de materiales responde a un criterio de coherencia y durabilidad, no de exhibición .
+Tal como se detalla en el proyecto, la selección de materiales responde a un criterio de coherencia y durabilidad, no de exhibición.
 
 - Piedra sinterizada de alta resistencia
 - Revestimientos de gran formato efecto mármol

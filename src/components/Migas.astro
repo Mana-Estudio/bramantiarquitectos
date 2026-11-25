@@ -1,0 +1,52 @@
+---
+// Migas de pan visibles. El JSON-LD BreadcrumbList lo arma cada página con lib/jsonld.
+import { UI } from '../lib/i18n';
+import type { Idioma } from '../lib/sitio';
+interface Props {
+  items: { nombre: string; url: string }[];
+  idioma?: Idioma;
+}
+const { items, idioma = 'es' } = Astro.props;
+---
+
+<nav class="migas" aria-label={UI[idioma].migas}>
+  <ol role="list">
+    {items.map((it, i) => (
+      <li>
+        {i < items.length - 1 ? <a href={it.url}>{it.nombre}</a> : <span aria-current="page">{it.nombre}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .migas ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0;
+    font-size: var(--paso--2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gris);
+  }
+  .migas li + li::before {
+    content: '/';
+    margin-inline: 0.6em;
+    color: var(--linea-fuerte);
+  }
+  .migas a {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .migas a:hover {
+    text-decoration: underline;
+  }
+  .migas span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--tinta);
+  }
+</style>

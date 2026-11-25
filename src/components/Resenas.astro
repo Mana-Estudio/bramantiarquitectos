@@ -1,0 +1,106 @@
+---
+// Reseñas de Google migradas de la web actual (texto completo). Sin AggregateRating propio.
+import { getCollection } from 'astro:content';
+import { SITIO, type Idioma } from '../lib/sitio';
+
+interface Props {
+  idioma?: Idioma;
+  cantidad?: number;
+}
+const { idioma = 'es', cantidad = 6 } = Astro.props;
+const es = idioma === 'es';
+const resenas = (await getCollection('resenas')).sort((a, b) => (b.data.fecha ?? '').localeCompare(a.data.fecha ?? '')).slice(0, cantidad);
+---
+
+<section class="seccion resenas" aria-labelledby="resenas-titulo">
+  <div class="contenedor grilla">
+    <header class="resenas-cabecera">
+      <p class="etiqueta">{es ? 'Opiniones en Google' : 'Google reviews'}</p>
+      <h2 id="resenas-titulo">{es ? <>Lo que dicen <em>quienes ya viven</em> en sus casas.</> : <>What clients say <em>once they live</em> in their homes.</>}</h2>
+      <a class="enlace-flecha" href={SITIO.fichaGoogle} rel="noopener" target="_blank">{es ? 'Ver todas en Google' : 'See all on Google'}</a>
+      {!es && <p class="secundario aviso-idioma">Reviews are shown in their original language (Spanish).</p>}
+    </header>
+    <ul role="list" class="resenas-lista" lang="es">
+      {resenas.map((r) => (
+        <li class="resena">
+          <figure>
+            <blockquote>
+              <p>“{r.data.texto}”</p>
+            </blockquote>
+            <figcaption>
+              <span class="resena-nombre">{r.data.nombre}</span>
+              <span class="secundario">
+                {'★'.repeat(r.data.estrellas)}
+                <span class="visualmente-oculto">{r.data.estrellas} de 5 estrellas</span> · {r.data.fuente}
+                {r.data.fecha && <> · {new Date(r.data.fecha).getFullYear()}</>}
+              </span>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .resenas .grilla {
+    row-gap: var(--espacio-xl);
+  }
+  .resenas-cabecera {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: start;
+    justify-items: start;
+  }
+  .resenas-cabecera h2 {
+    font-size: var(--paso-5);
+  }
+  .resenas-lista {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  .resena figure {
+    display: grid;
+    gap: var(--espacio-s);
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea);
+    height: 100%;
+    align-content: space-between;
+  }
+  .resena blockquote p {
+    font-family: var(--titulos);
+    font-size: var(--paso-2);
+    line-height: 1.3;
+  }
+  .resena figcaption {
+    display: grid;
+    gap: 0.15rem;
+    font-size: var(--paso--1);
+  }
+  .resena-nombre {
+    font-weight: 600;
+  }
+  .secundario {
+    letter-spacing: 0.02em;
+  }
+  .aviso-idioma {
+    font-size: var(--paso--1);
+  }
+  @media (min-width: 48rem) {
+    .resenas-lista {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 68rem) {
+    .resenas-cabecera {
+      grid-column: 1 / span 4;
+      position: sticky;
+      top: calc(var(--alto-header-compacto) + var(--espacio-l));
+    }
+    .resenas-lista {
+      grid-column: 6 / -1;
+    }
+  }
+</style>

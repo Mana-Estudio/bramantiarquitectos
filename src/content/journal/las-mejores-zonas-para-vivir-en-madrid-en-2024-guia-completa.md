@@ -49,7 +49,7 @@ Un **elegante** y **sofisticado** equilibrio entre lo clásico y lo moderno, cre
 
 ## 4. Madrid Río: Renovación y Sostenibilidad
 
-El proyecto de renovación en torno a **Madrid Río** ha transformado esta área en una de las mejores zonas para vivir en Madrid . Con kilómetros de espacios recreativos, carriles bici y zonas deportivas a lo largo del **río Manzanares**, es ideal para quienes valoran un estilo de vida activo y en contacto con la naturaleza.
+El proyecto de renovación en torno a **Madrid Río** ha transformado esta área en una de las mejores zonas para vivir en Madrid. Con kilómetros de espacios recreativos, carriles bici y zonas deportivas a lo largo del **río Manzanares**, es ideal para quienes valoran un estilo de vida activo y en contacto con la naturaleza.
 
 Este desarrollo ha fomentado la construcción de nuevos proyectos residenciales enfocados en la **sostenibilidad** y la eficiencia energética, lo que lo convierte en una excelente opción para jóvenes profesionales y familias comprometidas con el bienestar ambiental.
 

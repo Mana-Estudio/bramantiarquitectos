@@ -339,6 +339,7 @@ function htmlAMarkdown(html) {
   raiz.find('span').each((_, el) => { $(el).replaceWith($(el).html() ?? ''); });
   raiz.find('p').each((_, el) => { if (!$(el).text().trim() && !$(el).find('img').length) $(el).remove(); });
   let md = td.turndown(raiz.html() ?? '');
+  md = md.replace(/ {2}\n(?=[a-záéíóúñü(«“])/g, ' '); // <br> a mitad de frase
   md = md.replace(/ /g, ' ').replace(/[ \t]+\n/g, (m) => (m.startsWith('  ') ? '  \n' : '\n')).replace(/\n{3,}/g, '\n\n').trim();
   return sinMarcaVieja(md);
 }

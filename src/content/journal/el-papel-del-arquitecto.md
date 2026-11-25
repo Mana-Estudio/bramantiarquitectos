@@ -149,8 +149,7 @@ El resultado:
 - Integración de texturas: piedra, madera, acabados minerales
 - Diseño de iluminación que refuerza la arquitectura
 
-Todo responde a una misma lógica:  
-crear una experiencia habitable, no solo un espacio bonito.
+Todo responde a una misma lógica: crear una experiencia habitable, no solo un espacio bonito.
 
 Porque una vivienda no termina cuando se construye.  
 Termina cuando **conecta con quien la habita**.
@@ -198,8 +197,7 @@ Y el resultado no solo es más preciso, sino también más coherente y duradero.
 
 Ahí es donde se marca la diferencia.
 
-Entre una obra que simplemente se ejecuta…  
-y una vivienda que ha sido cuidadosamente pensada, coordinada y construida para perdurar.
+Entre una obra que simplemente se ejecuta… y una vivienda que ha sido cuidadosamente pensada, coordinada y construida para perdurar.
 
 ### La diferencia entre construir una casa y crear un hogar
 

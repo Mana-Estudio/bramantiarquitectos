@@ -1,0 +1,420 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Foto from '../Foto.astro';
+import Icono from '../Icono.astro';
+import TarjetaProyecto from '../TarjetaProyecto.astro';
+import TarjetaArticulo from '../TarjetaArticulo.astro';
+import Proceso from '../Proceso.astro';
+import Resenas from '../Resenas.astro';
+import CtaFinal from '../CtaFinal.astro';
+import { proyectos as todosProyectos, articulos } from '../../lib/contenido';
+import { RUTAS, RUTAS_SERVICIO } from '../../lib/i18n';
+import { SITIO, whatsapp, TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
+import hero from '../../assets/paginas/hero-casa-felipe-ii-salon.jpg';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const es = idioma === 'es';
+const r = RUTAS[idioma];
+
+const proyectos = await todosProyectos();
+const destacados = proyectos.filter((p) => p.data.destacado).slice(0, 6);
+const traducciones = new Map((await getCollection('proyectosEn')).map((p) => [p.id, p]));
+const servicios = (await getCollection('servicios')).filter((s) => s.data.idioma === idioma).sort((a, b) => a.data.orden - b.data.orden);
+const ultimos = (await articulos()).slice(0, 3);
+const fabrica = (await getEntry('journal', 'arquitectura-artesania-diseno-medida-real-fabrica-tapices'))?.id ?? '';
+---
+
+<Base
+  idioma={idioma}
+  titulo={es ? 'Bramanti Arquitectos · Estudio de arquitectura en Madrid' : 'Bramanti Arquitectos · Architecture studio in Madrid'}
+  tituloCompleto
+  descripcion={es
+    ? 'Estudio de arquitectura, interiorismo y construcción en Madrid. Reformas integrales y obra nueva con un único equipo, de la idea a la entrega.'
+    : 'Architecture, interior design and construction studio in Madrid. Full renovations and new builds by one team, from first idea to handover.'}
+  imagen={hero}
+>
+  <section class="hero" aria-labelledby="hero-titulo">
+    <div class="hero-texto">
+      <p class="etiqueta">{es ? 'Arquitectura · Interiorismo · Construcción' : 'Architecture · Interiors · Construction'}</p>
+      <h1 id="hero-titulo">{es ? <>Diseñamos espacios, <em>construimos hogares.</em></> : <>We design spaces, <em>we build homes.</em></>}</h1>
+      <p class="entradilla">
+        {es
+          ? 'Estudio de arquitectura, interiorismo y construcción en Madrid, con visión artística, técnica y humana. Llevamos tu proyecto completo: diseño, licencias y obra.'
+          : 'An architecture, interior design and construction studio in Madrid, with an artistic, technical and human approach. We handle the whole project: design, permits and construction.'}
+      </p>
+      <div class="botones">
+        <a class="boton" href={`${r.contacto}#presupuesto`} data-evento="presupuesto" data-evento-detalle="hero">{es ? 'Pedir valoración' : 'Request a consultation'}</a>
+        <a class="boton boton-linea" href={whatsapp(TEXTO_WHATSAPP[idioma])} data-evento="whatsapp" data-evento-detalle="hero"><Icono nombre="whatsapp" /> WhatsApp</a>
+      </div>
+    </div>
+    <figure class="hero-foto">
+      <div class="foto">
+        <Foto
+          src={hero}
+          alt={es ? 'Salón de Casa Felipe II con chimenea, molduras clásicas y luz cálida tras la reforma integral' : 'Living room at Casa Felipe II with a fireplace, classic mouldings and warm light after the full renovation'}
+          sizes="(min-width: 60rem) 58vw, 100vw"
+          anchos={[640, 960, 1280, 1600, 1920]}
+          prioridad
+        />
+      </div>
+      <figcaption>
+        <a href={r.proyecto('casa-felipe-ii-reforma-integral-retiro-madrid')}>Casa Felipe II · Retiro</a>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="seccion manifiesto" aria-labelledby="manifiesto-titulo">
+    <div class="contenedor grilla">
+      <p class="etiqueta manifiesto-etiqueta">Bramanti Arquitectos</p>
+      <h2 id="manifiesto-titulo" class="manifiesto-titulo">{es ? <>Diseñar. Construir. <em>Habitar.</em></> : <>Design. Build. <em>Inhabit.</em></>}</h2>
+      <div class="manifiesto-texto flujo">
+        <p class="entradilla">
+          {es
+            ? 'Somos un estudio de arquitectura, interiorismo y construcción en Madrid. Acompañamos cada proyecto desde la idea hasta su materialización, como único interlocutor y con una atención constante al detalle.'
+            : 'We are an architecture, interior design and construction studio in Madrid. We guide each project from the first idea to the finished home, as your single point of contact and with constant attention to detail.'}
+        </p>
+        <p class="secundario">
+          {es
+            ? 'Arquitectura humana: espacios que nacen de entender cómo vives, con la técnica al servicio del confort y una materialidad pensada para durar.'
+            : 'Human architecture: spaces born from understanding how you live, with technology serving comfort and materials chosen to last.'}
+        </p>
+        <a class="enlace-flecha" href={r.estudio}>{es ? 'Conoce el estudio' : 'Meet the studio'}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion servicios" aria-labelledby="servicios-titulo">
+    <div class="contenedor">
+      <header class="cabecera-seccion">
+        <p class="etiqueta">{es ? 'Servicios' : 'Services'}</p>
+        <h2 id="servicios-titulo">{es ? <>Un mismo equipo, <em>de la idea a la obra.</em></> : <>One team, <em>from idea to construction.</em></>}</h2>
+      </header>
+      <ol role="list" class="servicios-lista">
+        {servicios.map((s, i) => (
+          <li>
+            <a href={RUTAS_SERVICIO[s.data.servicio][idioma]} class="servicio">
+              <div class="foto servicio-foto">
+                <Foto src={s.data.imagen} alt={s.data.imagenAlt} sizes="(min-width: 60rem) 30vw, 100vw" anchos={[480, 800, 1100]} />
+              </div>
+              <span class="numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{s.data.nombre}</h3>
+              <p class="secundario">{s.data.resumen}</p>
+              <span class="enlace-flecha" aria-hidden="true">{es ? 'Ver servicio' : 'View service'}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="seccion destacados" aria-labelledby="destacados-titulo">
+    <div class="contenedor">
+      <header class="cabecera-seccion cabecera-fila">
+        <div>
+          <p class="etiqueta">{es ? 'Proyectos' : 'Projects'}</p>
+          <h2 id="destacados-titulo">{es ? <>Creaciones <em>recientes.</em></> : <>Recent <em>work.</em></>}</h2>
+        </div>
+        <a class="enlace-flecha" href={r.proyectos}>{es ? `Ver los ${proyectos.length} proyectos` : `See all ${proyectos.length} projects`}</a>
+      </header>
+      <div class="grilla-editorial">
+        {destacados.map((p, i) => (
+          <TarjetaProyecto
+            proyecto={p}
+            indice={i + 1}
+            idioma={idioma}
+            tipoTextoEn={traducciones.get(p.id)?.data.tipoTexto}
+            formato={i % 3 === 0 ? 'horizontal' : 'vertical'}
+            sizes={i % 3 === 0 ? '(min-width: 60rem) 58vw, 100vw' : '(min-width: 60rem) 40vw, 100vw'}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Proceso idioma={idioma} />
+
+  <section class="seccion cifras" aria-labelledby="cifras-titulo">
+    <div class="contenedor">
+      <h2 id="cifras-titulo" class="visualmente-oculto">{es ? 'El estudio en cifras' : 'The studio in numbers'}</h2>
+      <dl class="cifras-lista">
+        <div><dt>{es ? 'Años de trayectoria' : 'Years of experience'}</dt><dd>+7</dd></div>
+        <div><dt>{es ? 'Proyectos publicados' : 'Published projects'}</dt><dd>{proyectos.length}</dd></div>
+        <div><dt>{es ? 'Disciplinas en un mismo equipo' : 'Disciplines in one team'}</dt><dd>3</dd></div>
+        <div><dt>{es ? 'Interlocutor de principio a fin' : 'Point of contact, start to finish'}</dt><dd>1</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <Resenas idioma={idioma} />
+
+  <section class="seccion colaboraciones fondo-lino" aria-labelledby="colaboraciones-titulo">
+    <div class="contenedor grilla">
+      <header class="colaboraciones-cabecera">
+        <p class="etiqueta">{es ? 'Colaboraciones' : 'Collaborations'}</p>
+        <h2 id="colaboraciones-titulo">{es ? <>Oficio, arte <em>y artesanía.</em></> : <>Craft, art <em>and making.</em></>}</h2>
+      </header>
+      <ul role="list" class="colaboraciones-lista">
+        {SITIO.colaboraciones.map((c) => <li class="titulo">{c}</li>)}
+      </ul>
+      <p class="colaboraciones-texto secundario">
+        {es ? 'La arquitectura que desarrollamos nace del encuentro entre arte, técnica y emoción.' : 'Our architecture is born where art, technique and emotion meet.'}
+        {fabrica && es && <> Lee cómo diseñamos <a href={`/${fabrica}/`}>piezas a medida junto a la Real Fábrica de Tapices</a>.</>}
+        {fabrica && !es && <> Read how we designed <a href={`/${fabrica}/`} hreflang="es">bespoke pieces with the Real Fábrica de Tapices</a> (in Spanish).</>}
+      </p>
+    </div>
+  </section>
+
+  {es && (
+    <section class="seccion journal" aria-labelledby="journal-titulo">
+      <div class="contenedor">
+        <header class="cabecera-seccion cabecera-fila">
+          <div>
+            <p class="etiqueta">Journal</p>
+            <h2 id="journal-titulo">Ideas sobre <em>arquitectura y hogar.</em></h2>
+          </div>
+          <a class="enlace-flecha" href="/blog/">Todos los artículos</a>
+        </header>
+        <div class="journal-lista">
+          {ultimos.map((a) => <TarjetaArticulo articulo={a} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaFinal
+    idioma={idioma}
+    titulo={es ? '¿Planteas una reforma integral o una obra nueva?' : 'Planning a full renovation or a new build?'}
+    whatsappTexto={TEXTO_WHATSAPP[idioma]}
+  />
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    min-height: calc(100svh - var(--alto-header));
+    border-bottom: 1px solid var(--linea);
+  }
+  .hero-texto {
+    display: grid;
+    align-content: center;
+    gap: var(--espacio-m);
+    padding: var(--espacio-xl) var(--margen);
+  }
+  .hero-texto h1 {
+    font-size: clamp(3rem, 1.5rem + 5.6vw, 7rem);
+    max-width: 12ch;
+  }
+  .hero-foto {
+    position: relative;
+    min-height: 60svh;
+  }
+  .hero-foto .foto {
+    position: absolute;
+    inset: 0;
+  }
+  .hero-foto figcaption {
+    position: absolute;
+    right: var(--margen);
+    bottom: var(--espacio-s);
+  }
+  .hero-foto figcaption a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.9rem;
+    background: var(--piedra);
+    font-size: var(--paso--2);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+    .hero-texto {
+      padding-left: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+      padding-right: var(--espacio-xl);
+    }
+    .hero-foto {
+      min-height: auto;
+    }
+  }
+
+  .manifiesto .grilla {
+    row-gap: var(--espacio-m);
+  }
+  .manifiesto-etiqueta,
+  .manifiesto-titulo,
+  .manifiesto-texto {
+    grid-column: 1 / -1;
+  }
+  .manifiesto-titulo {
+    font-size: var(--paso-6);
+  }
+  @media (min-width: 60rem) {
+    .manifiesto-etiqueta {
+      grid-column: 1 / span 3;
+      align-self: start;
+      padding-top: 1.2rem;
+    }
+    .manifiesto-titulo {
+      grid-column: 4 / -1;
+    }
+    .manifiesto-texto {
+      grid-column: 7 / -1;
+    }
+  }
+
+  .cabecera-seccion {
+    display: grid;
+    gap: var(--espacio-s);
+    margin-bottom: var(--espacio-xl);
+    max-width: 48rem;
+  }
+  .cabecera-fila {
+    max-width: none;
+    grid-template-columns: 1fr;
+    align-items: end;
+  }
+  .cabecera-fila > div {
+    display: grid;
+    gap: var(--espacio-s);
+  }
+  .cabecera-fila .enlace-flecha {
+    justify-self: start;
+  }
+  @media (min-width: 48rem) {
+    .cabecera-fila {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  .servicios-lista {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+  }
+  .servicio {
+    display: grid;
+    gap: var(--espacio-xs);
+    text-decoration: none;
+  }
+  .servicio-foto {
+    aspect-ratio: 4 / 3;
+    margin-bottom: var(--espacio-xs);
+  }
+  .servicio h3 {
+    font-size: var(--paso-4);
+  }
+  .servicio .enlace-flecha {
+    justify-self: start;
+  }
+  .servicio:hover h3 {
+    font-style: italic;
+  }
+  @media (min-width: 60rem) {
+    .servicios-lista {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .servicios-lista li:nth-child(2) {
+      margin-top: var(--espacio-2xl);
+    }
+  }
+
+  .grilla-editorial {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+  }
+  @media (min-width: 60rem) {
+    .grilla-editorial {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .grilla-editorial > :global(*:nth-child(3n + 1)) {
+      grid-column: 1 / span 7;
+    }
+    .grilla-editorial > :global(*:nth-child(3n + 2)) {
+      grid-column: 9 / span 4;
+      margin-top: var(--espacio-3xl);
+    }
+    .grilla-editorial > :global(*:nth-child(3n)) {
+      grid-column: 3 / span 5;
+    }
+  }
+
+  .cifras-lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--espacio-l) var(--separacion);
+  }
+  .cifras-lista div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--espacio-2xs);
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .cifras-lista dd {
+    font-family: var(--titulos);
+    font-size: var(--paso-6);
+    line-height: 1;
+    color: var(--bronce);
+  }
+  .cifras-lista dt {
+    font-size: var(--paso--1);
+    color: var(--gris);
+  }
+  @media (min-width: 60rem) {
+    .cifras-lista {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .colaboraciones .grilla {
+    row-gap: var(--espacio-l);
+    align-items: end;
+  }
+  .colaboraciones-cabecera,
+  .colaboraciones-lista,
+  .colaboraciones-texto {
+    grid-column: 1 / -1;
+  }
+  .colaboraciones-cabecera {
+    display: grid;
+    gap: var(--espacio-s);
+  }
+  .colaboraciones-lista {
+    display: grid;
+    gap: var(--espacio-xs);
+  }
+  .colaboraciones-lista li {
+    font-size: var(--paso-4);
+    padding-bottom: var(--espacio-xs);
+    border-bottom: 1px solid var(--linea-fuerte);
+  }
+  @media (min-width: 60rem) {
+    .colaboraciones-cabecera {
+      grid-column: 1 / span 5;
+    }
+    .colaboraciones-lista {
+      grid-column: 7 / -1;
+    }
+    .colaboraciones-texto {
+      grid-column: 7 / -1;
+    }
+  }
+
+  .journal-lista {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  @media (min-width: 48rem) {
+    .journal-lista {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

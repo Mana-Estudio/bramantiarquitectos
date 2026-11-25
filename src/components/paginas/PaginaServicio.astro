@@ -1,0 +1,307 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Foto from '../Foto.astro';
+import Migas from '../Migas.astro';
+import Faqs from '../Faqs.astro';
+import TarjetaProyecto from '../TarjetaProyecto.astro';
+import TarjetaArticulo from '../TarjetaArticulo.astro';
+import CtaFinal from '../CtaFinal.astro';
+import { proyectos as todos, articulos, faqs as faqsDe, promociones } from '../../lib/contenido';
+import { UI, RUTAS, RUTAS_SERVICIO, type TipoProyecto } from '../../lib/i18n';
+import { whatsapp, type Idioma } from '../../lib/sitio';
+import { migas as migasLd, preguntas } from '../../lib/jsonld';
+
+interface Props {
+  servicio: TipoProyecto;
+  idioma: Idioma;
+}
+const { servicio, idioma } = Astro.props;
+const es = idioma === 'es';
+const t = UI[idioma];
+const r = RUTAS[idioma];
+
+const entrada = (await getCollection('servicios')).find((s) => s.data.servicio === servicio && s.data.idioma === idioma);
+if (!entrada) throw new Error(`Falta el contenido del servicio ${servicio} (${idioma})`);
+const d = entrada.data;
+const { Content } = await render(entrada);
+const traducciones = new Map((await getCollection('proyectosEn')).map((p) => [p.id, p]));
+const lista = await todos();
+const proyectos = lista.filter((p) => p.data.tipos.includes(servicio)).slice(0, 4);
+const promos = servicio === 'obra-nueva' ? await promociones() : [];
+const preguntasServicio = es && d.faqAmbito ? (await faqsDe(d.faqAmbito)).slice(0, 8) : [];
+
+// Artículos del journal relacionados por tema (enlazado interno servicio ↔ artículos).
+const temas: Record<TipoProyecto, RegExp> = {
+  'reforma-integral': /reform|vicios|presupuesto|errores|arquitecto/i,
+  interiorismo: /interiorismo|iluminar|molduras|japandi|microcemento|tarima|mood|biof/i,
+  'obra-nueva': /obra nueva|passivhaus|cobiax|plano|sat[eé]lites|majadahonda/i,
+};
+const relacionados = es ? (await articulos()).filter((a) => temas[servicio].test(a.data.title)).slice(0, 3) : [];
+
+const textoWhatsapp = es ? `Hola, me interesa vuestro servicio de ${d.nombre.toLowerCase()}.` : `Hello, I am interested in your ${d.nombre.toLowerCase()} service.`;
+const migas = [
+  { nombre: t.inicio, url: r.inicio },
+  { nombre: d.nombre, url: RUTAS_SERVICIO[servicio][idioma] },
+];
+const tituloHtml = d.titulo.replace(/\*(.+?)\*/g, '<em>$1</em>');
+---
+
+<Base
+  idioma={idioma}
+  titulo={d.seoTitle}
+  descripcion={d.descripcion}
+  imagen={d.imagen}
+  whatsappTexto={textoWhatsapp}
+  jsonld={[migasLd(migas), ...(preguntasServicio.length ? [preguntas(preguntasServicio.map((f) => ({ pregunta: f.data.pregunta, respuesta: f.data.respuesta })))] : [])]}
+>
+  <section class="contenedor servicio-cabecera">
+    <Migas items={migas} idioma={idioma} />
+    <div class="servicio-intro">
+      <p class="etiqueta">{es ? 'Servicio' : 'Service'}</p>
+      <h1 set:html={tituloHtml} />
+      <p class="entradilla">{d.intro}</p>
+      <div class="botones">
+        <a class="boton" href={`${r.contacto}?servicio=${servicio}#presupuesto`} data-evento="presupuesto" data-evento-detalle={`servicio-${servicio}`}>{t.pedirValoracion}</a>
+        <a class="boton boton-linea" href={whatsapp(textoWhatsapp)} data-evento="whatsapp" data-evento-detalle={`servicio-${servicio}`}>WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="servicio-foto foto">
+    <Foto src={d.imagen} alt={d.imagenAlt} sizes="100vw" anchos={[640, 960, 1280, 1600]} prioridad />
+  </div>
+
+  <section class="seccion" aria-labelledby="incluye-titulo">
+    <div class="contenedor">
+      <header class="cabecera-bloque">
+        <p class="etiqueta">{es ? 'Qué incluye' : 'What is included'}</p>
+        <h2 id="incluye-titulo">{es ? <>Todo el proyecto, <em>en las mismas manos.</em></> : <>The whole project, <em>in the same hands.</em></>}</h2>
+      </header>
+      <ul role="list" class="incluye">
+        {d.incluye.map((it, i) => (
+          <li>
+            <span class="numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{it.titulo}</h3>
+            <p class="secundario">{it.texto}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="seccion fondo-lino" aria-labelledby="proceso-servicio-titulo">
+    <div class="contenedor grilla">
+      <header class="proceso-servicio-cabecera">
+        <p class="etiqueta">{es ? 'Proceso' : 'Process'}</p>
+        <h2 id="proceso-servicio-titulo">{es ? <>Paso a paso, <em>sin sorpresas.</em></> : <>Step by step, <em>no surprises.</em></>}</h2>
+      </header>
+      <ol role="list" class="proceso-servicio">
+        {d.proceso.map((p, i) => (
+          <li>
+            <span class="numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{p.titulo}</h3>
+              <p class="secundario">{p.texto}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="seccion" aria-label={es ? 'Más sobre el servicio' : 'More about this service'}>
+    <div class="contenedor grilla">
+      <div class="servicio-cuerpo prosa">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  {proyectos.length > 0 && (
+    <section class="seccion" aria-labelledby="proyectos-servicio-titulo">
+      <div class="contenedor">
+        <header class="cabecera-fila">
+          <h2 id="proyectos-servicio-titulo">{es ? <>Proyectos <em>de {d.nombre.toLowerCase()}.</em></> : <>{d.nombre} <em>projects.</em></>}</h2>
+          <a class="enlace-flecha" href={`${r.proyectos}?tipo=${servicio}`}>{es ? 'Ver todos' : 'See all'}</a>
+        </header>
+        <div class="proyectos-servicio">
+          {proyectos.map((p) => (
+            <TarjetaProyecto proyecto={p} indice={lista.findIndex((x) => x.id === p.id) + 1} idioma={idioma} tipoTextoEn={traducciones.get(p.id)?.data.tipoTexto} sizes="(min-width: 60rem) 23vw, 50vw" />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {promos.length > 0 && (
+    <section class="seccion" aria-labelledby="promos-servicio-titulo">
+      <div class="contenedor">
+        <header class="cabecera-fila">
+          <h2 id="promos-servicio-titulo">{es ? <>Obra nueva <em>en Majadahonda.</em></> : <>New builds <em>in Majadahonda.</em></>}</h2>
+          <a class="enlace-flecha" href="/promociones/" hreflang="es">{es ? 'Ver promociones' : 'View properties (ES)'}</a>
+        </header>
+        <ul role="list" class="proyectos-servicio">
+          {promos.filter((p) => p.data.estado === 'render').map((p) => (
+            <li>
+              <a href={p.data.url} class="promo-mini" hreflang={es ? undefined : 'es'}>
+                <div class="foto"><Foto src={p.data.portada} alt={p.data.portadaAlt} sizes="(min-width: 60rem) 30vw, 100vw" anchos={[480, 800]} /></div>
+                <h3>{p.data.nombre}</h3>
+                <p class="secundario">{p.data.zona} · {p.data.operacion}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <Faqs faqs={preguntasServicio} titulo={es ? `Preguntas sobre ${d.nombre.toLowerCase()}` : 'Frequently asked questions'} />
+
+  {relacionados.length > 0 && (
+    <section class="seccion" aria-labelledby="lecturas-titulo">
+      <div class="contenedor">
+        <header class="cabecera-fila">
+          <h2 id="lecturas-titulo">Para leer <em>antes de empezar.</em></h2>
+          <a class="enlace-flecha" href="/blog/">Journal</a>
+        </header>
+        <div class="lecturas">
+          {relacionados.map((a) => <TarjetaArticulo articulo={a} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaFinal idioma={idioma} consulta={`servicio=${servicio}`} whatsappTexto={textoWhatsapp} />
+</Base>
+
+<style>
+  .servicio-cabecera {
+    padding-block: var(--espacio-m) var(--espacio-xl);
+  }
+  .servicio-intro {
+    display: grid;
+    gap: var(--espacio-m);
+    margin-top: var(--espacio-l);
+    max-width: 56rem;
+  }
+  .servicio-intro h1 {
+    font-size: clamp(2.6rem, 1.6rem + 4.4vw, 6rem);
+  }
+  .servicio-foto {
+    aspect-ratio: 21 / 9;
+    max-height: 75vh;
+  }
+  @media (max-width: 48rem) {
+    .servicio-foto {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  .cabecera-bloque {
+    display: grid;
+    gap: var(--espacio-s);
+    max-width: 44rem;
+    margin-bottom: var(--espacio-xl);
+  }
+  .cabecera-bloque h2,
+  .proceso-servicio-cabecera h2,
+  .cabecera-fila h2 {
+    font-size: var(--paso-5);
+  }
+  .incluye {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  .incluye li {
+    display: grid;
+    gap: var(--espacio-2xs);
+    align-content: start;
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .incluye h3 {
+    font-size: var(--paso-2);
+  }
+  @media (min-width: 48rem) {
+    .incluye {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 68rem) {
+    .incluye {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .proceso-servicio-cabecera {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: start;
+    margin-bottom: var(--espacio-l);
+  }
+  .proceso-servicio {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .proceso-servicio li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: var(--espacio-s);
+    padding-block: var(--espacio-s);
+    border-bottom: 1px solid var(--linea);
+  }
+  .proceso-servicio h3 {
+    font-size: var(--paso-2);
+  }
+  @media (min-width: 68rem) {
+    .proceso-servicio-cabecera {
+      grid-column: 1 / span 4;
+      position: sticky;
+      top: calc(var(--alto-header-compacto) + var(--espacio-l));
+    }
+    .proceso-servicio {
+      grid-column: 6 / -1;
+    }
+  }
+  .servicio-cuerpo {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 68rem) {
+    .servicio-cuerpo {
+      grid-column: 4 / span 7;
+    }
+  }
+  .cabecera-fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--espacio-s);
+    margin-bottom: var(--espacio-xl);
+  }
+  .proyectos-servicio {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  }
+  .promo-mini {
+    display: grid;
+    gap: var(--espacio-xs);
+    text-decoration: none;
+  }
+  .promo-mini .foto {
+    aspect-ratio: 3 / 2;
+  }
+  .promo-mini h3 {
+    font-size: var(--paso-3);
+  }
+  .lecturas {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  @media (min-width: 48rem) {
+    .lecturas {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

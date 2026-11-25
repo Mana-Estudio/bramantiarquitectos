@@ -380,6 +380,11 @@ small {
   background: var(--lino);
   overflow: hidden;
 }
+.foto picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .foto img {
   width: 100%;
   height: 100%;

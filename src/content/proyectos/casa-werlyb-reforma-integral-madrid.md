@@ -74,12 +74,8 @@ La intervención se articula a partir de una idea clara: ordenar el espacio para
 
 ## El ambiente
 
-La nueva distribución tiene como objetivo abrir el espacio y crear  
-una conexión continua entre las áreas sociales de la vivienda,  
-transformando por completo la sensación de amplitud y circulación.  
-Se optó por un salón-comedor amplio con una cocina integrada  
-que fluye directamente hacia una gran terraza, pensada para  
-aprovechar al máximo el espacio al aire libre.
+La nueva distribución tiene como objetivo abrir el espacio y crear una conexión continua entre las áreas sociales de la vivienda, transformando por completo la sensación de amplitud y circulación.  
+Se optó por un salón-comedor amplio con una cocina integrada que fluye directamente hacia una gran terraza, pensada para aprovechar al máximo el espacio al aire libre.
 
 Este espacio exterior se ha diseñado como un área polivalente que permite desde reuniones íntimas hasta eventos más amplios y funcionales para grabaciones al aire libre, aportando flexibilidad a las actividades de los habitantes.
 

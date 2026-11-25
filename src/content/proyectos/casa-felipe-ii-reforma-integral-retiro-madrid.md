@@ -1,6 +1,6 @@
 ---
 nombre: "Casa Felipe II"
-descripcion: "Casa Felipe II es un proyecto de reforma integral ubicado en una de las zonas más exclusivas el centro de madrid."
+descripcion: "Casa Felipe II es un proyecto de reforma integral ubicado en una de las zonas más exclusivas del centro de Madrid."
 resumen: "Hay casas que no necesitan reinventarse. Solo necesitan volver a estar a la altura de lo que prometen. En Felipe II, el punto de partida era claro: preservar la sensación de hogar clásico, su elegancia, su presencia y…"
 zona: "Retiro"
 tipos:
