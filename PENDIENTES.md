@@ -9,7 +9,8 @@ Lo que falta para pasar de la demo a producción. Donde no había un dato, la de
 - [ ] **Qué imágenes son renders.** Hoy los 10 proyectos figuran como "obra terminada" (no se pudo deducir) y Los Satélites y Proyecto Omega como "render".
 - [ ] **Crédito fotográfico.** Los archivos de Casa Felipe II llevan el nombre de un fotógrafo en el nombre del archivo; confirmar si quieren mostrar el crédito (el campo `fotografo` ya existe).
 - [ ] **Logo en vector (SVG).** La demo usa los PNG actuales (`Group-11115.png` blanco y `Group-11116.png` negro).
-- [ ] Aprobar el **favicon nuevo** (una "B" en serif sobre tinta). El de la web actual sigue siendo el de la marca anterior.
+- [ ] Aprobar el **favicon nuevo** (la "B" de Archivo, la familia del logotipo, sobre tinta). El de la web actual sigue siendo el de la marca anterior.
+- [ ] Confirmar la **tipografía**: los títulos usan Archivo, que coincide con el logotipo. Si prefieren la de los títulos de la web actual (Poppins), es un cambio de una línea en `astro.config.mjs`.
 - [ ] **Descripciones de fotos (alt).** Muchas imágenes no tenían texto alternativo en WordPress: en proyectos y promociones llevan uno genérico ("Casa X: cocina tras la reforma", unas 30 apariciones) y en el journal, el título del artículo con "(imagen n)" (40). Lo ideal es describir cada foto al recibir los originales.
 
 ### Equipo y estudio

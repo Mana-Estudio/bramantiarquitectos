@@ -19,7 +19,7 @@
   --linea: rgb(28 26 23 / 0.16);
   --linea-fuerte: rgb(28 26 23 / 0.32);
 
-  --titulos: var(--fuente-titulos, 'Instrument Serif'), Georgia, serif;
+  --titulos: var(--fuente-titulos, 'Archivo'), Arial, sans-serif;
   --texto: var(--fuente-texto, 'Manrope'), system-ui, sans-serif;
 
   /* Escala fluida (360 px → 1440 px) */
@@ -28,10 +28,10 @@
   --paso-0: clamp(1rem, 0.96rem + 0.19vw, 1.13rem);
   --paso-1: clamp(1.2rem, 1.13rem + 0.33vw, 1.42rem);
   --paso-2: clamp(1.44rem, 1.31rem + 0.56vw, 1.8rem);
-  --paso-3: clamp(1.73rem, 1.51rem + 0.95vw, 2.4rem);
-  --paso-4: clamp(2.07rem, 1.7rem + 1.6vw, 3.2rem);
-  --paso-5: clamp(2.49rem, 1.88rem + 2.7vw, 4.4rem);
-  --paso-6: clamp(2.9rem, 1.9rem + 4.4vw, 6.4rem);
+  --paso-3: clamp(1.55rem, 1.38rem + 0.75vw, 2.1rem);
+  --paso-4: clamp(1.85rem, 1.55rem + 1.3vw, 2.75rem);
+  --paso-5: clamp(2.15rem, 1.7rem + 2vw, 3.6rem);
+  --paso-6: clamp(2.5rem, 1.75rem + 3.3vw, 5.1rem);
 
   --espacio-2xs: clamp(0.5rem, 0.47rem + 0.13vw, 0.56rem);
   --espacio-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.88rem);
@@ -132,14 +132,16 @@ h3,
 .titulo {
   font-family: var(--titulos);
   font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  font-stretch: 100%;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 h1,
 .titulo-1 {
   font-size: var(--paso-6);
-  line-height: 0.98;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
 }
 h2,
 .titulo-2 {
@@ -149,6 +151,7 @@ h3,
 .titulo-3 {
   font-size: var(--paso-3);
   line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 h4 {
   font-family: var(--texto);
@@ -159,7 +162,9 @@ h1 em,
 h2 em,
 h3 em,
 .titulo em {
-  font-style: italic;
+  font-style: normal;
+  font-weight: 300;
+  color: var(--bronce-texto);
 }
 p {
   text-wrap: pretty;
@@ -273,6 +278,7 @@ small {
 }
 .numero {
   font-family: var(--titulos);
+  font-weight: 300;
   font-size: var(--paso-2);
   color: var(--bronce-texto);
   font-variant-numeric: tabular-nums;

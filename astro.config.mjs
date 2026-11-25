@@ -53,13 +53,14 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.local(),
-      name: 'Instrument Serif',
+      // Archivo: la misma familia del logotipo de Bramanti (grotesca de curvas cuadradas).
+      name: 'Archivo',
       cssVariable: '--fuente-titulos',
-      fallbacks: ['Georgia', 'serif'],
+      fallbacks: ['Arial', 'sans-serif'],
       options: {
         variants: [
-          { src: ['@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2'], weight: '400', style: 'normal' },
-          { src: ['@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2'], weight: '400', style: 'italic' },
+          { src: ['@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2'], weight: '100 900', style: 'normal' },
+          { src: ['@fontsource-variable/archivo/files/archivo-latin-wght-italic.woff2'], weight: '100 900', style: 'italic' },
         ],
       },
     },

@@ -34,7 +34,7 @@ const destacados = (await todos()).filter((p) => p.data.destacado).slice(0, 3);
     padding-block: var(--espacio-2xl) var(--espacio-3xl);
   }
   .no-encontrada h1 {
-    font-size: clamp(3rem, 1.6rem + 6vw, 7.5rem);
+    font-size: clamp(2.5rem, 1.4rem + 4.6vw, 5.8rem);
   }
   .caminos {
     display: grid;
@@ -52,7 +52,7 @@ const destacados = (await todos()).filter((p) => p.data.destacado).slice(0, 3);
     font-size: var(--paso-3);
   }
   .caminos a:hover .titulo {
-    font-style: italic;
+    color: var(--bronce-texto);
   }
   @media (min-width: 60rem) {
     .caminos {
