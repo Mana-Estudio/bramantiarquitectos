@@ -54,7 +54,7 @@ export default defineConfig({
     },
     {
       provider: fontProviders.npm(),
-      name: 'Manrope',
+      name: 'Manrope Variable',
       cssVariable: '--fuente-texto',
       weights: ['200 800'],
       styles: ['normal'],

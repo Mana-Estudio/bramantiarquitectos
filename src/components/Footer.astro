@@ -1,0 +1,159 @@
+---
+import Logo from './Logo.astro';
+import { UI, RUTAS, RUTAS_SERVICIO, TIPOS } from '../lib/i18n';
+import { SITIO, whatsapp, type Idioma } from '../lib/sitio';
+
+interface Props {
+  idioma: Idioma;
+  whatsappTexto: string;
+}
+const { idioma, whatsappTexto } = Astro.props;
+const t = UI[idioma];
+const r = RUTAS[idioma];
+const es = idioma === 'es';
+const anio = new Date().getFullYear();
+const servicios = (Object.keys(TIPOS) as (keyof typeof TIPOS)[]).map((k) => ({ href: RUTAS_SERVICIO[k][idioma], texto: TIPOS[k][idioma] }));
+const legales = [
+  { href: '/aviso-legal/', texto: es ? 'Aviso legal' : 'Legal notice (ES)' },
+  { href: '/politica-de-privacidad/', texto: es ? 'Política de privacidad' : 'Privacy policy (ES)' },
+  { href: '/politica-de-cookies/', texto: es ? 'Política de cookies' : 'Cookie policy (ES)' },
+  { href: '/terminos-y-condiciones/', texto: es ? 'Términos y condiciones' : 'Terms and conditions (ES)' },
+];
+---
+
+<footer class="pie fondo-tinta">
+  <div class="contenedor">
+    <div class="pie-arriba grilla">
+      <div class="pie-marca">
+        <Logo variante="blanco" ancho={190} />
+        <p class="pie-lema titulo">{es ? <>Diseñar. Construir. <em>Habitar.</em></> : <>Design. Build. <em>Inhabit.</em></>}</p>
+      </div>
+
+      <div class="pie-col">
+        <h2 class="etiqueta sin-linea">{es ? 'Estudio y showroom' : 'Studio and showroom'}</h2>
+        <address>
+          {SITIO.direccion.calle}<br />
+          {SITIO.direccion.cp} {SITIO.direccion.ciudad}
+        </address>
+        <a class="enlace-flecha" href={SITIO.comoLlegar} rel="noopener" target="_blank" data-evento="como-llegar">{es ? 'Cómo llegar' : 'Get directions'}</a>
+      </div>
+
+      <div class="pie-col">
+        <h2 class="etiqueta sin-linea">{t.contacto}</h2>
+        <ul role="list">
+          <li><a href={`mailto:${SITIO.email}`} data-evento="email" data-evento-detalle="pie">{SITIO.email}</a></li>
+          <li><a href={SITIO.telefonoHref} data-evento="llamar" data-evento-detalle="pie">{SITIO.telefono}</a></li>
+          <li><a href={whatsapp(whatsappTexto)} data-evento="whatsapp" data-evento-detalle="pie">WhatsApp</a></li>
+          <li><a href={SITIO.instagram} rel="noopener me" target="_blank">Instagram</a></li>
+        </ul>
+      </div>
+
+      <div class="pie-col">
+        <h2 class="etiqueta sin-linea">{t.servicios}</h2>
+        <ul role="list">
+          {servicios.map((s) => <li><a href={s.href}>{s.texto}</a></li>)}
+          {es && <li><a href="/reformas-barrio-de-salamanca/">Reformas en el Barrio de Salamanca</a></li>}
+        </ul>
+      </div>
+
+      <div class="pie-col">
+        <h2 class="etiqueta sin-linea">{es ? 'Explorar' : 'Explore'}</h2>
+        <ul role="list">
+          <li><a href={r.proyectos}>{t.proyectos}</a></li>
+          <li><a href={r.estudio}>{t.estudio}</a></li>
+          <li><a href="/promociones/">{es ? 'Promociones' : 'Properties for sale (ES)'}</a></li>
+          <li><a href="/blog/">{t.journal}</a></li>
+          <li><a href={r.contacto}>{t.contacto}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pie-abajo">
+      <p>© {anio} {SITIO.nombre} · {SITIO.razonSocial} · {t.derechos}</p>
+      <ul role="list" class="pie-legales">
+        {legales.map((l) => <li><a href={l.href}>{l.texto}</a></li>)}
+      </ul>
+      <p>
+        {es ? 'Parte de' : 'Part of'} <a href={SITIO.grupo} rel="noopener" target="_blank">Grupo Bramanti</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    padding-block: var(--espacio-2xl) var(--espacio-l);
+    font-size: var(--paso--1);
+  }
+  .pie a {
+    text-decoration: none;
+  }
+  .pie a:hover {
+    text-decoration: underline;
+  }
+  .pie-arriba {
+    row-gap: var(--espacio-l);
+    padding-bottom: var(--espacio-xl);
+  }
+  .pie-marca {
+    grid-column: 1 / -1;
+  }
+  .pie-lema {
+    margin-top: var(--espacio-m);
+    font-size: var(--paso-3);
+  }
+  .pie-col {
+    grid-column: span 6;
+    display: grid;
+    align-content: start;
+    gap: var(--espacio-xs);
+  }
+  .pie-col ul {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .pie-col li a,
+  .pie-legales a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  address {
+    font-style: normal;
+  }
+  .pie .enlace-flecha {
+    justify-self: start;
+    border-bottom-color: rgb(244 241 236 / 0.4);
+  }
+  .pie-abajo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-xs) var(--espacio-l);
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--espacio-m);
+    border-top: 1px solid var(--linea);
+    color: var(--gris);
+  }
+  .pie-legales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--espacio-m);
+  }
+  @media (min-width: 48rem) {
+    .pie-col {
+      grid-column: span 3;
+    }
+  }
+  @media (min-width: 68rem) {
+    .pie-marca {
+      grid-column: span 4;
+    }
+    .pie-col {
+      grid-column: span 2;
+    }
+    .pie-col:first-of-type {
+      grid-column: 6 / span 2;
+    }
+  }
+</style>

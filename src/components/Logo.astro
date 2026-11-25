@@ -1,0 +1,17 @@
+---
+// Logotipo actual en PNG (para la demo). Falta el vector oficial: ver PENDIENTES.md.
+import { Image } from 'astro:assets';
+import logoNegro from '../assets/marca/logo-negro.png';
+import logoBlanco from '../assets/marca/logo-blanco.png';
+
+interface Props {
+  variante?: 'negro' | 'blanco';
+  ancho?: number;
+  eager?: boolean;
+}
+const { variante = 'negro', ancho = 172, eager = false } = Astro.props;
+const src = variante === 'blanco' ? logoBlanco : logoNegro;
+const alto = Math.round((ancho * src.height) / src.width);
+---
+
+<Image src={src} alt="Bramanti Arquitectos" width={ancho} height={alto} densities={[1, 2]} loading={eager ? 'eager' : 'lazy'} decoding="async" class="logo" />
