@@ -41,13 +41,13 @@ En definitiva, **vivir rodeado de naturaleza nos hace vivir mejor**. Y eso tiene
 
 Como [**estudio de arquitectura e interiorismo en Madrid**](/contacto/), nuestro enfoque es holístico: partimos de la idea, definimos el proyecto y ejecutamos la obra, cuidando cada detalle para que el resultado final no sea solo estético, sino también **emocional y funcional**. Estas son algunas de las claves que utilizamos en nuestros proyectos para incorporar el diseño biofílico:
 
-##### 1\. Luz natural como protagonista
+### 1\. Luz natural como protagonista
 
 El cuerpo humano responde a los ritmos circadianos, regulados por la luz. Diseñamos distribuciones que maximizan la entrada de luz natural y utilizamos [**iluminación circadiana**](https://www.abc.es/summum/living/casas/abci-como-puede-mejorar-vida-iluminacion-circadiana-201711281658_noticia.html?ref=https%3A%2F%2Fwww.abc.es%2Fsummum%2Fliving%2Fcasas%2Fabci-como-puede-mejorar-vida-iluminacion-circadiana-201711281658_noticia.html) en interiores que cambia su tono e intensidad según la hora del día.
 
 *Más luz natural, mejor descanso, más energía, mayor sensación de confort.*
 
-##### 2\. Materiales naturales y texturas reales
+#### 2\. Materiales naturales y texturas reales
 
 La presencia de materiales como la madera, la piedra, el lino o el barro aporta **calidez, memoria y honestidad** al espacio. La textura importa: lo que tocamos influye en cómo nos sentimos. Por eso, evitamos superficies sintéticas o ruidosas y optamos por materiales **sensorialmente ricos y duraderos**.
 

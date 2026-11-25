@@ -31,7 +31,7 @@ const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
   data-zona={aSlug(d.zona)}
 >
   <a href={href} class="tarjeta-enlace">
-    <div class="foto tarjeta-foto" data-vt={vt}>
+    <div class="foto tarjeta-foto" transition:name={vt}>
       <Foto src={d.portada} alt={d.portadaAlt} sizes={sizes} anchos={[400, 640, 960, 1280]} />
       {d.estado === 'render' && <span class="chip tarjeta-estado">Render</span>}
     </div>

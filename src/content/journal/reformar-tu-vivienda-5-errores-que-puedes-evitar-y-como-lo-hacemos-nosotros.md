@@ -22,7 +22,7 @@ Vamos a contarte los 5 errores más comunes al reformar una vivienda y cómo los
 
 ## Error 1: No tener un proyecto claro desde el principio
 
-#### **¿Qué significa un proyecto claro?**
+### **¿Qué significa un proyecto claro?**
 
 Un proyecto claro no solo es un plano. Es una visión integral que define los espacios, materiales, tiempos y costos. Cuando una reforma arranca “sobre la marcha” o “vamos viendo”, suele derivar en cambios de último momento, retrasos y sobrecostes innecesarios.
 
@@ -32,7 +32,7 @@ En nuestro estudio, antes de comenzar cualquier obra, realizamos un análisis pr
 
 ## Error 2: No calcular bien el presupuesto (y no prever imprevistos)
 
-#### **Costos ocultos en las reformas**
+### **Costos ocultos en las reformas**
 
 Uno de los errores más dolorosos es subestimar el presupuesto. Muchas veces, al inicio todo parece ajustado, pero surgen partidas adicionales, cambios de materiales o problemas estructurales no previstos que disparan los costos.
 
@@ -42,7 +42,7 @@ Utilizamos herramientas digitales y hojas de cálculo detalladas que permiten al
 
 ## Error 3: Elegir materiales sin asesoramiento profesional
 
-#### **Los errores más comunes con los materiales**
+### **Los errores más comunes con los materiales**
 
 Es fácil dejarse llevar por una foto de Pinterest o una oferta online. Pero muchos materiales no están pensados para el uso intensivo o no se adaptan al clima, a la humedad o al estilo de vida del cliente.
 
@@ -52,7 +52,7 @@ Nosotros asesoramos personalmente en la elección de cada material. Priorizamos 
 
 ## Error 4: Contratar a profesionales sin experiencia comprobada
 
-#### **Riesgos de trabajar con personal no cualificado**
+### **Riesgos de trabajar con personal no cualificado**
 
 Una mala instalación eléctrica, una mala nivelación del suelo o una pared mal ejecutada pueden comprometer todo el trabajo. Lo barato, muchas veces, sale caro.
 
@@ -62,7 +62,7 @@ En Bramanti Arquitectos solo trabajamos con profesionales con experiencia contra
 
 ## Error 5: No pensar en la funcionalidad y distribución futura
 
-#### **Reformas que se ven bien pero no se viven bien**
+### **Reformas que se ven bien pero no se viven bien**
 
 Una reforma puede verse espectacular, pero si no está pensada para tu día a día, termina siendo incómoda. Cocinas sin espacio de almacenaje, baños sin ventilación o salones donde no entra la luz natural son errores muy comunes.
 

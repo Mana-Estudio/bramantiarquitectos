@@ -65,13 +65,17 @@ const migas = [
   { nombre: d.nombre, url: r.proyecto(proyecto.id) },
 ];
 const og = await getImage({ src: d.portada, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
-const tituloSeo = es ? `${d.nombre}: ${d.tipoTexto.toLowerCase()} en ${d.zona}` : `${d.nombre}: ${tipoTexto.toLowerCase()} in ${zona}`;
+// Título SEO ≤ 60: del más descriptivo al más corto, distinto en cada idioma.
+const candidatos = es
+  ? [`${d.nombre}: ${d.tipoTexto.toLowerCase()} en ${d.zona}`, `${d.nombre}: reforma integral en ${d.zona}`, `${d.nombre}: reforma en ${d.zona}`, `${d.nombre}: ${d.tipoTexto.toLowerCase()}`]
+  : [`${d.nombre}: ${tipoTexto.toLowerCase()} in ${zona}`, `${d.nombre}: full renovation in ${zona}`, `${d.nombre}: renovation in ${zona}`, `${d.nombre}: ${tipoTexto.toLowerCase()}`];
+const tituloSeo = candidatos.find((c) => c.length <= 60) ?? d.nombre;
 const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
 ---
 
 <Base
   idioma={idioma}
-  titulo={tituloSeo.length <= 60 ? tituloSeo : d.nombre}
+  titulo={tituloSeo}
   descripcion={descripcion}
   imagen={d.portada}
   tipoOg="article"
@@ -91,7 +95,7 @@ const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
       </div>
     </header>
 
-    <div class="ficha-hero foto" data-vt={vt}>
+    <div class="ficha-hero foto" transition:name={vt}>
       <Foto src={d.portada} alt={portadaAlt} sizes="100vw" anchos={[640, 960, 1280, 1600, 1920]} prioridad />
     </div>
 

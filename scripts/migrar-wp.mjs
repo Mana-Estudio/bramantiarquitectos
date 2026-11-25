@@ -483,7 +483,16 @@ async function migrarJournal(posts, cats) {
       coverAlt: portada ? portada.alt : undefined,
       wpId: p.id,
     };
-    const cuerpo = partes.join('\n\n').replace(/\n{3,}/g, '\n\n');
+    // Jerarquía de encabezados sin saltos (h2 → h3 → h4), como pide la accesibilidad.
+    let previo = 1;
+    const cuerpo = partes
+      .join('\n\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/^(#{2,6}) (.+)$/gm, (_, almohadillas, texto) => {
+        const nivel = Math.min(almohadillas.length, previo + 1);
+        previo = nivel;
+        return `${'#'.repeat(nivel)} ${texto}`;
+      });
     await escribir(archivo, frontmatter(datos) + '\n' + cuerpo + '\n');
   }
 }

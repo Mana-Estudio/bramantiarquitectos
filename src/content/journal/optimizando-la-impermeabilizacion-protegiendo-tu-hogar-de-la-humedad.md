@@ -35,7 +35,7 @@ Desde el inicio de cada proyecto en Bramanti Arquitectos, otorgamos una atenció
 
 En Bramanti Arquitectos, hemos perfeccionado una solución efectiva para combatir las humedades: la combinación estratégica de una lámina asfáltica de alta calidad y una red de drenaje meticulosamente diseñada.
 
-#### Lámina Asfáltica de Alta Calidad:
+### Lámina Asfáltica de Alta Calidad:
 
 Seleccionamos cuidadosamente una lámina asfáltica que garantice una barrera impermeable resistente y duradera. Esta lámina se aplica de manera precisa sobre las superficies vulnerables, como cimientos y paredes, creando una protección sólida contra la entrada de agua.
 

@@ -11,7 +11,7 @@ coverAlt: "La utilización de los Aromas en Casa Decor"
 wpId: 10562
 ---
 
-### ¿Qué es Casa Decor?
+## ¿Qué es Casa Decor?
 
 [**Casa Decor**](https://casadecor.es/) es una **exposición anual** que se celebra en **Madrid**, España, y que se ha convertido en un **referente en el mundo del diseño interior**, la **decoración** y las **tendencias de estilo de vida**. Cada año, Casa Decor se desarrolla en un edificio emblemático diferente del centro de [Madrid](https://www.esmadrid.com/), transformándolo en un escenario excepcional para mostrar las últimas creaciones de los profesionales más reconocidos del sector.
 
@@ -43,11 +43,11 @@ La relación entre los aromas y la decoración del hogar es profunda e impactant
 
 En **Casa Decor 2024**, podemos observar diversas tendencias en el uso de aromas, cada una con su propio sello distintivo:
 
-##### **1\. Aromas naturales y orgánicos:**
+### **1\. Aromas naturales y orgánicos:**
 
 La tendencia hacia lo natural y lo orgánico se refleja también en todos los aspectos, desde la elección de materiales hasta la paleta de colores. Y los aromas no son una excepción. Fragancias a base de aceites esenciales de flores, hierbas y maderas exóticas crean ambientes cálidos y acogedores, perfectos para espacios como dormitorios, baños o salas de estar. Los **aromas naturales y orgánicos** están ganando cada vez más popularidad en la decoración de interiores, ya que ofrecen una experiencia sensorial más auténtica y saludable.
 
-##### **2\. Aromas cítricos y frescos:**
+#### **2\. Aromas cítricos y frescos:**
 
 Los **aromas cítricos y frescos**, como el limón, la naranja o la bergamota, son una de las tendencias más populares en la decoración de interiores, ideales para aportar vitalidad y energía a los espacios. Estos aromas evocan sensaciones de vitalidad, energía, frescura y limpieza, lo que los convierte en una opción ideal para crear ambientes alegres. Perfectos para cocinas, estudios o zonas de trabajo, estos aromas ayudan a mejorar la concentración y la productividad.
 
@@ -67,13 +67,13 @@ La **aromaterapia**, el [uso de aceites esenciales](https://www.naturaviacosmeti
 
 Elegir el **aroma adecuado** para cada habitación de tu casa puede crear un ambiente más **agradable**, **relajante** o **estimulante**, dependiendo de tus necesidades y preferencias. Aquí te presentamos algunas **recomendaciones**:
 
-###### **Dormitorio:**
+### **Dormitorio:**
 
 - **Lavanda:** Es conocida por sus propiedades relajantes y promueve un sueño profundo y reparador.
 - **Manzanilla:** Tiene un efecto calmante y tranquilizante, ideal para combatir el insomnio y la ansiedad.
 - [**Ylang Ylang:**](https://www.cuerpomente.com/salud-natural/terapias-naturales/aceite-esencial-ylang-ylang-propiedades-usos_9566) Posee propiedades afrodisíacas y crea un ambiente sensual y romántico.
 
-##### **Sala de estar:**
+#### **Sala de estar:**
 
 - **Cítricos:** Aportan frescura, vitalidad y energía al ambiente. Son ideales para crear un espacio acogedor y alegre.
 - **Madera:** Evoca calidez, confort y sofisticación. Perfecto para crear un ambiente relajante y acogedor.
