@@ -31,7 +31,17 @@ const { Content } = await render(es || !en ? proyecto : en);
 const zona = es ? d.zona : (en?.data.zona ?? ZONAS_EN[d.zona] ?? d.zona);
 const tipoTexto = es ? d.tipoTexto : (en?.data.tipoTexto ?? d.tipos.map((x) => TIPOS[x].en).join(' & '));
 const subtitulo = es ? d.subtitulo : en?.data.subtitulo;
-const resumen = es ? d.resumen : (en?.data.resumen ?? d.resumen);
+// Para la cita grande de la ficha: frases completas (sin cortes con "…").
+const frasesCompletas = (texto: string, max = 170) => {
+  const frases = texto.replace(/…$/, '').match(/[^.!?]+[.!?]+/g) ?? [];
+  let salida = '';
+  for (const f of frases) {
+    if ((salida + f).trim().length > max) break;
+    salida += f;
+  }
+  return salida.trim() || texto;
+};
+const resumen = frasesCompletas(es ? d.resumen : (en?.data.resumen ?? d.resumen));
 const descripcion = es ? d.descripcion : (en?.data.descripcion ?? d.descripcion);
 const portadaAlt = es ? d.portadaAlt : (en?.data.portadaAlt ?? d.portadaAlt);
 
