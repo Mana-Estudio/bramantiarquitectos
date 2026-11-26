@@ -1,0 +1,95 @@
+---
+// Acordeón nativo con <details>: accesible y sin JS.
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  faqs: CollectionEntry<'faqs'>[];
+  titulo?: string;
+  etiqueta?: string;
+  id?: string;
+  lang?: string;
+}
+const { faqs, titulo = 'Preguntas frecuentes', etiqueta = 'Antes de empezar', id = 'preguntas', lang } = Astro.props;
+---
+
+{faqs.length > 0 && (
+  <section class="seccion faqs" aria-labelledby={`${id}-titulo`} id={id}>
+    <div class="contenedor grilla">
+      <header class="faqs-cabecera">
+        <p class="etiqueta">{etiqueta}</p>
+        <h2 id={`${id}-titulo`}>{titulo}</h2>
+      </header>
+      <div class="faqs-lista" lang={lang}>
+        {faqs.map((f) => (
+          <details class="faq">
+            <summary>
+              <span>{f.data.pregunta}</span>
+            </summary>
+            <div class="faq-respuesta prosa" set:html={f.data.respuestaHtml} />
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .faqs .grilla {
+    row-gap: var(--espacio-l);
+  }
+  .faqs-cabecera {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: start;
+  }
+  .faqs-cabecera h2 {
+    font-size: var(--paso-5);
+  }
+  .faqs-lista {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .faq {
+    border-bottom: 1px solid var(--linea);
+  }
+  .faq summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--espacio-s);
+    align-items: center;
+    min-height: 3.5rem;
+    padding-block: var(--espacio-s);
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--paso-1);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq summary::after {
+    content: '+';
+    font-family: var(--titulos);
+    font-size: var(--paso-3);
+    line-height: 1;
+    color: var(--bronce);
+    transition: transform var(--t-rapida) var(--curva);
+  }
+  .faq[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .faq-respuesta {
+    padding-bottom: var(--espacio-m);
+    color: var(--tinta);
+  }
+  @media (min-width: 68rem) {
+    .faqs-cabecera {
+      grid-column: 1 / span 4;
+    }
+    .faqs-lista {
+      grid-column: 6 / -1;
+    }
+  }
+</style>

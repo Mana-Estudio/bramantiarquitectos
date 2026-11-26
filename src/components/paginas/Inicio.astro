@@ -1,0 +1,413 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Foto from '../Foto.astro';
+import TarjetaProyecto from '../TarjetaProyecto.astro';
+import TarjetaArticulo from '../TarjetaArticulo.astro';
+import Proceso from '../Proceso.astro';
+import Resenas from '../Resenas.astro';
+import CtaFinal from '../CtaFinal.astro';
+import HeroCarrusel from '../HeroCarrusel.astro';
+import CarruselVideos from '../CarruselVideos.astro';
+import { proyectos as todosProyectos, articulos, videos } from '../../lib/contenido';
+import { RUTAS, RUTAS_SERVICIO, ZONAS_EN } from '../../lib/i18n';
+import { SITIO, whatsapp, TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
+import hero from '../../assets/paginas/hero-casa-felipe-ii-salon.jpg';
+import heroWerlyb from '../../assets/paginas/hero-casa-werlyb-salon.jpg';
+import heroSantosDumont from '../../assets/paginas/hero-casa-santos-dumont-salon.jpg';
+import heroElara from '../../assets/proyectos/casa-elara/casa-elara-cocina-01.jpg';
+import heroGoya from '../../assets/proyectos/casa-goya/casa-goya-cocina-01.jpg';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const es = idioma === 'es';
+const r = RUTAS[idioma];
+
+const proyectos = await todosProyectos();
+const traducciones = new Map((await getCollection('proyectosEn')).map((p) => [p.id, p]));
+const servicios = (await getCollection('servicios')).filter((s) => s.data.idioma === idioma).sort((a, b) => a.data.orden - b.data.orden);
+const ultimos = (await articulos()).slice(0, 3);
+const fabrica = (await getEntry('journal', 'arquitectura-artesania-diseno-medida-real-fabrica-tapices'))?.id ?? '';
+
+// Como en la home actual: Casa Felipe II y Casa Werlyb abren las creaciones recientes con su video.
+const todosVideos = await videos();
+// Vistas previas silenciosas de YouTube en las tarjetas destacadas (solo ordenador, al entrar en pantalla).
+// Si la revisión legal pide no cargar YouTube sin un clic, basta con poner false: quedan las fotos.
+const VISTAS_PREVIAS_YOUTUBE = true;
+const videoDe = (proyecto: string) => todosVideos.find((v) => v.data.proyecto === proyecto && v.data.youtube && !v.data.testimonio && v.data.formato === 'horizontal');
+const conVideo = ['casa-felipe-ii-reforma-integral-retiro-madrid', 'casa-werlyb-reforma-integral-madrid'];
+const principales = conVideo.map((id) => proyectos.find((p) => p.id === id)).filter((p) => p !== undefined);
+const resto = proyectos.filter((p) => p.data.destacado && !conVideo.includes(p.id)).slice(0, 4);
+const indiceDe = (id: string) => proyectos.findIndex((p) => p.id === id) + 1;
+const videosCarrusel = todosVideos.filter((v) => v.data.destacado);
+
+const zonaEn = (z: string) => (es ? z : (ZONAS_EN[z] ?? z));
+const diapositivas = [
+  { src: hero, slug: 'casa-felipe-ii-reforma-integral-retiro-madrid', nombre: 'Casa Felipe II', zona: 'Retiro', alt: es ? 'Salón de Casa Felipe II con chimenea, molduras clásicas y luz cálida' : 'Living room at Casa Felipe II with a fireplace, classic mouldings and warm light' },
+  { src: heroElara, slug: 'casa-elara-reforma-barrio-salamanca', nombre: 'Casa Elara', zona: 'Barrio de Salamanca', alt: es ? 'Cocina abierta de Casa Elara con isla de piedra y techo con luz integrada' : 'Open kitchen at Casa Elara with a stone island and integrated ceiling light' },
+  { src: heroWerlyb, slug: 'casa-werlyb-reforma-integral-madrid', nombre: 'Casa Werlyb', zona: 'Madrid', alt: es ? 'Salón y cocina abiertos de Casa Werlyb, con isla oscura y luz natural' : 'Open living room and kitchen at Casa Werlyb, with a dark island and daylight' },
+  { src: heroSantosDumont, slug: 'casa-santos-dumont-reforma-integral-madrid', nombre: 'Casa Santos Dumont', zona: 'Madrid Río', alt: es ? 'Salón de Casa Santos Dumont con estantería de madera a medida y piezas de color' : 'Living room at Casa Santos Dumont with bespoke wooden shelving and colourful pieces' },
+  { src: heroGoya, slug: 'casa-goya-reforma-integral-salamanca-madrid', nombre: 'Casa Goya', zona: 'Barrio de Salamanca', alt: es ? 'Cocina de Casa Goya con isla blanca y palillería de roble' : 'Kitchen at Casa Goya with a white island and oak slats' },
+].map((d) => ({ src: d.src, alt: d.alt, nombre: d.nombre, zona: zonaEn(d.zona), href: r.proyecto(d.slug) }));
+---
+
+<Base
+  idioma={idioma}
+  titulo={es ? 'Bramanti Arquitectos · Estudio de arquitectura en Madrid' : 'Bramanti Arquitectos · Architecture studio in Madrid'}
+  tituloCompleto
+  descripcion={es
+    ? 'Estudio de arquitectura, interiorismo y construcción en Madrid. Reformas integrales y obra nueva con un único equipo, de la idea a la entrega.'
+    : 'Architecture, interior design and construction studio in Madrid. Full renovations and new builds by one team, from first idea to handover.'}
+  imagen={hero}
+  sobreHero
+>
+  <HeroCarrusel
+    idioma={idioma}
+    diapositivas={diapositivas}
+    etiqueta={es ? 'Arquitectura · Interiorismo · Construcción' : 'Architecture · Interiors · Construction'}
+    titulo={es ? 'Diseñamos espacios, <em>construimos hogares.</em>' : 'We design spaces, <em>we build homes.</em>'}
+    entradilla={es
+      ? 'Estudio de arquitectura, interiorismo y construcción en Madrid. Llevamos tu proyecto completo: diseño, licencias y obra.'
+      : 'Architecture, interior design and construction studio in Madrid. We handle the whole project: design, permits and construction.'}
+    ctaPrincipal={{ href: r.valoracion, texto: es ? 'Pedir valoración' : 'Request a consultation' }}
+    ctaSecundario={{ href: whatsapp(TEXTO_WHATSAPP[idioma]), texto: 'WhatsApp' }}
+  />
+
+  <section class="seccion manifiesto" aria-labelledby="manifiesto-titulo">
+    <div class="contenedor grilla">
+      <p class="etiqueta manifiesto-etiqueta" data-anim="subir">Bramanti Arquitectos</p>
+      <h2 id="manifiesto-titulo" class="manifiesto-titulo" data-anim="subir">{es ? <>Diseñar. Construir. <em>Habitar.</em></> : <>Design. Build. <em>Inhabit.</em></>}</h2>
+      <div class="manifiesto-texto flujo" data-anim="escalonar">
+        <p class="entradilla">
+          {es
+            ? 'Somos un estudio de arquitectura, interiorismo y construcción en Madrid. Acompañamos cada proyecto desde la idea hasta su materialización, como único interlocutor y con una atención constante al detalle.'
+            : 'We are an architecture, interior design and construction studio in Madrid. We guide each project from the first idea to the finished home, as your single point of contact and with constant attention to detail.'}
+        </p>
+        <p class="secundario">
+          {es
+            ? 'Arquitectura humana: espacios que nacen de entender cómo vives, con la técnica al servicio del confort y una materialidad pensada para durar.'
+            : 'Human architecture: spaces born from understanding how you live, with technology serving comfort and materials chosen to last.'}
+        </p>
+        <a class="enlace-flecha" href={r.estudio}>{es ? 'Conoce el estudio' : 'Meet the studio'}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion destacados" aria-labelledby="destacados-titulo">
+    <div class="contenedor">
+      <header class="cabecera-seccion cabecera-fila" data-anim="subir">
+        <div>
+          <p class="etiqueta">{es ? 'Proyectos' : 'Projects'}</p>
+          <h2 id="destacados-titulo">{es ? <>Creaciones <em>recientes.</em></> : <>Recent <em>work.</em></>}</h2>
+        </div>
+        <a class="enlace-flecha" href={r.proyectos}>{es ? `Ver los ${proyectos.length} proyectos` : `See all ${proyectos.length} projects`}</a>
+      </header>
+      <div class="destacados-video" data-anim="escalonar">
+        {principales.map((p) => {
+          const v = videoDe(p.id);
+          return (
+            <TarjetaProyecto
+              proyecto={p}
+              indice={indiceDe(p.id)}
+              idioma={idioma}
+              tipoTextoEn={traducciones.get(p.id)?.data.tipoTexto}
+              formato="horizontal"
+              sizes="(min-width: 60rem) 48vw, 100vw"
+              videoFondo={VISTAS_PREVIAS_YOUTUBE && v?.data.youtube ? { youtube: v.data.youtube, titulo: es ? v.data.titulo : v.data.tituloEn } : undefined}
+            />
+          );
+        })}
+      </div>
+      <div class="grilla-editorial">
+        {resto.map((p, i) => (
+          <div data-anim="subir">
+            <TarjetaProyecto
+              proyecto={p}
+              indice={indiceDe(p.id)}
+              idioma={idioma}
+              tipoTextoEn={traducciones.get(p.id)?.data.tipoTexto}
+              formato={i % 3 === 0 ? 'horizontal' : 'vertical'}
+              sizes={i % 3 === 0 ? '(min-width: 60rem) 58vw, 100vw' : '(min-width: 60rem) 40vw, 100vw'}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CarruselVideos
+    videos={videosCarrusel}
+    idioma={idioma}
+    id="videos-inicio"
+    titulo={es ? 'Casas <em>en movimiento.</em>' : 'Homes <em>in motion.</em>'}
+    texto={es ? 'Recorridos por obras terminadas, procesos de obra y proyectos en render. Desliza para ver más.' : 'Walkthroughs of finished homes, works in progress and render projects. Scroll for more.'}
+    enlace={{ href: r.proyectos, texto: es ? 'Ver todos los proyectos' : 'See all projects' }}
+  />
+
+  <section class="seccion servicios" aria-labelledby="servicios-titulo">
+    <div class="contenedor">
+      <header class="cabecera-seccion" data-anim="subir">
+        <p class="etiqueta">{es ? 'Servicios' : 'Services'}</p>
+        <h2 id="servicios-titulo">{es ? <>Un mismo equipo, <em>de la idea a la obra.</em></> : <>One team, <em>from idea to construction.</em></>}</h2>
+      </header>
+      <ol role="list" class="servicios-lista" data-anim="escalonar">
+        {servicios.map((s, i) => (
+          <li>
+            <a href={RUTAS_SERVICIO[s.data.servicio][idioma]} class="servicio" data-cursor={es ? 'Ver servicio' : 'View service'}>
+              <div class="foto servicio-foto">
+                <Foto src={s.data.imagen} alt={s.data.imagenAlt} sizes="(min-width: 60rem) 30vw, 100vw" anchos={[480, 800, 1100]} />
+              </div>
+              <span class="numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{s.data.nombre}</h3>
+              <p class="secundario">{s.data.resumen}</p>
+              <span class="enlace-flecha" aria-hidden="true">{es ? 'Ver servicio' : 'View service'}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Proceso idioma={idioma} />
+
+  <section class="seccion cifras" aria-labelledby="cifras-titulo">
+    <div class="contenedor">
+      <h2 id="cifras-titulo" class="visualmente-oculto">{es ? 'El estudio en cifras' : 'The studio in numbers'}</h2>
+      <dl class="cifras-lista" data-anim="escalonar">
+        <div><dt>{es ? 'Años de trayectoria' : 'Years of experience'}</dt><dd data-contar="7" data-prefijo="+">+7</dd></div>
+        <div><dt>{es ? 'Proyectos publicados' : 'Published projects'}</dt><dd data-contar={proyectos.length}>{proyectos.length}</dd></div>
+        <div><dt>{es ? 'Disciplinas en un mismo equipo' : 'Disciplines in one team'}</dt><dd data-contar="3">3</dd></div>
+        <div><dt>{es ? 'Interlocutor de principio a fin' : 'Point of contact, start to finish'}</dt><dd data-contar="1">1</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <Resenas idioma={idioma} />
+
+  <section class="seccion colaboraciones fondo-lino" aria-labelledby="colaboraciones-titulo">
+    <div class="contenedor grilla">
+      <header class="colaboraciones-cabecera">
+        <p class="etiqueta">{es ? 'Colaboraciones' : 'Collaborations'}</p>
+        <h2 id="colaboraciones-titulo">{es ? <>Oficio, arte <em>y artesanía.</em></> : <>Craft, art <em>and making.</em></>}</h2>
+      </header>
+      <ul role="list" class="colaboraciones-lista" data-anim="escalonar">
+        {SITIO.colaboraciones.map((c) => <li class="titulo">{c}</li>)}
+      </ul>
+      <p class="colaboraciones-texto secundario">
+        {es ? 'La arquitectura que desarrollamos nace del encuentro entre arte, técnica y emoción.' : 'Our architecture is born where art, technique and emotion meet.'}
+        {fabrica && es && <> Lee cómo diseñamos <a href={`/${fabrica}/`}>piezas a medida junto a la Real Fábrica de Tapices</a>.</>}
+        {fabrica && !es && <> Read how we designed <a href={`/${fabrica}/`} hreflang="es">bespoke pieces with the Real Fábrica de Tapices</a> (in Spanish).</>}
+      </p>
+    </div>
+  </section>
+
+  {es && (
+    <section class="seccion journal" aria-labelledby="journal-titulo">
+      <div class="contenedor">
+        <header class="cabecera-seccion cabecera-fila">
+          <div>
+            <p class="etiqueta">Journal</p>
+            <h2 id="journal-titulo">Ideas sobre <em>arquitectura y hogar.</em></h2>
+          </div>
+          <a class="enlace-flecha" href="/blog/">Todos los artículos</a>
+        </header>
+        <div class="journal-lista" data-anim="escalonar">
+          {ultimos.map((a) => <TarjetaArticulo articulo={a} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaFinal
+    idioma={idioma}
+    titulo={es ? '¿Planteas una reforma integral o una obra nueva?' : 'Planning a full renovation or a new build?'}
+    whatsappTexto={TEXTO_WHATSAPP[idioma]}
+  />
+</Base>
+
+<style>
+  .destacados-video {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+    margin-bottom: var(--espacio-2xl);
+  }
+  @media (min-width: 60rem) {
+    .destacados-video {
+      grid-template-columns: 7fr 5fr;
+      align-items: end;
+    }
+  }
+  .manifiesto .grilla {
+    row-gap: var(--espacio-m);
+  }
+  .manifiesto-etiqueta,
+  .manifiesto-titulo,
+  .manifiesto-texto {
+    grid-column: 1 / -1;
+  }
+  .manifiesto-titulo {
+    font-size: var(--paso-6);
+  }
+  @media (min-width: 60rem) {
+    .manifiesto-etiqueta {
+      grid-column: 1 / span 3;
+      align-self: start;
+      padding-top: 1.2rem;
+    }
+    .manifiesto-titulo {
+      grid-column: 4 / -1;
+    }
+    .manifiesto-texto {
+      grid-column: 7 / -1;
+    }
+  }
+
+  .cabecera-seccion {
+    display: grid;
+    gap: var(--espacio-s);
+    margin-bottom: var(--espacio-xl);
+    max-width: 48rem;
+  }
+  .cabecera-fila {
+    max-width: none;
+    grid-template-columns: 1fr;
+    align-items: end;
+  }
+  .cabecera-fila > div {
+    display: grid;
+    gap: var(--espacio-s);
+  }
+  .cabecera-fila .enlace-flecha {
+    justify-self: start;
+  }
+  @media (min-width: 48rem) {
+    .cabecera-fila {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  .servicios-lista {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+  }
+  .servicio {
+    display: grid;
+    gap: var(--espacio-xs);
+    text-decoration: none;
+  }
+  .servicio-foto {
+    aspect-ratio: 4 / 3;
+    margin-bottom: var(--espacio-xs);
+  }
+  .servicio h3 {
+    font-size: var(--paso-4);
+  }
+  .servicio .enlace-flecha {
+    justify-self: start;
+  }
+  .servicio:hover h3 {
+    color: var(--bronce-texto);
+  }
+  @media (min-width: 60rem) {
+    .servicios-lista {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .servicios-lista li:nth-child(2) {
+      margin-top: var(--espacio-2xl);
+    }
+  }
+
+  .grilla-editorial {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+  }
+  @media (min-width: 60rem) {
+    .grilla-editorial {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .grilla-editorial > :global(*:nth-child(3n + 1)) {
+      grid-column: 1 / span 7;
+    }
+    .grilla-editorial > :global(*:nth-child(3n + 2)) {
+      grid-column: 9 / span 4;
+      margin-top: var(--espacio-3xl);
+    }
+    .grilla-editorial > :global(*:nth-child(3n)) {
+      grid-column: 3 / span 5;
+    }
+  }
+
+  .cifras-lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--espacio-l) var(--separacion);
+  }
+  .cifras-lista div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--espacio-2xs);
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .cifras-lista dd {
+    font-family: var(--titulos);
+    font-size: var(--paso-6);
+    line-height: 1;
+    color: var(--bronce);
+  }
+  .cifras-lista dt {
+    font-size: var(--paso--1);
+    color: var(--gris);
+  }
+  @media (min-width: 60rem) {
+    .cifras-lista {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .colaboraciones .grilla {
+    row-gap: var(--espacio-l);
+    align-items: end;
+  }
+  .colaboraciones-cabecera,
+  .colaboraciones-lista,
+  .colaboraciones-texto {
+    grid-column: 1 / -1;
+  }
+  .colaboraciones-cabecera {
+    display: grid;
+    gap: var(--espacio-s);
+  }
+  .colaboraciones-lista {
+    display: grid;
+    gap: var(--espacio-xs);
+  }
+  .colaboraciones-lista li {
+    font-size: var(--paso-4);
+    padding-bottom: var(--espacio-xs);
+    border-bottom: 1px solid var(--linea-fuerte);
+  }
+  @media (min-width: 60rem) {
+    .colaboraciones-cabecera {
+      grid-column: 1 / span 5;
+    }
+    .colaboraciones-lista {
+      grid-column: 7 / -1;
+    }
+    .colaboraciones-texto {
+      grid-column: 7 / -1;
+    }
+  }
+
+  .journal-lista {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  @media (min-width: 48rem) {
+    .journal-lista {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

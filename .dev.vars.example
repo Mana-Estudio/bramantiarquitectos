@@ -1,0 +1,6 @@
+# Copiá este archivo a .dev.vars para probar el formulario en local con `wrangler dev`.
+# Son las claves PÚBLICAS de prueba de Cloudflare Turnstile (siempre validan). No son secretos.
+# En producción los valores reales van con: npx wrangler secret put TURNSTILE_SECRET
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+# Sin RESEND_API_KEY el Worker no envía mails: los muestra en la consola (modo prueba).
+# RESEND_API_KEY=

@@ -1,0 +1,103 @@
+---
+// Sección de videos: los horizontales ocupan más y los verticales (shorts, testimonios) van más angostos.
+import type { CollectionEntry } from 'astro:content';
+import Video from './Video.astro';
+import type { Idioma } from '../lib/sitio';
+
+interface Props {
+  videos: CollectionEntry<'videos'>[];
+  idioma?: Idioma;
+  titulo?: string;
+  etiqueta?: string;
+  texto?: string;
+  id?: string;
+  fondo?: 'piedra' | 'lino' | 'tinta';
+  enlace?: { href: string; texto: string };
+}
+const { videos, idioma = 'es', titulo, etiqueta, texto, id = 'videos', fondo = 'piedra', enlace } = Astro.props;
+const es = idioma === 'es';
+const unico = videos.length === 1;
+const nota = es
+  ? 'Los videos de YouTube se cargan solo cuando pulsas reproducir.'
+  : 'YouTube videos only load when you press play.';
+---
+
+{videos.length > 0 && (
+  <section class:list={['seccion', 'videos', { 'fondo-lino': fondo === 'lino', 'fondo-tinta': fondo === 'tinta' }]} aria-labelledby={`${id}-titulo`}>
+    <div class="contenedor">
+      <header class="videos-cabecera">
+        <div>
+          <p class="etiqueta">{etiqueta ?? (es ? 'En vídeo' : 'On video')}</p>
+          <h2 id={`${id}-titulo`}>{titulo ?? (es ? 'Míralo en movimiento.' : 'See it in motion.')}</h2>
+          {texto && <p class="entradilla">{texto}</p>}
+        </div>
+        {enlace && <a class="enlace-flecha" href={enlace.href}>{enlace.texto}</a>}
+      </header>
+      <div class:list={['videos-lista', { unico }]}>
+        {videos.map((v) => (
+          <div class:list={['videos-celda', v.data.formato]}>
+            <Video video={v} idioma={idioma} sizes={v.data.formato === 'vertical' ? '(min-width: 60rem) 25vw, 70vw' : unico ? '(min-width: 60rem) 70vw, 100vw' : '(min-width: 60rem) 45vw, 100vw'} />
+          </div>
+        ))}
+      </div>
+      {videos.some((v) => v.data.youtube) && <p class="videos-nota secundario">{nota}</p>}
+    </div>
+  </section>
+)}
+
+<style>
+  .videos-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--espacio-s);
+    margin-bottom: var(--espacio-xl);
+  }
+  .videos-cabecera > div {
+    display: grid;
+    gap: var(--espacio-s);
+    max-width: 44rem;
+  }
+  .videos-cabecera h2 {
+    font-size: var(--paso-5);
+  }
+  .videos-lista {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+    align-items: start;
+  }
+  .videos-celda.vertical {
+    max-width: 22rem;
+  }
+  .videos-nota {
+    margin-top: var(--espacio-l);
+    font-size: var(--paso--2);
+  }
+  @media (min-width: 48rem) {
+    .videos-lista {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .videos-celda.horizontal {
+      grid-column: span 7;
+    }
+    .videos-celda.vertical {
+      grid-column: span 4;
+      max-width: none;
+    }
+    .videos-celda.horizontal + .videos-celda.horizontal {
+      grid-column: span 5;
+    }
+    .unico .videos-celda.horizontal {
+      grid-column: 1 / span 9;
+    }
+    .unico .videos-celda.vertical {
+      grid-column: 1 / span 4;
+    }
+  }
+  @media (min-width: 68rem) {
+    .videos-celda.vertical {
+      grid-column: span 3;
+    }
+  }
+</style>

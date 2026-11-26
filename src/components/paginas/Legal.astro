@@ -1,0 +1,55 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Migas from '../Migas.astro';
+import { fecha } from '../../lib/i18n';
+import { migas as migasLd } from '../../lib/jsonld';
+
+interface Props {
+  slug: 'aviso-legal' | 'politica-de-privacidad' | 'politica-de-cookies' | 'terminos-y-condiciones';
+}
+const { slug } = Astro.props;
+const entrada = await getEntry('legales', slug);
+if (!entrada) throw new Error(`Falta el texto legal ${slug}`);
+const { Content } = await render(entrada);
+const d = entrada.data;
+const migas = [
+  { nombre: 'Inicio', url: '/' },
+  { nombre: d.title, url: `/${slug}/` },
+];
+---
+
+<Base titulo={d.title} descripcion={d.description ?? `${d.title} de la web de Bramanti Arquitectos (Bramantia Index, S.L.).`} jsonld={[migasLd(migas)]}>
+  <article class="contenedor legal">
+    <Migas items={migas} />
+    <header class="legal-cabecera">
+      <p class="etiqueta">Legal</p>
+      <h1>{d.title}</h1>
+      {d.updated && <p class="secundario">Última actualización: <time datetime={d.updated.toISOString().slice(0, 10)}>{fecha(d.updated)}</time></p>}
+    </header>
+    <div class="prosa legal-texto">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    padding-block: var(--espacio-m) var(--espacio-3xl);
+  }
+  .legal-cabecera {
+    display: grid;
+    gap: var(--espacio-s);
+    margin-block: var(--espacio-l) var(--espacio-xl);
+  }
+  .legal-cabecera h1 {
+    font-size: var(--paso-5);
+  }
+  .legal-texto {
+    max-width: 46rem;
+    font-size: var(--paso--1);
+  }
+  .legal-texto :global(h2:first-child) {
+    display: none;
+  }
+</style>

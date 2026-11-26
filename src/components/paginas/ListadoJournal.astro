@@ -1,0 +1,138 @@
+---
+import Base from '../../layouts/Base.astro';
+import Migas from '../Migas.astro';
+import TarjetaArticulo from '../TarjetaArticulo.astro';
+import CtaFinal from '../CtaFinal.astro';
+import { articulos as todos, CATEGORIAS, type Categoria } from '../../lib/contenido';
+import { TEXTO_WHATSAPP } from '../../lib/sitio';
+import { migas as migasLd } from '../../lib/jsonld';
+
+interface Props {
+  categoria?: Categoria;
+}
+const { categoria } = Astro.props;
+const todosArticulos = await todos();
+const articulos = categoria ? todosArticulos.filter((a) => a.data.categorias.includes(categoria) || a.data.categoria === categoria) : todosArticulos;
+const conteo = (c: Categoria) => todosArticulos.filter((a) => a.data.categorias.includes(c) || a.data.categoria === c).length;
+const [primero, ...resto] = articulos;
+const migas = [
+  { nombre: 'Inicio', url: '/' },
+  { nombre: 'Journal', url: '/blog/' },
+  ...(categoria ? [{ nombre: CATEGORIAS[categoria], url: `/blog/categoria/${categoria}/` }] : []),
+];
+const titulo = categoria ? `Journal · ${CATEGORIAS[categoria]}` : 'Journal: arquitectura, interiorismo y obra';
+---
+
+<Base
+  titulo={titulo}
+  descripcion={categoria
+    ? `Artículos de ${CATEGORIAS[categoria].toLowerCase()} del journal de Bramanti Arquitectos: ideas, guías y proyectos en Madrid.`
+    : 'Journal de Bramanti Arquitectos: guías sobre reformas en Madrid, interiorismo, obra nueva, Passivhaus y tendencias, escritas por el estudio.'}
+  imagen={primero?.data.cover}
+  jsonld={[migasLd(migas)]}
+>
+  <section class="contenedor cabecera">
+    <Migas items={migas} />
+    <div class="cabecera-grilla">
+      <h1>{categoria ? <>Journal <em>· {CATEGORIAS[categoria]}</em></> : <>Journal<em>.</em></>}</h1>
+      <p class="entradilla">Ideas, guías y procesos sobre arquitectura, interiorismo y construcción en Madrid, contadas por el estudio.</p>
+    </div>
+    <nav class="categorias" aria-label="Categorías del journal">
+      <ul role="list">
+        <li><a href="/blog/" aria-current={!categoria ? 'page' : undefined}>Todos <small>({todosArticulos.length})</small></a></li>
+        {(Object.keys(CATEGORIAS) as Categoria[]).map((c) => (
+          <li><a href={`/blog/categoria/${c}/`} aria-current={categoria === c ? 'page' : undefined}>{CATEGORIAS[c]} <small>({conteo(c)})</small></a></li>
+        ))}
+      </ul>
+    </nav>
+  </section>
+
+  <section class="contenedor articulos" aria-label="Artículos">
+    {primero && (
+      <div class="destacado">
+        <TarjetaArticulo articulo={primero} nivel="h2" sizes="(min-width: 60rem) 60vw, 100vw" />
+      </div>
+    )}
+    <div class="rejilla">
+      {resto.map((a) => <TarjetaArticulo articulo={a} nivel="h2" />)}
+    </div>
+  </section>
+
+  <CtaFinal whatsappTexto={TEXTO_WHATSAPP.es} />
+</Base>
+
+<style>
+  .cabecera {
+    padding-block: var(--espacio-m) var(--espacio-xl);
+  }
+  .cabecera-grilla {
+    display: grid;
+    gap: var(--espacio-m);
+    margin-top: var(--espacio-l);
+    align-items: end;
+  }
+  @media (min-width: 60rem) {
+    .cabecera-grilla {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+  .categorias {
+    margin-top: var(--espacio-l);
+    padding-block: var(--espacio-s);
+    border-block: 1px solid var(--linea);
+  }
+  .categorias ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .categorias a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: 2.75rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 999px;
+    font-size: var(--paso--1);
+    text-decoration: none;
+  }
+  .categorias small {
+    color: var(--gris);
+  }
+  .categorias a[aria-current='page'] {
+    background: var(--tinta);
+    border-color: var(--tinta);
+    color: var(--piedra);
+  }
+  .categorias a[aria-current='page'] small {
+    color: inherit;
+  }
+  .articulos {
+    display: grid;
+    gap: var(--espacio-2xl);
+    padding-bottom: var(--espacio-3xl);
+  }
+  .destacado :global(.tarjeta-articulo-titulo) {
+    font-size: var(--paso-4);
+  }
+  @media (min-width: 60rem) {
+    .destacado {
+      width: 66%;
+    }
+  }
+  .rejilla {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+  }
+  @media (min-width: 40rem) {
+    .rejilla {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 68rem) {
+    .rejilla {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

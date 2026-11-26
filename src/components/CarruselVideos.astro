@@ -1,0 +1,162 @@
+---
+// Carrusel horizontal de videos de casas (scroll-snap nativo + flechas + arrastre con mouse).
+// Sin JS sigue funcionando: es un contenedor con scroll horizontal.
+import type { CollectionEntry } from 'astro:content';
+import Video from './Video.astro';
+import Icono from './Icono.astro';
+import type { Idioma } from '../lib/sitio';
+
+interface Props {
+  videos: CollectionEntry<'videos'>[];
+  idioma?: Idioma;
+  titulo: string;
+  texto?: string;
+  etiqueta?: string;
+  enlace?: { href: string; texto: string };
+  id?: string;
+}
+const { videos, idioma = 'es', titulo, texto, etiqueta, enlace, id = 'carrusel-videos' } = Astro.props;
+const es = idioma === 'es';
+---
+
+{videos.length > 0 && (
+  <section class="seccion carrusel fondo-tinta" aria-labelledby={`${id}-titulo`} data-carrusel>
+    <div class="contenedor carrusel-cabecera">
+      <div data-anim="subir">
+        <p class="etiqueta">{etiqueta ?? (es ? 'En vídeo' : 'On video')}</p>
+        <h2 id={`${id}-titulo`} set:html={titulo} />
+        {texto && <p class="entradilla">{texto}</p>}
+      </div>
+      <div class="carrusel-acciones">
+        {enlace && <a class="enlace-flecha" href={enlace.href}>{enlace.texto}</a>}
+        <div class="carrusel-flechas" data-solo-js>
+          <button type="button" class="carrusel-flecha" data-carrusel-anterior aria-label={es ? 'Videos anteriores' : 'Previous videos'} aria-controls={`${id}-pista`}>
+            <Icono nombre="anterior" />
+          </button>
+          <button type="button" class="carrusel-flecha" data-carrusel-siguiente aria-label={es ? 'Más videos' : 'More videos'} aria-controls={`${id}-pista`}>
+            <Icono nombre="siguiente" />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="carrusel-pista" id={`${id}-pista`} data-carrusel-pista tabindex="0" aria-label={es ? 'Videos de proyectos, desliza para ver más' : 'Project videos, scroll for more'}>
+      <ul role="list">
+        {videos.map((v) => (
+          <li class:list={['carrusel-item', v.data.formato]}>
+            <Video video={v} idioma={idioma} sizes={v.data.formato === 'vertical' ? '(min-width: 60rem) 22vw, 60vw' : '(min-width: 60rem) 42vw, 85vw'} />
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="contenedor">
+      <p class="carrusel-nota secundario">{es ? 'Los videos de YouTube se cargan solo cuando pulsas reproducir.' : 'YouTube videos only load when you press play.'}</p>
+    </div>
+  </section>
+)}
+
+<script>
+  import '../scripts/carrusel';
+</script>
+
+<style>
+  .carrusel {
+    overflow: hidden;
+  }
+  .carrusel-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--espacio-m);
+    margin-bottom: var(--espacio-xl);
+  }
+  .carrusel-cabecera > div:first-child {
+    display: grid;
+    gap: var(--espacio-s);
+    max-width: 46rem;
+  }
+  .carrusel-cabecera h2 {
+    font-size: var(--paso-5);
+  }
+  .carrusel-acciones {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-m);
+  }
+  .carrusel-flechas {
+    display: none;
+    gap: 0.5rem;
+  }
+  @media (scripting: enabled) {
+    .carrusel-flechas {
+      display: flex;
+    }
+  }
+  .carrusel-flecha {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgb(244 241 236 / 0.4);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--piedra);
+    transition:
+      background var(--t-rapida) var(--curva),
+      color var(--t-rapida) var(--curva),
+      opacity var(--t-rapida) var(--curva),
+      scale var(--t-rapida) var(--curva);
+  }
+  .carrusel-flecha:hover:not(:disabled) {
+    background: var(--piedra);
+    color: var(--tinta);
+  }
+  .carrusel-flecha:active:not(:disabled) {
+    scale: 0.92;
+  }
+  .carrusel-flecha:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .carrusel-pista {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+  }
+  .carrusel-pista::-webkit-scrollbar {
+    display: none;
+  }
+  .carrusel-pista.arrastrando {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
+  .carrusel-pista:focus-visible {
+    outline: 2px solid var(--piedra);
+    outline-offset: -2px;
+  }
+  .carrusel-pista ul {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--separacion);
+    width: max-content;
+    padding-inline: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+  }
+  .carrusel-item {
+    scroll-snap-align: start;
+    flex: none;
+  }
+  .carrusel-item.horizontal {
+    width: min(85vw, 40rem);
+  }
+  .carrusel-item.vertical {
+    width: min(60vw, 18rem);
+  }
+  .carrusel-nota {
+    margin-top: var(--espacio-l);
+    font-size: var(--paso--2);
+  }
+</style>
