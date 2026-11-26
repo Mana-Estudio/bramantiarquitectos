@@ -1,5 +1,6 @@
 ---
 import Logo from './Logo.astro';
+import FirmaMana from './FirmaMana.astro';
 import { UI, RUTAS, RUTAS_SERVICIO, TIPOS } from '../lib/i18n';
 import { SITIO, whatsapp, type Idioma } from '../lib/sitio';
 
@@ -76,6 +77,7 @@ const legales = [
       <p>
         {es ? 'Parte de' : 'Part of'} <a href={SITIO.grupo} rel="noopener" target="_blank">Grupo Bramanti</a>
       </p>
+      <FirmaMana cliente="bramantiarquitectos" idioma={idioma} />
     </div>
   </div>
 </footer>
