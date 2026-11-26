@@ -65,6 +65,10 @@
 * {
   margin: 0;
 }
+/* El atributo hidden siempre gana a los display de componentes (botones, flex, grid). */
+[hidden] {
+  display: none !important;
+}
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -329,6 +333,16 @@ small {
 .boton:hover {
   --fondo: #000;
 }
+.boton:active {
+  scale: 0.97;
+}
+.boton {
+  transition:
+    background var(--t-rapida) var(--curva),
+    color var(--t-rapida) var(--curva),
+    border-color var(--t-rapida) var(--curva),
+    scale var(--t-rapida) var(--curva);
+}
 .boton-linea {
   --fondo: transparent;
   --color: var(--tinta);
@@ -363,6 +377,7 @@ small {
   gap: var(--espacio-xs);
 }
 .enlace-flecha {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
@@ -372,6 +387,23 @@ small {
   letter-spacing: 0.04em;
   text-decoration: none;
   border-bottom: 1px solid var(--linea-fuerte);
+}
+.enlace-flecha::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--bronce);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 500ms var(--curva);
+}
+.enlace-flecha:hover::before,
+.enlace-flecha:focus-visible::before {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 .enlace-flecha::after {
   content: '→';
@@ -488,6 +520,87 @@ small {
   border-top: 1px solid var(--linea);
 }
 
+/* ----- Animaciones con Motion (scripts/animaciones.ts) ----- */
+/* El estado inicial solo aplica cuando el script agregó .anim: sin JS, todo se ve. */
+.anim [data-anim='subir']:not([data-anim-visto]),
+.anim [data-anim='escalonar']:not([data-anim-visto]) > *,
+.anim [data-anim='imagen']:not([data-anim-visto]) {
+  opacity: 0;
+}
+
+/* Barra de progreso de lectura (fichas y artículos). */
+.progreso {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 2px;
+  background: var(--bronce);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* Etiqueta que acompaña al cursor sobre proyectos y videos (scripts/micro.ts). */
+.cursor-etiqueta {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  background: var(--piedra);
+  color: var(--tinta);
+  font-size: var(--paso--2);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(14px, 14px) scale(0.6);
+  transition:
+    opacity 250ms var(--curva),
+    transform 350ms var(--curva),
+    translate 90ms linear;
+  box-shadow: 0 0 0 1px var(--linea);
+}
+.cursor-etiqueta.visible {
+  opacity: 1;
+  transform: translate(14px, 14px) scale(1);
+}
+
+/* Botón de copiar (email). */
+.copiar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 999px;
+  background: transparent;
+  font-size: var(--paso--2);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background var(--t-rapida) var(--curva),
+    color var(--t-rapida) var(--curva);
+}
+.copiar:hover {
+  background: var(--tinta);
+  color: var(--piedra);
+}
+.copiar[data-copiado] {
+  background: var(--tinta);
+  color: var(--piedra);
+}
+.fondo-tinta .copiar:hover,
+.fondo-tinta .copiar[data-copiado] {
+  background: var(--piedra);
+  color: var(--tinta);
+}
+
 /* ----- View Transitions nativas entre grilla y ficha ----- */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
@@ -523,4 +636,14 @@ small {
   body {
     background: #fff;
   }
+}
+
+/* Botones magnéticos (scripts/micro.ts): el desplazamiento usa la propiedad translate. */
+.magnetico {
+  transition:
+    background var(--t-rapida) var(--curva),
+    color var(--t-rapida) var(--curva),
+    border-color var(--t-rapida) var(--curva),
+    scale var(--t-rapida) var(--curva),
+    translate 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
