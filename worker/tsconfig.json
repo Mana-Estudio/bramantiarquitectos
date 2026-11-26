@@ -9,5 +9,5 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["./**/*.ts", "../src/lib/mail.ts", "../src/lib/contacto.ts"]
+  "include": ["./**/*.ts", "../src/lib/mail.ts", "../src/lib/contacto.ts", "../src/lib/valoracion.ts"]
 }

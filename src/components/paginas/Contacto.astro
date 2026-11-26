@@ -51,6 +51,13 @@ const faqs = es ? [...todas.filter((f) => f.data.ambitos.includes('contacto')), 
     </div>
 
     <aside class="contacto-directo" aria-label={es ? 'Contacto directo' : 'Direct contact'}>
+      {es && (
+        <div class="bloque fondo-tinta guiado">
+          <h2 class="etiqueta sin-linea">Presupuestador guiado</h2>
+          <p>¿Reforma, interiorismo u obra nueva? Responde unas preguntas rápidas y adjunta planos o fotos: llegamos a la primera reunión con tu proyecto entendido.</p>
+          <a class="boton" href={r.valoracion} data-evento="presupuesto" data-evento-detalle="contacto-guiado">Empezar en 3 minutos</a>
+        </div>
+      )}
       <div class="bloque">
         <h2 class="etiqueta sin-linea">{es ? '¿Prefieres hablar ya?' : 'Prefer to talk now?'}</h2>
         <a class="boton" href={whatsapp(TEXTO_WHATSAPP[idioma])} data-evento="whatsapp" data-evento-detalle="contacto"><Icono nombre="whatsapp" /> {es ? 'Escríbenos por WhatsApp' : 'Message us on WhatsApp'}</a>
@@ -110,8 +117,13 @@ const faqs = es ? [...todas.filter((f) => f.data.ambitos.includes('contacto')), 
     padding: var(--espacio-m);
     border: 1px solid var(--linea);
   }
-  .direccion {
+  .direccion,
+  .guiado {
     border: 0;
+  }
+  .guiado p {
+    color: inherit;
+    opacity: 0.85;
   }
   .direccion address {
     font-style: normal;

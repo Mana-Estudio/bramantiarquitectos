@@ -64,7 +64,7 @@ const tituloHtml = d.titulo.replace(/\*(.+?)\*/g, '<em>$1</em>');
       <h1 set:html={tituloHtml} />
       <p class="entradilla">{d.intro}</p>
       <div class="botones">
-        <a class="boton" href={`${r.contacto}?servicio=${servicio}#presupuesto`} data-evento="presupuesto" data-evento-detalle={`servicio-${servicio}`}>{t.pedirValoracion}</a>
+        <a class="boton" href={es ? `${r.valoracion}?servicio=${servicio}` : `${r.contacto}?servicio=${servicio}#presupuesto`} data-evento="presupuesto" data-evento-detalle={`servicio-${servicio}`}>{t.pedirValoracion}</a>
         <a class="boton boton-linea" href={whatsapp(textoWhatsapp)} data-evento="whatsapp" data-evento-detalle={`servicio-${servicio}`}>WhatsApp</a>
       </div>
     </div>

@@ -14,7 +14,9 @@ interface Props {
 }
 const { idioma = 'es', titulo, texto, whatsappTexto, consulta = '', boton } = Astro.props;
 const es = idioma === 'es';
-const href = `${RUTAS[idioma].contacto}${consulta ? `?${consulta}` : ''}#presupuesto`;
+// En español los pedidos de valoración van al presupuestador; las consultas de compra, al contacto.
+const alPresupuestador = idioma === 'es' && !consulta.includes('promocion');
+const href = alPresupuestador ? `${RUTAS.es.valoracion}${consulta ? `?${consulta}` : ''}` : `${RUTAS[idioma].contacto}${consulta ? `?${consulta}` : ''}#presupuesto`;
 ---
 
 <section class="cta-final fondo-tinta" aria-labelledby="cta-final-titulo">
