@@ -1,0 +1,60 @@
+---
+import Foto from './Foto.astro';
+import { CATEGORIAS, tituloCorto, type Articulo } from '../lib/contenido';
+import { fecha } from '../lib/i18n';
+
+interface Props {
+  articulo: Articulo;
+  nivel?: 'h2' | 'h3';
+  sizes?: string;
+}
+const { articulo, nivel = 'h3', sizes = '(min-width: 68rem) 30vw, (min-width: 40rem) 50vw, 100vw' } = Astro.props;
+const d = articulo.data;
+const Nivel = nivel;
+---
+
+<article class="tarjeta-articulo">
+  <a href={`/${articulo.id}/`}>
+    <div class="foto tarjeta-articulo-foto">
+      {d.cover ? <Foto src={d.cover} alt={d.coverAlt ?? ''} sizes={sizes} anchos={[400, 640, 960]} /> : <span class="sin-foto titulo" aria-hidden="true">{CATEGORIAS[d.categoria]}</span>}
+    </div>
+    <p class="tarjeta-articulo-meta secundario">
+      <span>{CATEGORIAS[d.categoria]}</span> · <time datetime={d.date.toISOString().slice(0, 10)}>{fecha(d.date)}</time>
+    </p>
+    <Nivel class="tarjeta-articulo-titulo">{tituloCorto(d.title)}</Nivel>
+  </a>
+</article>
+
+<style>
+  .tarjeta-articulo a {
+    display: grid;
+    gap: var(--espacio-xs);
+    text-decoration: none;
+  }
+  .tarjeta-articulo-foto {
+    aspect-ratio: 3 / 2;
+    display: grid;
+  }
+  .sin-foto {
+    place-self: center;
+    font-size: var(--paso-3);
+    font-weight: 300;
+    color: var(--gris-osc);
+  }
+  .tarjeta-articulo-meta {
+    font-size: var(--paso--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tarjeta-articulo-titulo {
+    font-family: var(--titulos);
+    font-size: var(--paso-2);
+    line-height: 1.15;
+    font-weight: 400;
+  }
+  .tarjeta-articulo a:hover .tarjeta-articulo-titulo {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--bronce);
+  }
+</style>

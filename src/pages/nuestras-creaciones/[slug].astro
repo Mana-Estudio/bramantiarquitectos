@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from 'astro';
+import FichaProyecto from '../../components/paginas/FichaProyecto.astro';
+import { proyectos } from '../../lib/contenido';
+
+export const getStaticPaths = (async () => {
+  return (await proyectos()).map((proyecto) => ({ params: { slug: proyecto.id }, props: { proyecto } }));
+}) satisfies GetStaticPaths;
+
+const { proyecto } = Astro.props;
+---
+
+<FichaProyecto proyecto={proyecto} idioma="es" />

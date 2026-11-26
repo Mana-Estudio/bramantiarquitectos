@@ -1,0 +1,82 @@
+---
+import Icono from './Icono.astro';
+import { RUTAS } from '../lib/i18n';
+import { SITIO, whatsapp, type Idioma } from '../lib/sitio';
+
+interface Props {
+  idioma?: Idioma;
+  titulo?: string;
+  texto?: string;
+  whatsappTexto: string;
+  /** Parámetros que se precargan en el formulario (?proyecto=, ?servicio=) */
+  consulta?: string;
+  boton?: string;
+}
+const { idioma = 'es', titulo, texto, whatsappTexto, consulta = '', boton } = Astro.props;
+const es = idioma === 'es';
+// En español los pedidos de valoración van al presupuestador; las consultas de compra, al contacto.
+const alPresupuestador = idioma === 'es' && !consulta.includes('promocion');
+const href = alPresupuestador ? `${RUTAS.es.valoracion}${consulta ? `?${consulta}` : ''}` : `${RUTAS[idioma].contacto}${consulta ? `?${consulta}` : ''}#presupuesto`;
+---
+
+<section class="cta-final fondo-tinta" aria-labelledby="cta-final-titulo">
+  <div class="contenedor grilla">
+    <div class="cta-texto">
+      <p class="etiqueta">{es ? 'Primera conversación' : 'First conversation'}</p>
+      <h2 id="cta-final-titulo">{titulo ?? (es ? 'Cuéntanos tu proyecto.' : 'Tell us about your project.')}</h2>
+    </div>
+    <div class="cta-acciones">
+      <p class="entradilla">
+        {texto ?? (es
+          ? 'Revisamos tu vivienda, lo que quieres cambiar y la inversión prevista, y te explicamos con claridad cómo empezar.'
+          : 'We look at your home, what you want to change and your expected budget, and explain clearly how to begin.')}
+      </p>
+      <div class="botones">
+        <a class="boton" href={href} data-evento="presupuesto" data-evento-detalle="cta-final">{boton ?? (es ? 'Pedir valoración' : 'Request a consultation')}</a>
+        <a class="boton boton-linea" href={whatsapp(whatsappTexto)} data-evento="whatsapp" data-evento-detalle="cta-final">
+          <Icono nombre="whatsapp" /> WhatsApp
+        </a>
+      </div>
+      <p class="secundario cta-directo">
+        {es ? 'O llámanos al' : 'Or call us on'} <a href={SITIO.telefonoHref} data-evento="llamar" data-evento-detalle="cta-final">{SITIO.telefono}</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-final {
+    padding-block: var(--espacio-3xl);
+  }
+  .cta-final .grilla {
+    row-gap: var(--espacio-l);
+    align-items: end;
+  }
+  .cta-texto {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-s);
+  }
+  .cta-texto h2 {
+    font-size: var(--paso-6);
+  }
+  .cta-acciones {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--espacio-m);
+  }
+  .cta-acciones .entradilla {
+    color: inherit;
+  }
+  .cta-directo a {
+    color: var(--piedra);
+  }
+  @media (min-width: 60rem) {
+    .cta-texto {
+      grid-column: 1 / span 7;
+    }
+    .cta-acciones {
+      grid-column: 9 / -1;
+    }
+  }
+</style>

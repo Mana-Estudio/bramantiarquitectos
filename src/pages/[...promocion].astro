@@ -1,0 +1,152 @@
+---
+// Fichas de promociones en sus URLs actuales (/ventapromocionlossatelites/, /venta-proyecto-omega/,
+// /nuestras-creaciones/casa-silva-reforma-integral-madrid/). La URL sale del campo `url` de cada .md.
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import Migas from '../components/Migas.astro';
+import Galeria from '../components/Galeria.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import Videos from '../components/Videos.astro';
+import { promociones, videos } from '../lib/contenido';
+import { migas as migasLd } from '../lib/jsonld';
+
+export const getStaticPaths = (async () => {
+  return (await promociones()).map((promo) => ({ params: { promocion: promo.data.url.replace(/^\/|\/$/g, '') }, props: { promo } }));
+}) satisfies GetStaticPaths;
+
+const { promo } = Astro.props;
+const d = promo.data;
+const { Content } = await render(promo);
+const videosPromo = await videos((v) => v.promocion === promo.id);
+const textoWhatsapp = `Hola, me interesa ${d.nombre} (${d.zona}). ¿Me podéis enviar más información?`;
+const datos = [
+  { k: 'Zona', v: d.zona },
+  { k: 'Tipo', v: d.tipo },
+  d.datos.parcela && { k: 'Parcela', v: d.datos.parcela },
+  d.datos.superficieUtil && { k: 'Superficie útil', v: d.datos.superficieUtil },
+  d.datos.superficieConstruida && { k: 'Superficie construida', v: d.datos.superficieConstruida },
+  d.datos.terraza && { k: 'Terraza', v: d.datos.terraza },
+  d.datos.habitaciones && { k: 'Dormitorios', v: String(d.datos.habitaciones) },
+  d.datos.banos && { k: 'Baños', v: String(d.datos.banos) },
+  d.precio && { k: 'Precio', v: d.precio },
+  { k: 'Estado', v: d.estado === 'render' ? 'Proyecto (imágenes de render)' : 'Obra terminada' },
+].filter((x): x is { k: string; v: string } => Boolean(x));
+const migas = [
+  { nombre: 'Inicio', url: '/' },
+  { nombre: 'Promociones', url: '/promociones/' },
+  { nombre: d.nombre, url: d.url },
+];
+---
+
+<Base titulo={`${d.nombre} · ${d.operacion} en ${d.zona}`.length <= 60 ? `${d.nombre} · ${d.operacion} en ${d.zona}` : `${d.nombre} · ${d.operacion}`} descripcion={d.descripcion} imagen={d.portada} whatsappTexto={textoWhatsapp} jsonld={[migasLd(migas)]}>
+  <article>
+    <header class="contenedor promo-cabecera">
+      <Migas items={migas} />
+      <div class="promo-titulo">
+        <p class="etiqueta">{d.operacion}</p>
+        <h1>{d.nombre}</h1>
+        {d.subtitulo && <p class="entradilla">{d.subtitulo}</p>}
+      </div>
+    </header>
+
+    <div class="promo-hero foto">
+      <Foto src={d.portada} alt={d.portadaAlt} sizes="100vw" anchos={[640, 960, 1280, 1600]} prioridad />
+      {d.estado === 'render' && <span class="chip promo-chip">Render</span>}
+    </div>
+
+    <div class="contenedor promo-cuerpo">
+      <dl class="promo-datos">
+        {datos.map((x) => (
+          <div>
+            <dt>{x.k}</dt>
+            <dd>{x.v}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="prosa">
+        <p class="entradilla">{d.resumen}</p>
+        <Content />
+        <p class="secundario aviso">Precio, disponibilidad y superficies según la información publicada por el estudio; pueden variar. Consúltanos antes de tomar cualquier decisión.</p>
+      </div>
+    </div>
+
+    <Videos videos={videosPromo} id="videos-promocion" fondo="lino" titulo={`${d.nombre}, en vídeo.`} />
+
+    <Galeria fotos={d.galeria.map((g) => ({ src: g.src, alt: g.alt }))} titulo={`${d.nombre}, en imágenes`} />
+  </article>
+
+  <CtaFinal
+    titulo={`¿Te interesa ${d.nombre}?`}
+    texto="Escríbenos y te enviamos toda la información: planos, calidades, disponibilidad y visitas."
+    boton="Solicitar información"
+    consulta={`proyecto=${promo.id}&servicio=promocion`}
+    whatsappTexto={textoWhatsapp}
+  />
+</Base>
+
+<style>
+  .promo-cabecera {
+    padding-block: var(--espacio-m) var(--espacio-l);
+  }
+  .promo-titulo {
+    display: grid;
+    gap: var(--espacio-s);
+    margin-top: var(--espacio-l);
+  }
+  .promo-titulo h1 {
+    font-size: clamp(2.5rem, 1.4rem + 4.6vw, 5.8rem);
+  }
+  .promo-hero {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    max-height: 85vh;
+  }
+  .promo-chip {
+    position: absolute;
+    top: var(--espacio-s);
+    left: var(--margen);
+    background: var(--piedra);
+    color: var(--tinta);
+  }
+  .promo-cuerpo {
+    display: grid;
+    gap: var(--espacio-xl);
+    padding-block: var(--espacio-2xl);
+  }
+  .promo-datos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--espacio-s) var(--separacion);
+    align-content: start;
+  }
+  .promo-datos div {
+    display: grid;
+    gap: 0.15rem;
+    padding-top: var(--espacio-xs);
+    border-top: 1px solid var(--linea);
+  }
+  .promo-datos dt {
+    font-size: var(--paso--2);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bronce-texto);
+  }
+  .aviso {
+    font-size: var(--paso--1);
+  }
+  @media (min-width: 60rem) {
+    .promo-cuerpo {
+      grid-template-columns: 4fr 1fr 7fr;
+    }
+    .promo-datos {
+      position: sticky;
+      top: calc(var(--alto-header-compacto) + var(--espacio-l));
+    }
+    .promo-cuerpo .prosa {
+      grid-column: 3;
+    }
+  }
+</style>

@@ -1,0 +1,365 @@
+---
+import Logo from './Logo.astro';
+import Icono from './Icono.astro';
+import { UI, RUTAS, RUTAS_SERVICIO, TIPOS } from '../lib/i18n';
+import { SITIO, whatsapp, type Idioma } from '../lib/sitio';
+
+interface Props {
+  idioma: Idioma;
+  alternativa: string | null;
+  whatsappTexto: string;
+  /** En la home: el header arranca transparente sobre el hero a pantalla completa. */
+  sobreHero?: boolean;
+}
+const { idioma, alternativa, whatsappTexto, sobreHero = false } = Astro.props;
+const t = UI[idioma];
+const r = RUTAS[idioma];
+const ruta = Astro.url.pathname;
+const actual = (href: string) => (href === r.inicio ? ruta === href : ruta.startsWith(href)) || undefined;
+
+const enlaces = [
+  { href: r.proyectos, texto: t.proyectos },
+  { href: r.estudio, texto: t.estudio },
+  ...(idioma === 'es'
+    ? [
+        { href: r.promociones, texto: t.promociones },
+        { href: r.journal, texto: t.journal },
+      ]
+    : []),
+  { href: r.contacto, texto: t.contacto },
+];
+const servicios = (Object.keys(TIPOS) as (keyof typeof TIPOS)[]).map((k) => ({ href: RUTAS_SERVICIO[k][idioma], texto: TIPOS[k][idioma] }));
+const enServicios = servicios.some((s) => ruta.startsWith(s.href));
+const otroIdioma = idioma === 'es' ? 'en' : 'es';
+const hrefOtro = alternativa ?? RUTAS[otroIdioma].inicio;
+const contacto = r.valoracion;
+---
+
+{!sobreHero && <div class="header-espacio" aria-hidden="true"></div>}
+<header class:list={['header', { 'sobre-hero': sobreHero }]} data-header>
+  <div class="contenedor header-fila">
+    <a href={r.inicio} class="header-logo" aria-label={`${SITIO.nombre}, ${t.inicio.toLowerCase()}`}>
+      {sobreHero ? (
+        <>
+          <span class="logo-claro"><Logo variante="blanco" eager /></span>
+          <span class="logo-oscuro"><Logo eager /></span>
+        </>
+      ) : (
+        <Logo eager />
+      )}
+    </a>
+
+    <nav class="nav-escritorio" aria-label={t.navPrincipal}>
+      <ul role="list">
+        <li><a href={enlaces[0].href} aria-current={actual(enlaces[0].href) && 'page'}>{enlaces[0].texto}</a></li>
+        <li>
+          <details class="submenu" data-submenu>
+            <summary class:list={[{ activo: enServicios }]}>{t.servicios}</summary>
+            <ul role="list">
+              {servicios.map((s) => <li><a href={s.href} aria-current={actual(s.href) && 'page'}>{s.texto}</a></li>)}
+            </ul>
+          </details>
+        </li>
+        {enlaces.slice(1).map((e) => <li><a href={e.href} aria-current={actual(e.href) && 'page'}>{e.texto}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="header-acciones">
+      <a class="idioma" href={hrefOtro} hreflang={otroIdioma} lang={otroIdioma} data-evento="idioma">
+        <span aria-hidden="true">{t.idiomaOtroCorto}</span><span class="visualmente-oculto">{t.idiomaOtro}</span>
+      </a>
+      <a class="boton header-cta" href={contacto} data-evento="presupuesto" data-evento-detalle="header">{t.pedirValoracion}</a>
+
+      <details class="menu-movil" data-menu-movil>
+        <summary>
+          <Icono nombre="menu" class="icono-abrir" />
+          <Icono nombre="cerrar" class="icono-cerrar" />
+          <span class="visualmente-oculto">{t.menu}</span>
+        </summary>
+        <div class="menu-movil-panel">
+          <nav aria-label={t.navPrincipal}>
+            <ul role="list" class="menu-movil-lista">
+              <li><a href={r.inicio} aria-current={actual(r.inicio) && 'page'}>{t.inicio}</a></li>
+              <li><a href={r.proyectos} aria-current={actual(r.proyectos) && 'page'}>{t.proyectos}</a></li>
+              {servicios.map((s) => <li class="sub"><a href={s.href} aria-current={actual(s.href) && 'page'}>{s.texto}</a></li>)}
+              {enlaces.slice(1).map((e) => <li><a href={e.href} aria-current={actual(e.href) && 'page'}>{e.texto}</a></li>)}
+            </ul>
+          </nav>
+          <div class="menu-movil-contacto">
+            <a href={whatsapp(whatsappTexto)} data-evento="whatsapp" data-evento-detalle="menu">WhatsApp</a>
+            <a href={SITIO.telefonoHref} data-evento="llamar" data-evento-detalle="menu">{SITIO.telefono}</a>
+            <a href={`mailto:${SITIO.email}`} data-evento="email" data-evento-detalle="menu">{SITIO.email}</a>
+            <a href={hrefOtro} hreflang={otroIdioma} lang={otroIdioma}>{t.idiomaOtro}</a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header-espacio {
+    height: var(--alto-header);
+  }
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: var(--alto-header);
+    background: var(--piedra);
+    border-bottom: 1px solid transparent;
+    transition:
+      transform var(--t-media) var(--curva),
+      border-color var(--t-media) var(--curva);
+  }
+  .header-fila {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-m);
+    transition: transform var(--t-media) var(--curva);
+  }
+  /* Compacto: solo transforms, para no mover el contenido (CLS 0). */
+  .header.compacto {
+    transform: translateY(calc(var(--alto-header-compacto) - var(--alto-header)));
+    border-bottom-color: var(--linea);
+  }
+  .header.compacto .header-fila {
+    transform: translateY(calc((var(--alto-header) - var(--alto-header-compacto)) / 2));
+  }
+  .header.sobre-hero:not(.compacto) {
+    background: transparent;
+    color: var(--piedra);
+  }
+  .header.sobre-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -2.5rem;
+    background: linear-gradient(to bottom, rgb(20 18 16 / 0.55), transparent);
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity var(--t-media) var(--curva);
+  }
+  .header.sobre-hero.compacto::before,
+  .header.sobre-hero:has(.menu-movil[open])::before {
+    opacity: 0;
+  }
+  .header.sobre-hero:has(.menu-movil[open]) {
+    background: var(--piedra);
+    color: var(--tinta);
+  }
+  .header.sobre-hero .logo-claro,
+  .header.sobre-hero .logo-oscuro {
+    display: block;
+  }
+  .header.sobre-hero:not(.compacto):not(:has(.menu-movil[open])) .logo-oscuro,
+  .header.sobre-hero.compacto .logo-claro,
+  .header.sobre-hero:has(.menu-movil[open]) .logo-claro {
+    display: none;
+  }
+  .header.sobre-hero:not(.compacto) .header-cta {
+    --fondo: var(--piedra);
+    --color: var(--tinta);
+  }
+  .header.sobre-hero:not(.compacto) :focus-visible {
+    outline-color: var(--piedra);
+  }
+  .header.sobre-hero .submenu ul,
+  .header.sobre-hero .menu-movil-panel {
+    color: var(--tinta);
+  }
+  .header-fila {
+    position: relative;
+  }
+  .header-logo {
+    display: block;
+    flex: none;
+    transform-origin: left center;
+    transition: transform var(--t-media) var(--curva);
+  }
+  .header.compacto .header-logo {
+    transform: scale(0.86);
+  }
+  .header-logo :global(.logo) {
+    width: clamp(8.5rem, 7rem + 4vw, 10.75rem);
+    height: auto;
+  }
+
+  .nav-escritorio {
+    display: none;
+  }
+  .nav-escritorio > ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 0.2rem + 1.6vw, 2.25rem);
+  }
+  .nav-escritorio a,
+  .submenu summary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-size: var(--paso--1);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .nav-escritorio > ul > li > a::after,
+  .submenu summary::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.55rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 450ms var(--curva);
+  }
+  .nav-escritorio > ul > li > a:hover::after,
+  .submenu summary:hover::before,
+  .nav-escritorio a[aria-current='page']::after,
+  .submenu summary.activo::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .submenu {
+    position: relative;
+  }
+  .submenu summary {
+    cursor: pointer;
+    list-style: none;
+    gap: 0.4em;
+  }
+  .submenu summary::-webkit-details-marker {
+    display: none;
+  }
+  .submenu summary::after {
+    content: '';
+    width: 0.45em;
+    height: 0.45em;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: translateY(-0.15em) rotate(45deg);
+    transition: transform var(--t-rapida) var(--curva);
+  }
+  .submenu[open] summary::after {
+    transform: translateY(0.1em) rotate(-135deg);
+  }
+  .submenu ul {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: -1.25rem;
+    min-width: 15rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--piedra);
+    border: 1px solid var(--linea);
+  }
+  .submenu ul a {
+    display: flex;
+    width: 100%;
+  }
+
+  .header-acciones {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-xs);
+  }
+  .idioma {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    font-size: var(--paso--2);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+  }
+  .header-cta {
+    display: none;
+    min-height: 2.75rem;
+    padding-inline: 1.25em;
+  }
+
+  .menu-movil summary {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .menu-movil summary::-webkit-details-marker {
+    display: none;
+  }
+  .menu-movil :global(svg) {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  .menu-movil :global(.icono-cerrar),
+  .menu-movil[open] :global(.icono-abrir) {
+    display: none;
+  }
+  .menu-movil[open] :global(.icono-cerrar) {
+    display: block;
+  }
+  .menu-movil-panel {
+    position: fixed;
+    inset: var(--alto-header) 0 0;
+    z-index: 49;
+    overflow-y: auto;
+    padding: var(--espacio-l) var(--margen) calc(var(--espacio-2xl) + 4rem);
+    background: var(--piedra);
+    border-top: 1px solid var(--linea);
+    display: grid;
+    align-content: start;
+    gap: var(--espacio-xl);
+  }
+  .header.compacto .menu-movil-panel {
+    inset-block-start: var(--alto-header);
+  }
+  .menu-movil-lista a {
+    display: block;
+    padding-block: 0.35rem;
+    font-family: var(--titulos);
+    font-size: var(--paso-4);
+    line-height: 1.1;
+    text-decoration: none;
+  }
+  .menu-movil-lista .sub a {
+    font-family: var(--texto);
+    font-size: var(--paso-0);
+    padding: 0.5rem 0 0.5rem 1.25rem;
+    color: var(--gris);
+  }
+  .menu-movil-lista a[aria-current='page'] {
+    color: var(--bronce-texto);
+  }
+  .menu-movil-contacto {
+    display: grid;
+    gap: 0.25rem;
+    padding-top: var(--espacio-m);
+    border-top: 1px solid var(--linea);
+  }
+  .menu-movil-contacto a {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+
+  @media (min-width: 40rem) {
+    .header-cta {
+      display: inline-flex;
+    }
+  }
+  @media (min-width: 68rem) {
+    .nav-escritorio {
+      display: block;
+    }
+    .menu-movil {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,83 @@
+---
+// Proceso propio del estudio (textos de la web actual) + Obra y entrega.
+import type { Idioma } from '../lib/sitio';
+interface Props {
+  idioma?: Idioma;
+  titulo?: string;
+  fondo?: 'lino' | 'piedra';
+}
+const { idioma = 'es', titulo, fondo = 'lino' } = Astro.props;
+const es = idioma === 'es';
+
+const pasos = es
+  ? [
+      { nombre: 'Inmersión', texto: 'Analizamos hábitos, necesidades, aspiraciones y condicionantes técnicos para entender cómo se va a habitar el espacio.' },
+      { nombre: 'Abstracción', texto: 'Definimos la organización del espacio, las proporciones, la luz y la materialidad, dando forma a un diseño que equilibra funcionalidad, estética y viabilidad técnica.' },
+      { nombre: 'Materialización', texto: 'Coordinamos arquitectura, interiorismo y construcción para que cada decisión del proyecto se ejecute fielmente en la obra, cuidando detalles, materiales y control técnico.' },
+      { nombre: 'Obra y entrega', texto: 'Seguimos la obra como único interlocutor: revisamos avances e imprevistos, documentamos los cambios antes de aprobarlos y no la damos por terminada hasta revisar cada detalle contigo.' },
+    ]
+  : [
+      { nombre: 'Immersion', texto: 'We study habits, needs, aspirations and technical constraints to understand how the space will be lived in.' },
+      { nombre: 'Abstraction', texto: 'We define the layout, proportions, light and materials, shaping a design that balances function, aesthetics and technical feasibility.' },
+      { nombre: 'Materialisation', texto: 'We coordinate architecture, interior design and construction so that every design decision is faithfully built on site, with care for details, materials and technical control.' },
+      { nombre: 'Build and handover', texto: 'We follow the works as your single point of contact: we review progress and surprises, document changes before approving them, and only hand over once every detail has been checked with you.' },
+    ];
+---
+
+<section class:list={['seccion', 'proceso', { 'fondo-lino': fondo === 'lino' }]} aria-labelledby="proceso-titulo">
+  <div class="contenedor">
+    <header class="proceso-cabecera">
+      <p class="etiqueta">{es ? 'Cómo trabajamos' : 'How we work'}</p>
+      <h2 id="proceso-titulo">{titulo ?? (es ? <>Del pensamiento <em>a la forma.</em></> : <>From thought <em>to form.</em></>)}</h2>
+    </header>
+    <ol role="list" class="proceso-pasos">
+      {pasos.map((p, i) => (
+        <li>
+          <span class="numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{p.nombre}</h3>
+          <p>{p.texto}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .proceso-cabecera {
+    display: grid;
+    gap: var(--espacio-s);
+    max-width: 44rem;
+    margin-bottom: var(--espacio-xl);
+  }
+  .proceso-cabecera h2 {
+    font-size: var(--paso-5);
+  }
+  .proceso-pasos {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+    counter-reset: paso;
+  }
+  .proceso-pasos li {
+    display: grid;
+    gap: var(--espacio-xs);
+    align-content: start;
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .proceso-pasos h3 {
+    font-size: var(--paso-3);
+  }
+  .proceso-pasos p {
+    color: var(--gris);
+  }
+  @media (min-width: 48rem) {
+    .proceso-pasos {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 68rem) {
+    .proceso-pasos {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

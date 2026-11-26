@@ -1,0 +1,56 @@
+[
+  {
+    "id": "juan-ignacio-sanchez-martinez",
+    "nombre": "Juan Ignacio Sanchez Martinez",
+    "texto": "Grandes profesionales y con un gusto exquisito. No los hay mejor en Madrid.",
+    "fecha": "2025-09-26",
+    "fuente": "Google",
+    "estrellas": 5,
+    "url": "https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJRb2lHIInQg0R9c62UDdKpl8"
+  },
+  {
+    "id": "noelia-del-rincon-robles",
+    "nombre": "Noelia del Rincón Robles",
+    "texto": "Tuve una llamada de valoración con Adrian, el arquitecto y fue muy amable conmigo ya que me ayudo a determinar de que manera resolver mi situación. Un placer encontrar gente asi en el mercado la verdad, valoro mucho la honestidad y el asesoramiento sincero de un profesional. Muchas gracias por tu atención ‼️",
+    "fecha": "2025-02-19",
+    "fuente": "Google",
+    "estrellas": 5,
+    "url": "https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJRb2lHIInQg0R9c62UDdKpl8"
+  },
+  {
+    "id": "gustavo-garcia-villanova",
+    "nombre": "Gustavo García-Villanova",
+    "texto": "Sin duda, el mejor estudio de arquitectura de Madrid. El equipo liderado por Adrián y Antonio, hizo un trabajo fantástico en la reforma de mi casa. Un trato amable, honesto y directo. Sin duda muy recomendable.",
+    "fecha": "2024-09-18",
+    "fuente": "Google",
+    "estrellas": 5,
+    "url": "https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJRb2lHIInQg0R9c62UDdKpl8"
+  },
+  {
+    "id": "jose-bonilla",
+    "nombre": "Jose Bonilla",
+    "texto": "Da gusto trabajar con gente tan profesional, desde el diseño hasta la obra, gracias por todo, sobretodo a Adrián, un abrazo",
+    "fecha": "2024-09-12",
+    "fuente": "Google",
+    "estrellas": 5,
+    "url": "https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJRb2lHIInQg0R9c62UDdKpl8"
+  },
+  {
+    "id": "manuel-de-castro",
+    "nombre": "Manuel de Castro",
+    "texto": "Totalmente recomendable. Hicieron la reforma integral de mi casa con total profesionalidad, cumpliendo plazos y ajustándose al presupuesto. Y siempre disponibles para cualquier duda o cambio.",
+    "fecha": "2024-01-23",
+    "fuente": "Google",
+    "estrellas": 5,
+    "url": "https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJRb2lHIInQg0R9c62UDdKpl8"
+  },
+  {
+    "id": "jesus-dominguez",
+    "nombre": "Jesús Domínguez",
+    "texto": "Ha pasado un año desde que realizamos una reforma integral y no hemos tenido ningún problema ni desperfecto. Los materiales son de primerísima calidad y los acabados son geniales. El equipo joven, dinámico y con un profundo conocimiento nos asesoró de manera estupenda, hemos quedado sorprendidos. ¡Sin duda lo recomendamos!",
+    "fecha": "2023-05-18",
+    "fuente": "Google",
+    "estrellas": 5,
+    "url": "https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJRb2lHIInQg0R9c62UDdKpl8"
+  }
+]

@@ -1,0 +1,421 @@
+---
+// Hero a pantalla completa: carrusel de obras (fundido + Ken Burns) con el texto encima.
+// La primera foto es la LCP (carga inmediata); el resto se activa después de cargar la página.
+// Accesible: botón de pausa (WCAG 2.2.2), puntos con nombre y sin autoplay si se pide menos movimiento.
+import type { ImageMetadata } from 'astro';
+import Foto from './Foto.astro';
+import Icono from './Icono.astro';
+import type { Idioma } from '../lib/sitio';
+
+interface Diapositiva {
+  src: ImageMetadata;
+  alt: string;
+  nombre: string;
+  zona: string;
+  href: string;
+}
+interface Props {
+  diapositivas: Diapositiva[];
+  idioma?: Idioma;
+  etiqueta: string;
+  titulo: string;
+  entradilla: string;
+  ctaPrincipal: { href: string; texto: string };
+  ctaSecundario: { href: string; texto: string };
+}
+const { diapositivas, idioma = 'es', etiqueta, titulo, entradilla, ctaPrincipal, ctaSecundario } = Astro.props;
+const es = idioma === 'es';
+const total = diapositivas.length;
+---
+
+<section class="hero" aria-labelledby="hero-titulo" aria-roledescription={es ? 'carrusel' : 'carousel'} data-hero>
+  <div class="hero-diapositivas" data-parallax>
+    {diapositivas.map((d, i) => (
+      <div
+        class:list={['hero-diapositiva', { activa: i === 0 }]}
+        role="group"
+        aria-roledescription={es ? 'diapositiva' : 'slide'}
+        aria-label={`${i + 1} ${es ? 'de' : 'of'} ${total}: ${d.nombre}`}
+        aria-hidden={i === 0 ? undefined : 'true'}
+        data-diapositiva={i}
+        data-nombre={d.nombre}
+        data-zona={d.zona}
+        data-href={d.href}
+      >
+        <Foto src={d.src} alt={d.alt} sizes="100vw" anchos={[640, 960, 1280, 1600, 1920]} prioridad={i === 0} />
+      </div>
+    ))}
+  </div>
+  <div class="hero-velo" aria-hidden="true"></div>
+
+  <div class="contenedor hero-contenido">
+    <div class="hero-texto">
+      <p class="etiqueta hero-etiqueta">{etiqueta}</p>
+      <h1 id="hero-titulo" set:html={titulo} />
+      <p class="hero-entradilla">{entradilla}</p>
+      <div class="botones">
+        <a class="boton hero-boton" href={ctaPrincipal.href} data-evento="presupuesto" data-evento-detalle="hero">
+          {ctaPrincipal.texto} <span class="hero-flecha" aria-hidden="true">→</span>
+        </a>
+        <a class="boton boton-linea hero-boton-linea" href={ctaSecundario.href} data-evento="whatsapp" data-evento-detalle="hero">
+          <Icono nombre="whatsapp" /> {ctaSecundario.texto}
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-controles">
+      <a class="hero-pie" href={diapositivas[0].href} data-hero-pie data-cursor={es ? 'Ver proyecto' : 'View project'}>
+        <span class="hero-pie-nombre" data-hero-nombre>{diapositivas[0].nombre}</span>
+        <span class="hero-pie-zona" data-hero-zona>{diapositivas[0].zona}</span>
+      </a>
+      <div class="hero-navegacion" data-solo-js>
+        <span class="hero-contador" aria-hidden="true"><span data-hero-actual>01</span> / {String(total).padStart(2, '0')}</span>
+        <ol role="list" class="hero-puntos">
+          {diapositivas.map((d, i) => (
+            <li>
+              <button type="button" class:list={['hero-punto', { activo: i === 0 }]} data-hero-ir={i} aria-label={`${es ? 'Ver' : 'Show'} ${d.nombre}`} aria-current={i === 0 ? 'true' : undefined}>
+                <span class="hero-punto-barra"></span>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <button type="button" class="hero-pausa" data-hero-pausa aria-pressed="false" data-etiqueta-pausa={es ? 'Pausar el carrusel' : 'Pause the carousel'} data-etiqueta-play={es ? 'Reanudar el carrusel' : 'Resume the carousel'}>
+          <span class="visualmente-oculto">{es ? 'Pausar el carrusel' : 'Pause the carousel'}</span>
+          <svg class="icono-pausa" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /></svg>
+          <svg class="icono-play" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <a class="hero-bajar" href="#manifiesto-titulo" aria-label={es ? 'Bajar al contenido' : 'Scroll to content'}>
+    <span class="hero-bajar-linea" aria-hidden="true"></span>
+  </a>
+</section>
+
+<script>
+  import '../scripts/hero';
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    min-height: 36rem;
+    overflow: hidden;
+    color: var(--piedra);
+    background: var(--tinta);
+    isolation: isolate;
+  }
+  .hero-diapositivas {
+    position: absolute;
+    inset: -4% 0 0;
+    z-index: -2;
+  }
+  .hero-diapositiva {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1400ms var(--curva);
+  }
+  /* Hasta que el JS las active, solo existe la primera: no compiten con la imagen LCP. */
+  .hero-diapositiva:not(.activa):not(.lista) {
+    display: none;
+  }
+  .hero-diapositiva.activa {
+    opacity: 1;
+    z-index: 1;
+  }
+  .hero-diapositiva :global(picture),
+  .hero-diapositiva :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-diapositiva.activa :global(img) {
+      animation: ken-burns 9s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+    }
+  }
+  @keyframes ken-burns {
+    from {
+      transform: scale(1.0);
+    }
+    to {
+      transform: scale(1.09);
+    }
+  }
+  /* Velo para que el texto claro tenga contraste sobre cualquier foto. */
+  .hero-velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgb(16 14 12 / 0.82) 0%, rgb(16 14 12 / 0.45) 38%, rgb(16 14 12 / 0.08) 70%),
+      linear-gradient(to right, rgb(16 14 12 / 0.45) 0%, transparent 60%);
+  }
+  .hero-contenido {
+    position: relative;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-content: end;
+    gap: var(--espacio-l);
+    padding-top: calc(var(--alto-header) + var(--espacio-l));
+    padding-bottom: var(--espacio-l);
+  }
+  .hero-texto {
+    align-self: end;
+    display: grid;
+    gap: var(--espacio-m);
+    max-width: 52rem;
+  }
+  .hero-etiqueta {
+    color: #e2cfb8;
+  }
+  .hero-texto h1 {
+    font-size: clamp(2.6rem, 1.3rem + 5vw, 6rem);
+    line-height: 0.98;
+    max-width: 14ch;
+    color: var(--piedra);
+    text-shadow: 0 1px 24px rgb(0 0 0 / 0.18);
+  }
+  .hero-texto h1 :global(em) {
+    color: #e2cfb8;
+  }
+  .hero-entradilla {
+    font-size: var(--paso-1);
+    line-height: 1.5;
+    max-width: 34rem;
+    color: rgb(244 241 236 / 0.92);
+  }
+  .hero-boton {
+    --fondo: var(--piedra);
+    --color: var(--tinta);
+  }
+  .hero-boton:hover {
+    --fondo: var(--blanco);
+  }
+  .hero-flecha {
+    display: inline-block;
+    transition: transform var(--t-rapida) var(--curva);
+  }
+  .hero-boton:hover .hero-flecha {
+    transform: translateX(4px);
+  }
+  .hero-boton-linea {
+    --color: var(--piedra);
+    border-color: rgb(244 241 236 / 0.55);
+  }
+  .hero-boton-linea:hover {
+    --fondo: var(--piedra);
+    --color: var(--tinta);
+    border-color: var(--piedra);
+  }
+  .hero :focus-visible {
+    outline-color: var(--piedra);
+  }
+
+  /* Entrada del texto: CSS puro, arranca con el primer pintado (no depende del JS). */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-texto > * {
+      animation: hero-entrada 1100ms var(--curva) both;
+    }
+    .hero-texto > :nth-child(2) {
+      animation-delay: 120ms;
+    }
+    .hero-texto > :nth-child(3) {
+      animation-delay: 260ms;
+    }
+    .hero-texto > :nth-child(4) {
+      animation-delay: 380ms;
+    }
+    .hero-controles {
+      animation: hero-entrada 1100ms 520ms var(--curva) both;
+    }
+    /* El título es el elemento LCP: entra moviéndose pero visible desde el primer pintado
+       (un fundido desde opacidad 0 retrasa el LCP). */
+    .hero-texto > h1 {
+      animation-name: hero-titulo;
+    }
+  }
+  @keyframes hero-titulo {
+    from {
+      transform: translateY(0.35em);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes hero-entrada {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .hero-controles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--espacio-s) var(--espacio-l);
+    padding-top: var(--espacio-s);
+    border-top: 1px solid rgb(244 241 236 / 0.28);
+  }
+  .hero-pie {
+    display: grid;
+    gap: 0.1rem;
+    min-height: 2.75rem;
+    text-decoration: none;
+  }
+  .hero-pie-nombre {
+    font-family: var(--titulos);
+    font-size: var(--paso-1);
+  }
+  .hero-pie-zona {
+    font-size: var(--paso--2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(244 241 236 / 0.8);
+  }
+  .hero-pie:hover .hero-pie-nombre {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+  .hero-navegacion {
+    display: none;
+    align-items: center;
+    gap: var(--espacio-s);
+  }
+  @media (scripting: enabled) {
+    .hero-navegacion {
+      display: flex;
+    }
+  }
+  .hero-contador {
+    font-variant-numeric: tabular-nums;
+    font-size: var(--paso--1);
+    letter-spacing: 0.08em;
+  }
+  .hero-puntos {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .hero-punto {
+    display: grid;
+    align-items: center;
+    width: clamp(1.75rem, 1rem + 2vw, 3rem);
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .hero-punto-barra {
+    position: relative;
+    display: block;
+    height: 2px;
+    background: rgb(244 241 236 / 0.35);
+    overflow: hidden;
+  }
+  .hero-punto-barra::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--piedra);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .hero-punto.activo .hero-punto-barra::after {
+    transform: scaleX(1);
+    transition: transform var(--duracion-diapositiva, 6000ms) linear;
+  }
+  .hero[data-pausado] .hero-punto.activo .hero-punto-barra::after {
+    transition: none;
+  }
+  .hero-punto:hover .hero-punto-barra {
+    background: rgb(244 241 236 / 0.6);
+  }
+  .hero-pausa {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgb(244 241 236 / 0.45);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--piedra);
+    transition:
+      background var(--t-rapida) var(--curva),
+      transform var(--t-rapida) var(--curva);
+  }
+  .hero-pausa:hover {
+    background: rgb(244 241 236 / 0.14);
+  }
+  .hero-pausa:active {
+    transform: scale(0.92);
+  }
+  .hero-pausa .icono-play,
+  .hero-pausa[aria-pressed='true'] .icono-pausa {
+    display: none;
+  }
+  .hero-pausa[aria-pressed='true'] .icono-play {
+    display: block;
+  }
+
+  .hero-bajar {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    display: none;
+    width: 2.75rem;
+    height: 4.5rem;
+    transform: translateX(-50%);
+  }
+  .hero-bajar-linea {
+    position: absolute;
+    left: 50%;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: rgb(244 241 236 / 0.3);
+    overflow: hidden;
+  }
+  .hero-bajar-linea::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 1px;
+    height: 40%;
+    background: var(--piedra);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-bajar-linea::after {
+      animation: bajar 2.2s var(--curva) infinite;
+    }
+  }
+  @keyframes bajar {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(260%);
+    }
+  }
+  @media (min-width: 60rem) {
+    .hero-bajar {
+      display: block;
+    }
+    .hero-contenido {
+      padding-bottom: var(--espacio-xl);
+    }
+  }
+</style>

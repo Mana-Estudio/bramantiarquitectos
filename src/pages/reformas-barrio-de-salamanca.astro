@@ -1,0 +1,159 @@
+---
+// Landing por zona: solo existe donde hay 2 o más proyectos publicados (Barrio de Salamanca).
+import Base from '../layouts/Base.astro';
+import Migas from '../components/Migas.astro';
+import TarjetaProyecto from '../components/TarjetaProyecto.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import Foto from '../components/Foto.astro';
+import { proyectos as todos, promociones } from '../lib/contenido';
+import { migas as migasLd } from '../lib/jsonld';
+
+const ZONA = 'Barrio de Salamanca';
+const lista = await todos();
+const enZona = lista.filter((p) => p.data.zona === ZONA);
+const promosZona = (await promociones()).filter((p) => p.data.zona === ZONA);
+if (enZona.length < 2) throw new Error('La landing de zona necesita al menos 2 proyectos en el Barrio de Salamanca');
+const migas = [
+  { nombre: 'Inicio', url: '/' },
+  { nombre: 'Reformas integrales', url: '/reformas-integrales-madrid/' },
+  { nombre: ZONA, url: '/reformas-barrio-de-salamanca/' },
+];
+const textoWhatsapp = 'Hola, tengo una vivienda en el Barrio de Salamanca y me gustaría hablar de una reforma.';
+---
+
+<Base
+  titulo="Reformas integrales en el Barrio de Salamanca"
+  descripcion={`Reformas integrales e interiorismo en el Barrio de Salamanca de Madrid: ${enZona.map((p) => p.data.nombre).join(', ')}, proyectos de Bramanti Arquitectos.`.slice(0, 155)}
+  imagen={enZona[0].data.portada}
+  whatsappTexto={textoWhatsapp}
+  jsonld={[migasLd(migas)]}
+>
+  <section class="contenedor cabecera">
+    <Migas items={migas} />
+    <div class="cabecera-grilla">
+      <h1>Reformas integrales en el <em>Barrio de Salamanca.</em></h1>
+      <div class="flujo">
+        <p class="entradilla">Viviendas clásicas con molduras, techos altos y estructuras que ya no responden a cómo vivimos hoy. Las reformamos desde el proyecto: distribución, luz, instalaciones e interiorismo en una misma propuesta.</p>
+        <p class="secundario">Nuestro estudio y showroom está en la Calle de Alcalá, 229. Estos son algunos de los proyectos que hemos hecho en el barrio.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="contenedor proyectos" aria-label={`Proyectos en ${ZONA}`}>
+    {enZona.map((p, i) => (
+      <TarjetaProyecto proyecto={p} indice={lista.findIndex((x) => x.id === p.id) + 1} formato={i === 0 ? 'horizontal' : 'vertical'} nivel="h2" sizes="(min-width: 60rem) 45vw, 100vw" />
+    ))}
+  </section>
+
+  {promosZona.length > 0 && (
+    <section class="seccion fondo-lino" aria-labelledby="venta-titulo">
+      <div class="contenedor venta">
+        <div class="foto venta-foto">
+          <Foto src={promosZona[0].data.portada} alt={promosZona[0].data.portadaAlt} sizes="(min-width: 60rem) 50vw, 100vw" anchos={[480, 800, 1200]} />
+        </div>
+        <div class="flujo">
+          <p class="etiqueta">En venta</p>
+          <h2 id="venta-titulo">{promosZona[0].data.nombre}</h2>
+          <p>{promosZona[0].data.resumen}</p>
+          <a class="enlace-flecha" href={promosZona[0].data.url}>Ver la vivienda</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="seccion" aria-labelledby="como-titulo">
+    <div class="contenedor grilla">
+      <h2 id="como-titulo" class="como-titulo">Cómo trabajamos <em>en el barrio.</em></h2>
+      <ul role="list" class="como-lista">
+        <li><h3>Normativa y edificio</h3><p class="secundario">Estudiamos la protección del edificio, los elementos singulares y las normas de la comunidad antes de proponer nada.</p></li>
+        <li><h3>Conservar lo valioso</h3><p class="secundario">Molduras, carpinterías o estructura original: decidimos contigo qué se recupera y qué se renueva.</p></li>
+        <li><h3>Luz y distribución</h3><p class="secundario">Reordenamos estancias fragmentadas para que la luz natural recorra la vivienda.</p></li>
+        <li><h3>Un único interlocutor</h3><p class="secundario">Proyecto, licencias y obra coordinados por el mismo equipo, de principio a fin.</p></li>
+      </ul>
+      <p class="como-enlace"><a class="enlace-flecha" href="/reformas-integrales-madrid/">Servicio de reformas integrales en Madrid</a></p>
+    </div>
+  </section>
+
+  <CtaFinal titulo="¿Tienes una vivienda en el Barrio de Salamanca?" consulta="servicio=reforma-integral" whatsappTexto={textoWhatsapp} />
+</Base>
+
+<style>
+  .cabecera {
+    padding-block: var(--espacio-m) var(--espacio-xl);
+  }
+  .cabecera-grilla {
+    display: grid;
+    gap: var(--espacio-m);
+    margin-top: var(--espacio-l);
+    align-items: end;
+  }
+  @media (min-width: 60rem) {
+    .cabecera-grilla {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+  .proyectos {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+    padding-bottom: var(--espacio-3xl);
+  }
+  @media (min-width: 48rem) {
+    .proyectos {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .proyectos > :global(:first-child) {
+      grid-column: 1 / -1;
+    }
+  }
+  .venta {
+    display: grid;
+    gap: var(--espacio-l);
+    align-items: center;
+  }
+  .venta-foto {
+    aspect-ratio: 3 / 2;
+  }
+  .venta h2 {
+    font-size: var(--paso-5);
+  }
+  @media (min-width: 60rem) {
+    .venta {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .como-titulo,
+  .como-lista,
+  .como-enlace {
+    grid-column: 1 / -1;
+  }
+  .como-titulo {
+    font-size: var(--paso-5);
+    margin-bottom: var(--espacio-l);
+  }
+  .como-lista {
+    display: grid;
+    gap: var(--espacio-l) var(--separacion);
+  }
+  .como-lista li {
+    display: grid;
+    gap: var(--espacio-2xs);
+    padding-top: var(--espacio-s);
+    border-top: 1px solid var(--linea-fuerte);
+  }
+  .como-lista h3 {
+    font-size: var(--paso-2);
+  }
+  .como-enlace {
+    margin-top: var(--espacio-l);
+  }
+  @media (min-width: 48rem) {
+    .como-lista {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 68rem) {
+    .como-lista {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,290 @@
+---
+import { render, getEntry, type CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Foto from '../Foto.astro';
+import Migas from '../Migas.astro';
+import Galeria from '../Galeria.astro';
+import AntesDespues from '../AntesDespues.astro';
+import TarjetaProyecto from '../TarjetaProyecto.astro';
+import CtaFinal from '../CtaFinal.astro';
+import Videos from '../Videos.astro';
+import { proyectos as todos, relacionados, videos } from '../../lib/contenido';
+import { UI, RUTAS, RUTAS_SERVICIO, TIPOS, ZONAS_EN, numero } from '../../lib/i18n';
+import type { Idioma } from '../../lib/sitio';
+import { migas as migasLd, obra } from '../../lib/jsonld';
+
+interface Props {
+  proyecto: CollectionEntry<'proyectos'>;
+  idioma: Idioma;
+}
+const { proyecto, idioma } = Astro.props;
+const es = idioma === 'es';
+const t = UI[idioma];
+const r = RUTAS[idioma];
+const d = proyecto.data;
+const en = es ? undefined : await getEntry('proyectosEn', proyecto.id);
+const lista = await todos();
+const indice = lista.findIndex((p) => p.id === proyecto.id) + 1;
+const otros = relacionados(proyecto, lista, 3);
+const delProyecto = await videos((v) => v.proyecto === proyecto.id);
+const videosObra = delProyecto.filter((v) => !v.data.testimonio);
+const testimonios = delProyecto.filter((v) => v.data.testimonio);
+
+const { Content } = await render(es || !en ? proyecto : en);
+const zona = es ? d.zona : (en?.data.zona ?? ZONAS_EN[d.zona] ?? d.zona);
+const tipoTexto = es ? d.tipoTexto : (en?.data.tipoTexto ?? d.tipos.map((x) => TIPOS[x].en).join(' & '));
+const subtitulo = es ? d.subtitulo : en?.data.subtitulo;
+// Para la cita grande de la ficha: frases completas (sin cortes con "…").
+const frasesCompletas = (texto: string, max = 170) => {
+  const frases = texto.replace(/…$/, '').match(/[^.!?]+[.!?]+/g) ?? [];
+  let salida = '';
+  for (const f of frases) {
+    if ((salida + f).trim().length > max) break;
+    salida += f;
+  }
+  return salida.trim() || texto;
+};
+const resumen = frasesCompletas(es ? d.resumen : (en?.data.resumen ?? d.resumen));
+const descripcion = es ? d.descripcion : (en?.data.descripcion ?? d.descripcion);
+const portadaAlt = es ? d.portadaAlt : (en?.data.portadaAlt ?? d.portadaAlt);
+
+const ficha = [
+  { k: t.zona, v: zona },
+  { k: t.tipo, v: tipoTexto },
+  d.anio ? { k: t.anio, v: String(d.anio) } : null,
+  d.superficie ? { k: t.superficie, v: d.superficie } : null,
+  d.duracion ? { k: t.duracion, v: es ? d.duracion : d.duracion.replace('meses', 'months') } : null,
+  { k: t.estado, v: d.estado === 'render' ? t.render : t.obraTerminada },
+  d.fotografo ? { k: es ? 'Fotografía' : 'Photography', v: d.fotografo } : null,
+].filter((x): x is { k: string; v: string } => x !== null);
+
+const altEn = (alt: string, estancia: string) => {
+  if (es) return alt;
+  const nombres: Record<string, string> = { salon: 'living room', cocina: 'kitchen', bano: 'bathroom', dormitorio: 'bedroom', pasillo: 'hallway', comedor: 'dining room', terraza: 'terrace', almacenaje: 'storage', despacho: 'workspace', fachada: 'façade', plano: 'floor plan' };
+  return `${d.nombre}: ${nombres[estancia] ?? 'detail'}${/antes/i.test(alt) ? ' before the renovation' : ' after the renovation'}`;
+};
+const galeria = d.galeria.map((g) => ({ src: g.src, alt: altEn(g.alt, g.estancia) }));
+const pares = d.comparaciones.map((c) => ({ ...c, antesAlt: altEn(c.antesAlt, c.estancia), despuesAlt: altEn(c.despuesAlt, c.estancia) }));
+const antesUsadas = new Set(d.comparaciones.map((c) => c.antes.src));
+const extraAntes = d.antes.filter((a) => !antesUsadas.has(a.src.src)).map((a) => ({ src: a.src, alt: altEn(a.alt, a.estancia) }));
+
+const textoWhatsapp = es
+  ? `Hola, vi ${d.nombre} en vuestra web y me gustaría hablar de un proyecto parecido.`
+  : `Hello, I saw ${d.nombre} on your website and would like to talk about a similar project.`;
+const servicioPrincipal = d.tipos[0];
+const migas = [
+  { nombre: t.inicio, url: r.inicio },
+  { nombre: t.proyectos, url: r.proyectos },
+  { nombre: d.nombre, url: r.proyecto(proyecto.id) },
+];
+const og = await getImage({ src: d.portada, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+// Título SEO ≤ 60: del más descriptivo al más corto, distinto en cada idioma.
+const candidatos = es
+  ? [`${d.nombre}: ${d.tipoTexto.toLowerCase()} en ${d.zona}`, `${d.nombre}: reforma integral en ${d.zona}`, `${d.nombre}: reforma en ${d.zona}`, `${d.nombre}: ${d.tipoTexto.toLowerCase()}`]
+  : [`${d.nombre}: ${tipoTexto.toLowerCase()} in ${zona}`, `${d.nombre}: full renovation in ${zona}`, `${d.nombre}: renovation in ${zona}`, `${d.nombre}: ${tipoTexto.toLowerCase()}`];
+const tituloSeo = candidatos.find((c) => c.length <= 60) ?? d.nombre;
+const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
+---
+
+<Base
+  idioma={idioma}
+  titulo={tituloSeo}
+  descripcion={descripcion}
+  imagen={d.portada}
+  tipoOg="article"
+  whatsappTexto={textoWhatsapp}
+  jsonld={[
+    migasLd(migas),
+    obra({ nombre: d.nombre, descripcion, url: r.proyecto(proyecto.id), imagen: new URL(og.src, Astro.site).href, zona: d.zona, anio: d.anio, idioma }),
+  ]}
+>
+  <article class="ficha">
+    <header class="contenedor ficha-cabecera">
+      <Migas items={migas} idioma={idioma} />
+      <div class="ficha-titulo">
+        <span class="numero" aria-hidden="true">{numero(indice)} / {numero(lista.length)}</span>
+        <h1>{d.nombre}</h1>
+        {subtitulo && <p class="entradilla">{subtitulo}</p>}
+      </div>
+    </header>
+
+    <div class="ficha-hero foto" transition:name={vt}>
+      <Foto src={d.portada} alt={portadaAlt} sizes="100vw" anchos={[640, 960, 1280, 1600, 1920]} prioridad />
+    </div>
+
+    <div class="contenedor ficha-datos">
+      <dl class="ficha-tecnica">
+        {ficha.map((f) => (
+          <div>
+            <dt>{f.k}</dt>
+            <dd>{f.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <section class="contenedor ficha-relato" aria-label={es ? 'El proyecto' : 'The project'}>
+      <p class="ficha-resumen titulo">{resumen}</p>
+      <div class="prosa relato">
+        <Content />
+      </div>
+      {d.enVenta && es && (
+        <aside class="aviso-venta">
+          <p class="etiqueta sin-linea">Disponible</p>
+          <p>Esta vivienda está a la venta. Si te interesa, escríbenos y te enviamos toda la información.</p>
+          <a class="enlace-flecha" href={`/contacto/?proyecto=${proyecto.id}#presupuesto`} data-evento="presupuesto" data-evento-detalle="venta">Solicitar información</a>
+        </aside>
+      )}
+    </section>
+
+    <Videos
+      videos={videosObra}
+      idioma={idioma}
+      id="videos-proyecto"
+      titulo={es ? `${d.nombre}, en vídeo.` : `${d.nombre} on video.`}
+    />
+
+    <AntesDespues pares={pares} extra={extraAntes} idioma={idioma} />
+
+    <Videos
+      videos={testimonios}
+      idioma={idioma}
+      id="videos-testimonio"
+      fondo="tinta"
+      etiqueta={es ? 'Testimonio' : 'Testimonial'}
+      titulo={es ? 'Lo cuenta quien vive aquí.' : 'In the words of the person who lives here.'}
+    />
+
+    <Galeria fotos={galeria} titulo={es ? `${d.nombre}, en detalle` : `${d.nombre} in detail`} idioma={idioma} />
+
+    <section class="seccion relacionados" aria-labelledby="relacionados-titulo">
+      <div class="contenedor">
+        <header class="relacionados-cabecera">
+          <h2 id="relacionados-titulo">{es ? <>Otros proyectos <em>parecidos.</em></> : <>Similar <em>projects.</em></>}</h2>
+          <a class="enlace-flecha" href={RUTAS_SERVICIO[servicioPrincipal][idioma]}>{es ? `Servicio de ${TIPOS[servicioPrincipal].es.toLowerCase()}` : `${TIPOS[servicioPrincipal].en} service`}</a>
+        </header>
+        <div class="relacionados-lista">
+          {otros.map((p) => (
+            <TarjetaProyecto proyecto={p} indice={lista.findIndex((x) => x.id === p.id) + 1} idioma={idioma} sizes="(min-width: 60rem) 30vw, 100vw" />
+          ))}
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <CtaFinal
+    idioma={idioma}
+    titulo={es ? 'Quiero un proyecto así.' : 'I want a project like this.'}
+    texto={es ? `Cuéntanos qué vivienda quieres transformar. Tomamos ${d.nombre} como referencia para la primera conversación.` : `Tell us about the home you want to transform. We will use ${d.nombre} as a reference for the first conversation.`}
+    boton={es ? 'Quiero un proyecto así' : 'I want a project like this'}
+    consulta={`proyecto=${proyecto.id}&servicio=${servicioPrincipal}`}
+    whatsappTexto={textoWhatsapp}
+  />
+</Base>
+
+<style>
+  .ficha-cabecera {
+    padding-block: var(--espacio-m) var(--espacio-l);
+  }
+  .ficha-titulo {
+    display: grid;
+    gap: var(--espacio-s);
+    margin-top: var(--espacio-l);
+  }
+  .ficha-titulo h1 {
+    font-size: clamp(2.5rem, 1.4rem + 4.8vw, 6.2rem);
+  }
+  .ficha-hero {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    max-height: 88vh;
+  }
+  @media (min-width: 60rem) {
+    .ficha-hero {
+      aspect-ratio: 16 / 9;
+    }
+  }
+  .ficha-tecnica {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--espacio-s) var(--separacion);
+    padding-block: var(--espacio-m);
+    border-bottom: 1px solid var(--linea);
+  }
+  .ficha-tecnica div {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .ficha-tecnica dt {
+    font-size: var(--paso--2);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bronce-texto);
+  }
+  .ficha-tecnica dd {
+    font-size: var(--paso-0);
+  }
+  @media (min-width: 48rem) {
+    .ficha-tecnica {
+      grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    }
+  }
+  .ficha-relato {
+    display: grid;
+    gap: var(--espacio-xl);
+    padding-block: var(--espacio-2xl);
+  }
+  .ficha-resumen {
+    font-size: var(--paso-4);
+    line-height: 1.2;
+    max-width: 30ch;
+  }
+  @media (min-width: 60rem) {
+    .ficha-relato {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--separacion);
+    }
+    .ficha-resumen {
+      grid-column: 1 / span 5;
+      position: sticky;
+      top: calc(var(--alto-header-compacto) + var(--espacio-l));
+      align-self: start;
+    }
+    .relato,
+    .aviso-venta {
+      grid-column: 7 / -1;
+    }
+  }
+  .relato :global(p:has(> img:only-child)) {
+    margin-inline: calc(var(--separacion) * -1);
+  }
+  .aviso-venta {
+    display: grid;
+    gap: var(--espacio-xs);
+    justify-items: start;
+    padding: var(--espacio-m);
+    background: var(--lino);
+  }
+  .relacionados-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--espacio-s);
+    margin-bottom: var(--espacio-xl);
+  }
+  .relacionados-cabecera h2 {
+    font-size: var(--paso-5);
+  }
+  .relacionados-lista {
+    display: grid;
+    gap: var(--espacio-xl) var(--separacion);
+  }
+  @media (min-width: 48rem) {
+    .relacionados-lista {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

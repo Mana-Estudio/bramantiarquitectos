@@ -1,0 +1,363 @@
+---
+// Formulario de presupuesto en 2 pasos. Funciona sin JS (POST normal a /api/contacto, que redirige
+// a /gracias/); con JS valida por pasos, precarga ?proyecto= y ?servicio= y envía con fetch.
+import { getCollection } from 'astro:content';
+import { TIPOS_CONSULTA, PLAZOS, INVERSIONES } from '../lib/contacto';
+import { RUTAS } from '../lib/i18n';
+import type { Idioma } from '../lib/sitio';
+
+interface Props {
+  idioma?: Idioma;
+}
+const { idioma = 'es' } = Astro.props;
+const es = idioma === 'es';
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA'; // clave pública de prueba de Cloudflare
+const nombres = Object.fromEntries([
+  ...(await getCollection('proyectos')).map((p) => [p.id, p.data.nombre]),
+  ...(await getCollection('promociones')).map((p) => [p.id, p.data.nombre]),
+]);
+const L = (o: { es: string; en: string }) => o[idioma];
+---
+
+<form
+  class="formulario"
+  id="formulario-presupuesto"
+  action="/api/contacto"
+  method="post"
+  data-formulario
+  data-gracias={RUTAS[idioma].gracias}
+  data-proyectos={JSON.stringify(nombres)}
+  data-idioma={idioma}
+  novalidate
+>
+  <p class="paso-indicador" data-indicador aria-live="polite">{es ? 'Paso 1 de 2' : 'Step 1 of 2'}</p>
+  <p class="referencia" data-referencia hidden></p>
+
+  <fieldset class="paso" data-paso="1">
+    <legend class="titulo-3" tabindex="-1">{es ? 'Tu proyecto' : 'Your project'}</legend>
+
+    <div class="campo">
+      <span class="campo-etiqueta" id="tipo-etiqueta">{es ? 'Tipo de proyecto' : 'Type of project'} <span aria-hidden="true">*</span></span>
+      <div class="opciones" role="radiogroup" aria-labelledby="tipo-etiqueta" aria-required="true">
+        {Object.entries(TIPOS_CONSULTA).map(([valor, texto], i) => (
+          <label class="opcion">
+            <input type="radio" name="tipo" value={valor} required={i === 0} data-error={es ? 'Elige el tipo de proyecto.' : 'Choose a type of project.'} />
+            <span>{L(texto)}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <div class="campos-fila">
+      <div class="campo">
+        <label for="f-zona" class="campo-etiqueta">{es ? 'Zona o municipio' : 'Area or town'} <span aria-hidden="true">*</span></label>
+        <input id="f-zona" name="zona" type="text" required minlength="2" maxlength="120" autocomplete="address-level2" placeholder={es ? 'Ej.: Barrio de Salamanca' : 'e.g. Salamanca district'} data-error={es ? 'Indica la zona de la vivienda.' : 'Tell us where the home is.'} />
+      </div>
+      <div class="campo">
+        <label for="f-superficie" class="campo-etiqueta">{es ? 'Superficie aproximada (m²)' : 'Approximate size (m²)'}</label>
+        <input id="f-superficie" name="superficie" type="number" inputmode="numeric" min="10" max="99999" step="1" placeholder="120" data-error={es ? 'Escribe solo números, por ejemplo 120.' : 'Numbers only, for example 120.'} />
+      </div>
+    </div>
+
+    <div class="campos-fila">
+      <div class="campo">
+        <label for="f-plazo" class="campo-etiqueta">{es ? '¿Cuándo te gustaría empezar?' : 'When would you like to start?'} <span aria-hidden="true">*</span></label>
+        <select id="f-plazo" name="plazo" required data-error={es ? 'Elige un plazo aproximado.' : 'Choose an approximate timeframe.'}>
+          <option value="">{es ? 'Elige una opción' : 'Choose an option'}</option>
+          {Object.entries(PLAZOS).map(([valor, texto]) => <option value={valor}>{L(texto)}</option>)}
+        </select>
+      </div>
+      <div class="campo">
+        <label for="f-inversion" class="campo-etiqueta">{es ? 'Inversión prevista (opcional)' : 'Expected budget (optional)'}</label>
+        <select id="f-inversion" name="inversion" aria-describedby="f-inversion-ayuda">
+          <option value="">{es ? 'Sin indicar' : 'Not specified'}</option>
+          {Object.entries(INVERSIONES).map(([valor, texto]) => <option value={valor}>{L(texto)}</option>)}
+        </select>
+        <p class="ayuda" id="f-inversion-ayuda">{es ? 'Nos ayuda a orientar la primera conversación. No es un compromiso.' : 'It helps us frame the first conversation. It is not a commitment.'}</p>
+      </div>
+    </div>
+
+    <div class="paso-acciones" data-solo-js>
+      <a href="#paso-2" class="boton" data-siguiente>{es ? 'Siguiente: tus datos' : 'Next: your details'}</a>
+    </div>
+  </fieldset>
+
+  <fieldset class="paso" data-paso="2" id="paso-2">
+    <legend class="titulo-3" tabindex="-1">{es ? 'Tus datos' : 'Your details'}</legend>
+
+    <div class="campos-fila">
+      <div class="campo">
+        <label for="f-nombre" class="campo-etiqueta">{es ? 'Nombre' : 'Name'} <span aria-hidden="true">*</span></label>
+        <input id="f-nombre" name="nombre" type="text" required minlength="2" maxlength="120" autocomplete="name" data-error={es ? 'Escribe tu nombre.' : 'Please enter your name.'} />
+      </div>
+      <div class="campo">
+        <label for="f-telefono" class="campo-etiqueta">{es ? 'Teléfono' : 'Phone'} <span aria-hidden="true">*</span></label>
+        <input id="f-telefono" name="telefono" type="tel" required autocomplete="tel" pattern="[+()0-9\s.\-]{9,20}" placeholder="+34 600 000 000" data-error={es ? 'Revisa el teléfono: al menos 9 cifras.' : 'Check the phone number: at least 9 digits.'} />
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="f-email" class="campo-etiqueta">Email <span aria-hidden="true">*</span></label>
+      <input id="f-email" name="email" type="email" required maxlength="160" autocomplete="email" spellcheck="false" data-error={es ? 'Revisa el email, por ejemplo nombre@dominio.com.' : 'Check the email, e.g. name@domain.com.'} />
+    </div>
+
+    <div class="campo">
+      <label for="f-mensaje" class="campo-etiqueta">{es ? 'Cuéntanos tu proyecto' : 'Tell us about your project'}</label>
+      <textarea id="f-mensaje" name="mensaje" rows="5" maxlength="4000" placeholder={es ? 'Estado de la vivienda, qué te gustaría cambiar, cómo vivís…' : 'Condition of the home, what you would like to change, how you live…'}></textarea>
+    </div>
+
+    <div class="rgpd">
+      <h3 class="etiqueta sin-linea">{es ? 'Información básica sobre protección de datos' : 'Basic data protection information'}</h3>
+      {es ? (
+        <dl>
+          <div><dt>Responsable</dt><dd>Bramantia Index, S.L.</dd></div>
+          <div><dt>Finalidad</dt><dd>Responder a tu consulta y enviarte la información que solicitas.</dd></div>
+          <div><dt>Legitimación</dt><dd>Tu consentimiento y la aplicación de medidas precontractuales a petición tuya.</dd></div>
+          <div><dt>Destinatarios</dt><dd>No se ceden datos a terceros salvo obligación legal. Encargados: Cloudflare (alojamiento y antispam) y el proveedor de envío de correo.</dd></div>
+          <div><dt>Derechos</dt><dd>Acceso, rectificación, supresión, oposición, limitación y portabilidad, escribiendo a info@bramantiarquitectos.com.</dd></div>
+          <div><dt>Más información</dt><dd><a href="/politica-de-privacidad/">Política de privacidad</a></dd></div>
+        </dl>
+      ) : (
+        <dl>
+          <div><dt>Controller</dt><dd>Bramantia Index, S.L.</dd></div>
+          <div><dt>Purpose</dt><dd>To answer your enquiry and send you the information you request.</dd></div>
+          <div><dt>Legal basis</dt><dd>Your consent and pre-contractual steps taken at your request.</dd></div>
+          <div><dt>Recipients</dt><dd>No data is shared with third parties unless legally required. Processors: Cloudflare (hosting and anti-spam) and the email delivery provider.</dd></div>
+          <div><dt>Rights</dt><dd>Access, rectification, erasure, objection, restriction and portability, by writing to info@bramantiarquitectos.com.</dd></div>
+          <div><dt>More information</dt><dd><a href="/politica-de-privacidad/" hreflang="es">Privacy policy (in Spanish)</a></dd></div>
+        </dl>
+      )}
+      <label class="check">
+        <input type="checkbox" name="consentimiento" value="si" required data-error={es ? 'Necesitamos tu consentimiento para responderte.' : 'We need your consent to reply.'} />
+        <span>{es ? 'He leído la información básica y acepto el tratamiento de mis datos para recibir respuesta.' : 'I have read the basic information and agree to my data being processed so you can reply.'} <span aria-hidden="true">*</span></span>
+      </label>
+    </div>
+
+    <div class="trampa" aria-hidden="true">
+      <label for="f-web">No rellenes este campo</label>
+      <input id="f-web" name="web" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <input type="hidden" name="proyecto" value="" data-campo-proyecto />
+    <input type="hidden" name="idioma" value={idioma} />
+    <input type="hidden" name="pagina" value={Astro.url.pathname} />
+
+    <div class="cf-turnstile" data-sitekey={siteKey} data-language={idioma} data-theme="light" data-size="flexible"></div>
+
+    <p class="estado" data-estado role="status" aria-live="polite"></p>
+
+    <div class="paso-acciones">
+      <button type="button" class="boton boton-linea" data-atras data-solo-js>{es ? 'Atrás' : 'Back'}</button>
+      <button type="submit" class="boton" data-enviar data-evento="formulario-enviado">{es ? 'Enviar consulta' : 'Send enquiry'}</button>
+    </div>
+    <p class="ayuda">{es ? 'Te respondemos por email o teléfono. Los campos con * son obligatorios.' : 'We will reply by email or phone. Fields marked * are required.'}</p>
+  </fieldset>
+</form>
+
+<script>
+  import '../scripts/formulario';
+</script>
+
+<style>
+  .formulario {
+    display: grid;
+    gap: var(--espacio-l);
+  }
+  .paso {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--espacio-m);
+    min-width: 0;
+  }
+  .paso[hidden] {
+    display: none;
+  }
+  /* Sin JS: un solo formulario largo. Con JS: dos pasos, ya resueltos al pintar (CLS 0). */
+  [data-solo-js],
+  .paso-indicador {
+    display: none;
+  }
+  @media (scripting: enabled) {
+    .paso-indicador {
+      display: block;
+    }
+    .paso-acciones[data-solo-js] {
+      display: flex;
+    }
+    button[data-solo-js] {
+      display: inline-flex;
+    }
+    .formulario:not(.en-paso-2):not(:has(#paso-2:target)) .paso[data-paso='2'],
+    .formulario.en-paso-2 .paso[data-paso='1'] {
+      display: none;
+    }
+  }
+  .paso legend {
+    font-size: var(--paso-3);
+    padding: 0;
+    margin-bottom: var(--espacio-s);
+  }
+  .paso legend:focus {
+    outline: none;
+  }
+  .paso-indicador,
+  .referencia {
+    font-size: var(--paso--1);
+    color: var(--gris);
+  }
+  .referencia {
+    padding: var(--espacio-xs) var(--espacio-s);
+    background: var(--lino);
+    color: var(--tinta);
+  }
+  .campos-fila {
+    display: grid;
+    gap: var(--espacio-m);
+  }
+  @media (min-width: 40rem) {
+    .campos-fila {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .campo {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .campo-etiqueta {
+    font-size: var(--paso--1);
+    font-weight: 600;
+  }
+  .campo input:not([type='radio']):not([type='checkbox']),
+  .campo select,
+  .campo textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 0;
+    background: var(--blanco);
+    font-size: 1rem;
+  }
+  .campo select {
+    appearance: none;
+    background: var(--blanco)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%231c1a17' stroke-width='1.5'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E")
+      no-repeat right 1rem center;
+    padding-right: 2.5rem;
+  }
+  .campo textarea {
+    resize: vertical;
+  }
+  .campo input:focus-visible,
+  .campo select:focus-visible,
+  .campo textarea:focus-visible {
+    outline: 2px solid var(--tinta);
+    outline-offset: 1px;
+  }
+  .formulario.validado :invalid:not(fieldset) {
+    border-color: #a3341f;
+  }
+  .ayuda {
+    font-size: var(--paso--2);
+    color: var(--gris);
+  }
+  .opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .opcion {
+    position: relative;
+  }
+  .opcion input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .opcion span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 999px;
+    background: var(--blanco);
+    font-size: var(--paso--1);
+  }
+  .opcion input:checked + span {
+    background: var(--tinta);
+    border-color: var(--tinta);
+    color: var(--piedra);
+  }
+  .opcion input:focus-visible + span {
+    outline: 2px solid var(--tinta);
+    outline-offset: 3px;
+  }
+  .rgpd {
+    display: grid;
+    gap: var(--espacio-s);
+    padding: var(--espacio-s);
+    border: 1px solid var(--linea);
+    font-size: var(--paso--2);
+  }
+  .rgpd dl {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .rgpd dl div {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: 0.75rem;
+  }
+  .rgpd dt {
+    font-weight: 600;
+  }
+  .check {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    font-size: var(--paso--1);
+  }
+  .check input {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0.15rem 0 0;
+  }
+  .trampa {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .paso-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-xs);
+  }
+  .estado:empty {
+    display: none;
+  }
+  .estado {
+    padding: var(--espacio-xs) var(--espacio-s);
+    border-left: 2px solid #a3341f;
+    background: var(--blanco);
+    font-size: var(--paso--1);
+  }
+  .estado.ok {
+    border-left-color: var(--tinta);
+  }
+  .cf-turnstile {
+    min-height: 65px;
+  }
+  @media (max-width: 30rem) {
+    .rgpd dl div {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+</style>

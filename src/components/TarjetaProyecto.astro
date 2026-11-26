@@ -1,0 +1,170 @@
+---
+import Foto from './Foto.astro';
+import { TIPOS, ZONAS_EN, numero, slug as aSlug, RUTAS } from '../lib/i18n';
+import type { Proyecto } from '../lib/contenido';
+import type { Idioma } from '../lib/sitio';
+
+interface Props {
+  proyecto: Proyecto;
+  indice: number;
+  idioma?: Idioma;
+  sizes?: string;
+  formato?: 'vertical' | 'horizontal';
+  /** Título accesible del proyecto en inglés (si existe la traducción). */
+  tipoTextoEn?: string;
+  nivel?: 'h2' | 'h3';
+  /** Video de YouTube que corre de fondo en la tarjeta (solo escritorio), como en la home actual. */
+  videoFondo?: { youtube: string; titulo: string };
+}
+
+const { proyecto, indice, idioma = 'es', sizes = '(min-width: 68rem) 40vw, (min-width: 40rem) 50vw, 100vw', formato = 'vertical', tipoTextoEn, nivel = 'h3', videoFondo } = Astro.props;
+const d = proyecto.data;
+const es = idioma === 'es';
+const href = RUTAS[idioma].proyecto(proyecto.id);
+const zona = es ? d.zona : (ZONAS_EN[d.zona] ?? d.zona);
+const tipo = es ? d.tipoTexto : (tipoTextoEn ?? d.tipos.map((t) => TIPOS[t].en).join(' & '));
+const Nivel = nivel;
+const vt = `proyecto-${proyecto.id.slice(0, 40)}`;
+---
+
+<article
+  class:list={['tarjeta-proyecto', formato]}
+  data-proyecto
+  data-tipos={d.tipos.join(' ')}
+  data-zona={aSlug(d.zona)}
+>
+  <a href={href} class="tarjeta-enlace" data-cursor={es ? 'Ver proyecto' : 'View project'}>
+    <div class="foto tarjeta-foto" transition:name={vt} data-video-fondo={videoFondo?.youtube} data-video-titulo={videoFondo?.titulo}>
+      <Foto src={d.portada} alt={d.portadaAlt} sizes={sizes} anchos={[400, 640, 960, 1280]} />
+      {d.estado === 'render' && <span class="chip tarjeta-estado">Render</span>}
+      {videoFondo && (
+        <span class="chip tarjeta-video" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
+          Video
+        </span>
+      )}
+    </div>
+    <div class="tarjeta-pie">
+      <span class="numero" aria-hidden="true">{numero(indice)}</span>
+      <div>
+        <Nivel class="tarjeta-nombre">{d.nombre}</Nivel>
+        <p class="tarjeta-meta secundario">{zona} · {tipo}</p>
+      </div>
+      <span class="tarjeta-flecha" aria-hidden="true">→</span>
+    </div>
+  </a>
+</article>
+
+<script>
+  import '../scripts/video';
+</script>
+
+<style>
+  .tarjeta-enlace {
+    display: grid;
+    gap: var(--espacio-s);
+    text-decoration: none;
+  }
+  .tarjeta-foto {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    container-type: size;
+  }
+  .horizontal .tarjeta-foto {
+    aspect-ratio: 3 / 2;
+  }
+  .tarjeta-foto :global(img) {
+    transition: transform 1100ms var(--curva);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tarjeta-enlace:hover .tarjeta-foto :global(img) {
+      transform: scale(1.045);
+    }
+  }
+  /* Video de fondo de YouTube: cubre la tarjeta (16:9 recortado) y aparece con un fundido. */
+  .tarjeta-foto :global(.video-fondo) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100cqw, 177.78cqh);
+    height: max(100cqh, 56.25cqw);
+    border: 0;
+    transform: translate(-50%, -50%) scale(1.18);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1200ms var(--curva);
+  }
+  .tarjeta-foto :global(.video-fondo.visible) {
+    opacity: 1;
+  }
+  .tarjeta-estado,
+  .tarjeta-video {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    background: var(--piedra);
+    color: var(--tinta);
+  }
+  .tarjeta-estado + .tarjeta-video {
+    left: auto;
+    right: 0.75rem;
+  }
+  .tarjeta-pie {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--espacio-s);
+    align-items: baseline;
+    padding-top: var(--espacio-2xs);
+    border-top: 1px solid var(--linea);
+    position: relative;
+  }
+  /* Microinteracción: la línea superior se completa en bronce al pasar. */
+  .tarjeta-pie::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--bronce);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms var(--curva);
+  }
+  .tarjeta-enlace:hover .tarjeta-pie::before,
+  .tarjeta-enlace:focus-visible .tarjeta-pie::before {
+    transform: scaleX(1);
+  }
+  .tarjeta-nombre {
+    font-family: var(--titulos);
+    font-size: var(--paso-3);
+    line-height: 1.1;
+    font-weight: 400;
+    transition: color var(--t-rapida) var(--curva);
+  }
+  .tarjeta-enlace:hover .tarjeta-nombre {
+    color: var(--bronce-texto);
+  }
+  .tarjeta-meta {
+    margin-top: 0.25rem;
+    font-size: var(--paso--1);
+  }
+  .tarjeta-flecha {
+    font-size: var(--paso-1);
+    color: var(--bronce-texto);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition:
+      opacity var(--t-rapida) var(--curva),
+      transform var(--t-media) var(--curva);
+  }
+  .tarjeta-enlace:hover .tarjeta-flecha,
+  .tarjeta-enlace:focus-visible .tarjeta-flecha {
+    opacity: 1;
+    transform: none;
+  }
+</style>

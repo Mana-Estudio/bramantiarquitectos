@@ -1,0 +1,21 @@
+---
+// Presupuestador: reemplaza el formulario externo de Tally por uno propio, dentro del sitio.
+import Base from '../layouts/Base.astro';
+import Presupuestador from '../components/Presupuestador.astro';
+import { migas as migasLd } from '../lib/jsonld';
+
+const migas = [
+  { nombre: 'Inicio', url: '/' },
+  { nombre: 'Pedir valoración', url: '/pedir-valoracion/' },
+];
+---
+
+<Base
+  titulo="Pedir valoración de tu reforma u obra nueva"
+  descripcion="Pide una valoración de tu reforma integral, obra nueva o interiorismo en Madrid. Responde en 3 minutos y te preparamos una propuesta ajustada."
+  whatsappTexto="Hola, quiero pedir una valoración para mi proyecto."
+  jsonld={[migasLd(migas)]}
+  sinBarraMovil
+>
+  <Presupuestador />
+</Base>

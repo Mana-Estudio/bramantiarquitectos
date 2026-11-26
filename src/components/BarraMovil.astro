@@ -1,0 +1,71 @@
+---
+import Icono from './Icono.astro';
+import { UI, RUTAS } from '../lib/i18n';
+import { SITIO, whatsapp, type Idioma } from '../lib/sitio';
+
+interface Props {
+  idioma: Idioma;
+  whatsappTexto: string;
+}
+const { idioma, whatsappTexto } = Astro.props;
+const t = UI[idioma];
+---
+
+<nav class="barra-movil" aria-label={idioma === 'es' ? 'Contacto rápido' : 'Quick contact'}>
+  <a href={whatsapp(whatsappTexto)} data-evento="whatsapp" data-evento-detalle="barra-movil">
+    <Icono nombre="whatsapp" />
+    <span>{t.whatsapp}</span>
+  </a>
+  <a href={SITIO.telefonoHref} data-evento="llamar" data-evento-detalle="barra-movil">
+    <Icono nombre="telefono" />
+    <span>{t.llamar}</span>
+  </a>
+  <a href={RUTAS[idioma].valoracion} class="principal" data-evento="presupuesto" data-evento-detalle="barra-movil">
+    <span>{t.presupuesto}</span>
+  </a>
+</nav>
+
+<style>
+  .barra-movil {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    background: var(--piedra);
+    border-top: 1px solid var(--linea);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .barra-movil a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.5rem;
+    font-size: var(--paso--1);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .barra-movil a + a {
+    border-left: 1px solid var(--linea);
+  }
+  .barra-movil .principal {
+    background: var(--tinta);
+    color: var(--piedra);
+  }
+  .barra-movil :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  :global(body) {
+    padding-bottom: calc(3.5rem + env(safe-area-inset-bottom));
+  }
+  @media (min-width: 68rem) {
+    .barra-movil {
+      display: none;
+    }
+    :global(body) {
+      padding-bottom: 0;
+    }
+  }
+</style>

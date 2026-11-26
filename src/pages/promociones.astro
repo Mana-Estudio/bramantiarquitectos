@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import Migas from '../components/Migas.astro';
+import Faqs from '../components/Faqs.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { promociones, faqs } from '../lib/contenido';
+import { numero } from '../lib/i18n';
+import { migas as migasLd } from '../lib/jsonld';
+
+const lista = await promociones();
+const preguntas = await faqs('promociones');
+const migas = [
+  { nombre: 'Inicio', url: '/' },
+  { nombre: 'Promociones', url: '/promociones/' },
+];
+const textoWhatsapp = 'Hola, me interesan vuestras promociones en venta. ¿Me podéis enviar información?';
+---
+
+<Base
+  titulo="Promociones y viviendas en venta en Madrid"
+  descripcion="Viviendas en venta de Bramanti Arquitectos: obra nueva unifamiliar en Los Satélites (Majadahonda) y un piso reformado en el Barrio de Salamanca."
+  imagen={lista[1]?.data.portada}
+  whatsappTexto={textoWhatsapp}
+  jsonld={[migasLd(migas)]}
+>
+  <section class="contenedor cabecera">
+    <Migas items={migas} />
+    <div class="cabecera-grilla">
+      <h1>Promociones <em>en venta.</em></h1>
+      <p class="entradilla">Viviendas que proyectamos y construimos para vender: obra nueva unifamiliar en Majadahonda y viviendas reformadas en Madrid, listas para entrar a vivir.</p>
+    </div>
+  </section>
+
+  <section class="contenedor lista" aria-label="Promociones disponibles">
+    {lista.map((p, i) => (
+      <article class:list={['promo', { invertida: i % 2 === 1 }]}>
+        <a href={p.data.url} class="promo-foto foto">
+          <Foto src={p.data.portada} alt={p.data.portadaAlt} sizes="(min-width: 60rem) 60vw, 100vw" anchos={[640, 960, 1280]} prioridad={i === 0} />
+          {p.data.estado === 'render' && <span class="chip promo-chip">Render</span>}
+        </a>
+        <div class="promo-texto">
+          <span class="numero" aria-hidden="true">{numero(i + 1)}</span>
+          <p class="etiqueta sin-linea">{p.data.operacion} · {p.data.zona}</p>
+          <h2><a href={p.data.url}>{p.data.nombre}</a></h2>
+          <p class="secundario">{p.data.resumen}</p>
+          <ul role="list" class="promo-datos">
+            {p.data.datos.superficieUtil && <li>{p.data.datos.superficieUtil} útiles</li>}
+            {p.data.datos.superficieConstruida && <li>{p.data.datos.superficieConstruida} construidos</li>}
+            {p.data.datos.parcela && <li>Parcela de {p.data.datos.parcela}</li>}
+            {p.data.datos.terraza && <li>Terraza de {p.data.datos.terraza}</li>}
+            {p.data.datos.habitaciones && <li>{p.data.datos.habitaciones} dormitorios</li>}
+            {p.data.precio && <li>{p.data.precio}</li>}
+          </ul>
+          <div class="botones">
+            <a class="boton" href={p.data.url}>Ver la promoción</a>
+            <a class="boton boton-linea" href={`/contacto/?proyecto=${p.id}&servicio=promocion#presupuesto`} data-evento="presupuesto" data-evento-detalle={`promo-${p.id}`}>Consultar</a>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <Faqs faqs={preguntas} titulo="Comprar vivienda con nosotros" etiqueta="Preguntas frecuentes" />
+
+  <CtaFinal titulo="¿Buscas vivienda en Madrid?" texto="Cuéntanos qué buscas y te informamos de las promociones disponibles y de las próximas." boton="Consultar promociones" consulta="servicio=promocion" whatsappTexto={textoWhatsapp} />
+</Base>
+
+<style>
+  .cabecera {
+    padding-block: var(--espacio-m) var(--espacio-xl);
+  }
+  .cabecera-grilla {
+    display: grid;
+    gap: var(--espacio-m);
+    margin-top: var(--espacio-l);
+    align-items: end;
+  }
+  @media (min-width: 60rem) {
+    .cabecera-grilla {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+  .lista {
+    display: grid;
+    gap: var(--espacio-3xl);
+    padding-bottom: var(--espacio-3xl);
+  }
+  .promo {
+    display: grid;
+    gap: var(--espacio-m) var(--separacion);
+    align-items: center;
+  }
+  .promo-foto {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 2;
+  }
+  .promo-chip {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: var(--piedra);
+    color: var(--tinta);
+  }
+  .promo-texto {
+    display: grid;
+    gap: var(--espacio-s);
+    align-content: center;
+  }
+  .promo-texto h2 {
+    font-size: var(--paso-5);
+  }
+  .promo-texto h2 a {
+    text-decoration: none;
+  }
+  .promo-datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    font-size: var(--paso--1);
+    padding-block: var(--espacio-xs);
+    border-block: 1px solid var(--linea);
+  }
+  @media (min-width: 60rem) {
+    .promo {
+      grid-template-columns: 7fr 5fr;
+      gap: var(--espacio-xl);
+    }
+    .promo.invertida .promo-foto {
+      order: 2;
+    }
+  }
+</style>

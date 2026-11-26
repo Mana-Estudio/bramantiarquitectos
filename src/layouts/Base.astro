@@ -1,0 +1,133 @@
+---
+import '../styles/global.css';
+import { Font, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BarraMovil from '../components/BarraMovil.astro';
+import { UI } from '../lib/i18n';
+import { SITIO, TEXTO_WHATSAPP, type Idioma } from '../lib/sitio';
+import { parDe } from '../lib/rutas.mjs';
+import { estudio } from '../lib/jsonld';
+import heroDefecto from '../assets/paginas/hero-casa-felipe-ii-salon.jpg';
+import logoNegro from '../assets/marca/logo-negro.png';
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  idioma?: Idioma;
+  /** Foto principal de la página: se recorta a 1200×630 para Open Graph. */
+  imagen?: ImageMetadata;
+  tipoOg?: 'website' | 'article';
+  noindex?: boolean;
+  jsonld?: object[];
+  whatsappTexto?: string;
+  /** Si el título ya trae la marca o es muy largo, no se agrega " · Bramanti Arquitectos". */
+  tituloCompleto?: boolean;
+  /** Home: header transparente sobre el hero a pantalla completa. */
+  sobreHero?: boolean;
+  /** Presupuestador: sin la barra fija de abajo en móvil (tiene su propia navegación). */
+  sinBarraMovil?: boolean;
+}
+
+const {
+  titulo,
+  descripcion,
+  idioma = 'es',
+  imagen = heroDefecto,
+  tipoOg = 'website',
+  noindex = false,
+  jsonld = [],
+  whatsappTexto = TEXTO_WHATSAPP[idioma],
+  tituloCompleto = false,
+  sobreHero = false,
+  sinBarraMovil = false,
+} = Astro.props;
+
+const t = UI[idioma];
+const ruta = Astro.url.pathname;
+const canonical = new URL(ruta, Astro.site).href;
+const conMarca = `${titulo} · ${SITIO.nombre}`;
+const tituloFinal = tituloCompleto || conMarca.length > 60 ? titulo : conMarca;
+
+const par = parDe(ruta);
+const alternativa = par ? (idioma === 'es' ? par.en : par.es) : null;
+
+const og = await getImage({ src: imagen, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 78 });
+const ogUrl = new URL(og.src, Astro.site).href;
+const logo = await getImage({ src: logoNegro, format: 'png' });
+const logoUrl = new URL(logo.src, Astro.site).href;
+
+const datosEstructurados = [estudio(logoUrl, ogUrl), ...jsonld];
+const analytics = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
+---
+
+<!doctype html>
+<html lang={idioma === 'es' ? 'es-ES' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloFinal}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {par && (
+      <>
+        <link rel="alternate" hreflang="es-ES" href={new URL(par.es, Astro.site).href} />
+        <link rel="alternate" hreflang="en" href={new URL(par.en, Astro.site).href} />
+        <link rel="alternate" hreflang="x-default" href={new URL(par.es, Astro.site).href} />
+      </>
+    )}
+
+    <!-- Se precargan solo los archivos latinos que se ven arriba de todo (≈ 70 KB): evita saltos al cambiar la fuente. -->
+    <Font cssVariable="--fuente-titulos" preload={[{ style: 'normal' }]} />
+    <Font cssVariable="--fuente-texto" preload />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#f4f1ec" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITIO.nombre} · Journal`} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={tipoOg} />
+    <meta property="og:site_name" content={SITIO.nombre} />
+    <meta property="og:locale" content={idioma === 'es' ? 'es_ES' : 'en_GB'} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    {datosEstructurados.map((d) => <script type="application/ld+json" is:inline set:html={JSON.stringify(d)} />)}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">{t.saltar}</a>
+    <Header idioma={idioma} alternativa={alternativa} whatsappTexto={whatsappTexto} sobreHero={sobreHero} />
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+    <Footer idioma={idioma} whatsappTexto={whatsappTexto} />
+    {!sinBarraMovil && <BarraMovil idioma={idioma} whatsappTexto={whatsappTexto} />}
+
+    {analytics && <script defer is:inline src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: analytics })} />}
+    <script>
+      import '../scripts/base';
+      import '../scripts/animaciones';
+      import '../scripts/micro';
+    </script>
+  </body>
+</html>
+
+<style>
+  main:focus {
+    outline: none;
+  }
+</style>

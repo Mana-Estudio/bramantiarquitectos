@@ -1,0 +1,815 @@
+---
+// Presupuestador por pasos (réplica mejorada del Tally del estudio). Los pasos y preguntas salen de
+// src/lib/valoracion.ts. Sin JS se ofrece el formulario corto de contacto y WhatsApp.
+import type { ImageMetadata } from 'astro';
+import { PASOS, ARCHIVOS, type Campo } from '../lib/valoracion';
+import Foto from './Foto.astro';
+import Icono from './Icono.astro';
+import { SITIO, whatsapp } from '../lib/sitio';
+import fotoReforma from '../assets/proyectos/casa-elara/casa-elara-cocina-01.jpg';
+import fotoObraNueva from '../assets/promociones/proyecto-omega/proyecto-omega-terraza-01.webp';
+import fotoInteriorismo from '../assets/proyectos/casa-santos-dumont/casa-santos-dumont-salon-02.jpg';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA'; // clave pública de prueba
+const fotos: Record<string, { src: ImageMetadata; alt: string }> = {
+  'reforma-integral': { src: fotoReforma, alt: '' },
+  'obra-nueva': { src: fotoObraNueva, alt: '' },
+  interiorismo: { src: fotoInteriorismo, alt: '' },
+};
+const textoWhatsapp = 'Hola, quiero pedir una valoración para mi proyecto.';
+const n = (i: number) => String(i).padStart(2, '0');
+const tipoInput = (c: Campo) => (c.tipo === 'email' ? 'email' : c.tipo === 'tel' ? 'tel' : 'text');
+---
+
+<div class="presu" data-presu data-gracias="/gracias/?origen=valoracion">
+  <aside class="presu-lateral">
+    <p class="etiqueta">Pedir valoración</p>
+    <h1>Tu proyecto, <em>en 3 minutos.</em></h1>
+    <p class="presu-intro">Responde unas preguntas y te preparamos una propuesta ajustada a tu caso. Sin compromiso.</p>
+    <ul role="list" class="presu-garantias">
+      <li><span aria-hidden="true">01</span> La lee una persona del estudio, no un sistema automático.</li>
+      <li><span aria-hidden="true">02</span> Puedes adjuntar planos, fotos o referencias.</li>
+      <li><span aria-hidden="true">03</span> Tus datos solo se usan para responderte.</li>
+    </ul>
+    <p class="presu-alternativa">
+      ¿Prefieres hablar? <a href={whatsapp(textoWhatsapp)} data-evento="whatsapp" data-evento-detalle="presupuestador"><Icono nombre="whatsapp" /> WhatsApp</a>
+      o <a href={SITIO.telefonoHref} data-evento="llamar" data-evento-detalle="presupuestador">{SITIO.telefono}</a>
+    </p>
+  </aside>
+
+  <div class="presu-principal">
+    <noscript>
+      <div class="presu-sinjs">
+        <p>Para usar el presupuestador paso a paso necesitas JavaScript. También puedes escribirnos desde el <a href="/contacto/#presupuesto">formulario de contacto</a> o por <a href={whatsapp(textoWhatsapp)}>WhatsApp</a>.</p>
+      </div>
+    </noscript>
+
+    <form class="presu-form" action="/api/valoracion" method="post" enctype="multipart/form-data" novalidate data-presu-form>
+      <div class="presu-progreso">
+        <div class="presu-barra" aria-hidden="true"><span data-presu-barra></span></div>
+        <p class="presu-indicador" data-presu-indicador aria-live="polite">Paso 1</p>
+      </div>
+      <p class="presu-recuperado" data-presu-recuperado hidden>
+        Recuperamos lo que habías respondido. <button type="button" class="presu-link" data-presu-reiniciar>Empezar de nuevo</button>
+      </p>
+      <p class="presu-referencia" data-presu-referencia hidden></p>
+
+      {PASOS.map((paso, i) => (
+        <fieldset class="presu-paso" data-paso={paso.id} data-caminos={paso.caminos?.join(' ')} aria-labelledby={`p-${paso.id}`} hidden={i > 0}>
+          <div class="presu-cabecera">
+            <span class="presu-numero" aria-hidden="true" data-presu-numero>{n(i + 1)}</span>
+            <h2 id={`p-${paso.id}`} class="presu-titulo" tabindex="-1">{paso.titulo}</h2>
+            {paso.descripcion && <p class="presu-descripcion">{paso.descripcion}</p>}
+          </div>
+
+          {paso.campos.map((c) => (
+            <div
+              class:list={['presu-campo', `campo-${c.tipo}`]}
+              data-campo={c.id}
+              data-tipo={c.tipo}
+              data-requerido={c.requerido ? '' : undefined}
+              data-si-campo={c.si?.campo}
+              data-si-valores={c.si?.valores.join(' ')}
+              hidden={c.si ? true : undefined}
+            >
+              {(c.tipo === 'texto' || c.tipo === 'email' || c.tipo === 'tel') && (
+                <>
+                  <label class="presu-etiqueta" for={`f-${paso.id}-${c.id}`}>{c.etiqueta}{c.requerido && <span class="req" aria-hidden="true"> *</span>}</label>
+                  <input
+                    id={`f-${paso.id}-${c.id}`}
+                    name={c.id}
+                    type={tipoInput(c)}
+                    placeholder={c.placeholder}
+                    autocomplete={c.autocomplete ?? 'off'}
+                    maxlength={c.max}
+                    required={c.requerido}
+                    aria-describedby={`e-${paso.id}-${c.id}`}
+                    inputmode={c.tipo === 'tel' ? 'tel' : c.tipo === 'email' ? 'email' : undefined}
+                    spellcheck={c.tipo === 'email' ? 'false' : undefined}
+                  />
+                </>
+              )}
+              {c.tipo === 'numero' && (
+                <>
+                  <label class="presu-etiqueta" for={`f-${paso.id}-${c.id}`}>{c.etiqueta}{c.requerido && <span class="req" aria-hidden="true"> *</span>}</label>
+                  <div class="presu-con-unidad">
+                    <input id={`f-${paso.id}-${c.id}`} name={c.id} type="number" inputmode="numeric" min={c.min} max={c.max} step="1" placeholder={c.placeholder} required={c.requerido} aria-describedby={`e-${paso.id}-${c.id}`} />
+                    {c.unidad && <span class="presu-unidad" aria-hidden="true">{c.unidad}</span>}
+                  </div>
+                </>
+              )}
+              {c.tipo === 'area' && (
+                <>
+                  <label class="presu-etiqueta" for={`f-${paso.id}-${c.id}`}>{c.etiqueta}{c.requerido && <span class="req" aria-hidden="true"> *</span>}</label>
+                  <textarea id={`f-${paso.id}-${c.id}`} name={c.id} rows="4" maxlength={c.max} placeholder={c.placeholder} required={c.requerido} aria-describedby={`e-${paso.id}-${c.id}`}></textarea>
+                </>
+              )}
+              {c.tipo === 'contador' && (
+                <div class="presu-contador">
+                  <label class="presu-etiqueta" for={`f-${paso.id}-${c.id}`}>{c.etiqueta}</label>
+                  <div class="contador-control">
+                    <button type="button" class="contador-boton" data-restar aria-label={`Menos ${c.etiqueta.toLowerCase()}`}>−</button>
+                    <input id={`f-${paso.id}-${c.id}`} name={c.id} type="number" inputmode="numeric" min={c.min} max={c.max} value={c.inicial} aria-describedby={`e-${paso.id}-${c.id}`} />
+                    <button type="button" class="contador-boton" data-sumar aria-label={`Más ${c.etiqueta.toLowerCase()}`}>+</button>
+                  </div>
+                </div>
+              )}
+              {(c.tipo === 'opcion' || c.tipo === 'multiple') && (
+                <fieldset class="presu-grupo" aria-describedby={`e-${paso.id}-${c.id}`}>
+                  <legend class="presu-etiqueta">{c.etiqueta}{c.requerido && <span class="req" aria-hidden="true"> *</span>}{c.tipo === 'multiple' && <span class="presu-pista"> · puedes elegir varias</span>}</legend>
+                  <div class:list={['presu-opciones', `col-${c.columnas ?? 2}`, { tarjetas: c.tarjetas }]}>
+                    {c.opciones.map((o) => (
+                      <label class:list={['presu-opcion', { 'con-foto': c.id === 'interes' }]}>
+                        <input type={c.tipo === 'opcion' ? 'radio' : 'checkbox'} name={c.id} value={o.valor} />
+                        <span class="presu-opcion-caja">
+                          {c.id === 'interes' && fotos[o.valor] && (
+                            <span class="presu-opcion-foto foto" aria-hidden="true">
+                              <Foto src={fotos[o.valor].src} alt="" sizes="(min-width: 60rem) 14rem, 45vw" anchos={[320, 560]} />
+                            </span>
+                          )}
+                          {o.muestra && <span class="presu-muestra" aria-hidden="true" style={`--muestra: ${o.muestra}`}></span>}
+                          <span class="presu-opcion-texto">
+                            <span class="presu-opcion-etiqueta">{o.etiqueta}</span>
+                            {o.detalle && <span class="presu-opcion-detalle">{o.detalle}</span>}
+                          </span>
+                          <span class="presu-check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                          </span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )}
+              {c.tipo === 'archivos' && (
+                <div class="presu-archivos">
+                  <span class="presu-etiqueta" id={`l-${c.id}`}>{c.etiqueta}</span>
+                  <label class="presu-soltar" data-soltar>
+                    <input type="file" name={c.id} multiple accept={ARCHIVOS.aceptar} aria-labelledby={`l-${c.id}`} aria-describedby={`a-${c.id} e-${paso.id}-${c.id}`} data-max-archivos={ARCHIVOS.maxArchivos} data-max-bytes={ARCHIVOS.maxBytes} />
+                    <span class="presu-soltar-texto"><strong>Arrastra los archivos aquí</strong> o pulsa para elegirlos</span>
+                  </label>
+                  {c.ayuda && <p class="presu-ayuda" id={`a-${c.id}`}>{c.ayuda}</p>}
+                  <ul role="list" class="presu-lista-archivos" data-lista-archivos></ul>
+                </div>
+              )}
+              {c.tipo === 'casilla' && (
+                <label class="presu-casilla">
+                  <input type="checkbox" name={c.id} value="si" required={c.requerido} aria-describedby={`e-${paso.id}-${c.id}`} />
+                  <span>
+                    {c.etiqueta}{c.requerido && <span class="req" aria-hidden="true"> *</span>}
+                    {c.id === 'privacidad' && <> <a href="/politica-de-privacidad/" target="_blank" rel="noopener">Leer la política</a></>}
+                  </span>
+                </label>
+              )}
+              {c.ayuda && c.tipo !== 'archivos' && <p class="presu-ayuda">{c.ayuda}</p>}
+              <p class="presu-error" id={`e-${paso.id}-${c.id}`} role="alert" data-error></p>
+            </div>
+          ))}
+
+          {paso.id === 'contacto' && (
+            <>
+              <details class="presu-resumen">
+                <summary>Revisa tus respuestas</summary>
+                <dl data-presu-resumen></dl>
+              </details>
+              <div class="presu-rgpd">
+                <p><strong>Responsable:</strong> Bramantia Index, S.L. · <strong>Finalidad:</strong> gestionar tu solicitud y la posible relación comercial · <strong>Legitimación:</strong> tu consentimiento · <strong>Destinatarios:</strong> no se ceden datos salvo obligación legal; encargados: Cloudflare y el proveedor de correo · <strong>Derechos:</strong> acceso, rectificación, supresión y demás, en {SITIO.email}. Más información en la <a href="/politica-de-privacidad/">política de privacidad</a>.</p>
+              </div>
+              <div class="cf-turnstile" data-sitekey={siteKey} data-language="es" data-theme="light" data-size="flexible"></div>
+            </>
+          )}
+        </fieldset>
+      ))}
+
+      <div class="trampa" aria-hidden="true">
+        <label for="presu-web">No rellenes este campo</label>
+        <input id="presu-web" name="web" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <input type="hidden" name="proyecto" value="" data-presu-proyecto />
+      <input type="hidden" name="pagina" value="/pedir-valoracion/" />
+
+      <p class="presu-estado" data-presu-estado role="status" aria-live="polite"></p>
+
+      <div class="presu-navegacion">
+        <button type="button" class="boton boton-linea presu-atras" data-presu-atras hidden>
+          <Icono nombre="anterior" /> Atrás
+        </button>
+        <button type="button" class="boton presu-siguiente" data-presu-siguiente data-evento="valoracion-paso">
+          Continuar <span aria-hidden="true">→</span>
+        </button>
+        <button type="submit" class="boton presu-enviar" data-presu-enviar hidden data-evento="valoracion-enviada">
+          Enviar y recibir mi propuesta
+        </button>
+      </div>
+      <p class="presu-atajo" aria-hidden="true">Pulsa <kbd>Enter ↵</kbd> para continuar</p>
+    </form>
+  </div>
+</div>
+
+<script>
+  import '../scripts/presupuestador';
+</script>
+
+<style>
+  .presu {
+    display: grid;
+    min-height: calc(100svh - var(--alto-header));
+  }
+  .presu-lateral {
+    display: grid;
+    align-content: start;
+    gap: var(--espacio-s);
+    padding: var(--espacio-l) var(--margen);
+    background: var(--tinta);
+    color: var(--piedra);
+    --bronce-texto: #d2b799;
+  }
+  .presu-lateral h1 {
+    font-size: clamp(2.2rem, 1.4rem + 3vw, 4rem);
+  }
+  .presu-lateral h1 :global(em) {
+    color: #e2cfb8;
+  }
+  .presu-intro {
+    color: rgb(244 241 236 / 0.86);
+    max-width: 30rem;
+  }
+  .presu-garantias {
+    display: none;
+    gap: var(--espacio-xs);
+    margin-top: var(--espacio-m);
+    font-size: var(--paso--1);
+    color: rgb(244 241 236 / 0.85);
+  }
+  .presu-garantias li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    padding-top: var(--espacio-xs);
+    border-top: 1px solid rgb(244 241 236 / 0.18);
+  }
+  .presu-garantias span {
+    color: #d2b799;
+    font-family: var(--titulos);
+  }
+  .presu-alternativa {
+    font-size: var(--paso--1);
+    color: rgb(244 241 236 / 0.85);
+  }
+  .presu-alternativa a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: 2.75rem;
+    color: var(--piedra);
+  }
+  .presu-lateral :focus-visible {
+    outline-color: var(--piedra);
+  }
+  .presu-principal {
+    padding: var(--espacio-l) var(--margen) var(--espacio-2xl);
+  }
+  .presu-form {
+    max-width: 46rem;
+    margin-inline: auto;
+    display: grid;
+    gap: var(--espacio-l);
+  }
+  @media (scripting: none) {
+    .presu-form {
+      display: none;
+    }
+  }
+  .presu-sinjs {
+    padding: var(--espacio-m);
+    background: var(--lino);
+  }
+  .presu-progreso {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .presu-barra {
+    height: 3px;
+    background: var(--lino);
+    overflow: hidden;
+  }
+  .presu-barra span {
+    display: block;
+    height: 100%;
+    background: var(--tinta);
+    transform: scaleX(0.05);
+    transform-origin: left;
+    transition: transform 600ms var(--curva);
+  }
+  .presu-indicador {
+    font-size: var(--paso--2);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gris);
+  }
+  .presu-recuperado,
+  .presu-referencia {
+    padding: var(--espacio-xs) var(--espacio-s);
+    background: var(--lino);
+    font-size: var(--paso--1);
+  }
+  .presu-link {
+    border: 0;
+    background: none;
+    padding: 0;
+    min-height: 2.75rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .presu-paso {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    display: grid;
+    gap: var(--espacio-l);
+  }
+  .presu-paso[hidden] {
+    display: none;
+  }
+  .presu-cabecera {
+    display: grid;
+    gap: var(--espacio-xs);
+  }
+  .presu-numero {
+    font-family: var(--titulos);
+    font-size: var(--paso-1);
+    color: var(--bronce-texto);
+  }
+  .presu-titulo {
+    font-size: var(--paso-4);
+  }
+  .presu-titulo:focus {
+    outline: none;
+  }
+  .presu-descripcion {
+    color: var(--gris);
+    max-width: 36rem;
+  }
+  .presu-campo {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .presu-campo[hidden] {
+    display: none;
+  }
+  .presu-etiqueta {
+    font-size: var(--paso-0);
+    font-weight: 600;
+    padding: 0;
+  }
+  .req {
+    color: var(--bronce-texto);
+  }
+  .presu-pista {
+    font-weight: 400;
+    color: var(--gris);
+    font-size: var(--paso--1);
+  }
+  .presu-campo input[type='text'],
+  .presu-campo input[type='email'],
+  .presu-campo input[type='tel'],
+  .presu-campo input[type='number'],
+  .presu-campo textarea {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 0;
+    background: var(--blanco);
+    font-size: 1.05rem;
+    transition:
+      border-color var(--t-rapida) var(--curva),
+      box-shadow var(--t-rapida) var(--curva);
+  }
+  .presu-campo input:focus-visible,
+  .presu-campo textarea:focus-visible {
+    outline: none;
+    border-color: var(--tinta);
+    box-shadow: 0 0 0 3px rgb(28 26 23 / 0.12);
+  }
+  .presu-campo textarea {
+    resize: vertical;
+  }
+  .presu-campo.invalido input,
+  .presu-campo.invalido textarea {
+    border-color: #a3341f;
+  }
+  .presu-con-unidad {
+    position: relative;
+    max-width: 16rem;
+  }
+  .presu-con-unidad input {
+    padding-right: 3.5rem !important;
+  }
+  .presu-unidad {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gris);
+  }
+  .presu-error {
+    min-height: 0;
+    font-size: var(--paso--1);
+    color: #a3341f;
+  }
+  .presu-error:empty {
+    display: none;
+  }
+  .presu-ayuda {
+    font-size: var(--paso--1);
+    color: var(--gris);
+  }
+
+  /* Contador −/+ */
+  .presu-contador {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-s);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--linea);
+  }
+  .contador-control {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .contador-control input {
+    width: 4rem !important;
+    min-height: 2.75rem !important;
+    padding: 0.4rem !important;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    appearance: textfield;
+  }
+  .contador-control input::-webkit-inner-spin-button {
+    appearance: none;
+  }
+  .contador-boton {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 50%;
+    background: var(--blanco);
+    font-size: 1.25rem;
+    line-height: 1;
+    transition:
+      background var(--t-rapida) var(--curva),
+      color var(--t-rapida) var(--curva),
+      scale var(--t-rapida) var(--curva);
+  }
+  .contador-boton:hover {
+    background: var(--tinta);
+    color: var(--piedra);
+  }
+  .contador-boton:active {
+    scale: 0.9;
+  }
+
+  /* Opciones como tarjetas */
+  .presu-grupo {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .presu-opciones {
+    display: grid;
+    gap: 0.6rem;
+  }
+  @media (min-width: 36rem) {
+    .presu-opciones.col-2,
+    .presu-opciones.col-3 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 60rem) {
+    .presu-opciones.col-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .presu-opcion {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .presu-opcion input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .presu-opcion-caja {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 100%;
+    min-height: 3.25rem;
+    padding: 0.85rem 2.75rem 0.85rem 1rem;
+    border: 1px solid var(--linea-fuerte);
+    background: var(--blanco);
+    transition:
+      border-color var(--t-rapida) var(--curva),
+      background var(--t-rapida) var(--curva),
+      box-shadow var(--t-rapida) var(--curva),
+      transform var(--t-rapida) var(--curva);
+  }
+  .presu-opcion:hover .presu-opcion-caja {
+    border-color: var(--tinta);
+  }
+  .presu-opcion input:checked + .presu-opcion-caja {
+    border-color: var(--tinta);
+    background: var(--tinta);
+    color: var(--piedra);
+  }
+  .presu-opcion input:focus-visible + .presu-opcion-caja {
+    outline: 2px solid var(--tinta);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .presu-opcion:active .presu-opcion-caja {
+      transform: scale(0.985);
+    }
+  }
+  .presu-opcion-texto {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .presu-opcion-etiqueta {
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .presu-opcion-detalle {
+    font-size: var(--paso--1);
+    color: var(--gris);
+  }
+  .presu-opcion input:checked + .presu-opcion-caja .presu-opcion-detalle {
+    color: rgb(244 241 236 / 0.8);
+  }
+  .presu-check {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    color: transparent;
+    transition:
+      background var(--t-rapida) var(--curva),
+      color var(--t-rapida) var(--curva),
+      border-color var(--t-rapida) var(--curva),
+      scale 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .presu-opcion input:checked + .presu-opcion-caja .presu-check {
+    background: var(--piedra);
+    border-color: var(--piedra);
+    color: var(--tinta);
+    scale: 1.1;
+  }
+  .tarjetas .presu-opcion-caja {
+    min-height: 4.25rem;
+  }
+  .tarjetas .presu-opcion-etiqueta {
+    font-family: var(--titulos);
+    font-size: var(--paso-1);
+  }
+  .con-foto .presu-opcion-caja {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 0 0.9rem;
+  }
+  .presu-opcion-foto {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+  .presu-opcion-foto :global(img) {
+    transition: transform 900ms var(--curva);
+  }
+  .con-foto:hover .presu-opcion-foto :global(img) {
+    transform: scale(1.05);
+  }
+  .con-foto .presu-opcion-texto {
+    padding: 0 2.75rem 0 1rem;
+  }
+  .con-foto .presu-check {
+    top: auto;
+    bottom: 1rem;
+    transform: none;
+  }
+  .presu-muestra {
+    flex: none;
+    width: 2.5rem;
+    height: 1.5rem;
+    border: 1px solid var(--linea);
+    background: var(--muestra, var(--lino));
+  }
+
+  /* Archivos */
+  .presu-archivos {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .presu-soltar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 6rem;
+    padding: var(--espacio-m);
+    border: 1px dashed var(--linea-fuerte);
+    background: var(--blanco);
+    text-align: center;
+    cursor: pointer;
+    transition:
+      border-color var(--t-rapida) var(--curva),
+      background var(--t-rapida) var(--curva);
+  }
+  .presu-soltar:hover,
+  .presu-soltar.encima {
+    border-color: var(--tinta);
+    background: var(--lino);
+  }
+  .presu-soltar input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .presu-soltar:has(input:focus-visible) {
+    outline: 2px solid var(--tinta);
+    outline-offset: 3px;
+  }
+  .presu-soltar-texto {
+    font-size: var(--paso--1);
+  }
+  .presu-lista-archivos {
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--paso--1);
+  }
+  .presu-lista-archivos :global(li) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--lino);
+  }
+  .presu-lista-archivos :global(button) {
+    min-height: 2.75rem;
+    border: 0;
+    background: none;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .presu-casilla {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    font-size: var(--paso--1);
+    cursor: pointer;
+  }
+  .presu-casilla input {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0.1rem 0 0;
+  }
+  .presu-resumen {
+    border-top: 1px solid var(--linea);
+    border-bottom: 1px solid var(--linea);
+  }
+  .presu-resumen summary {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .presu-resumen :global(dl) {
+    display: grid;
+    gap: 0.5rem;
+    padding-bottom: var(--espacio-s);
+    font-size: var(--paso--1);
+  }
+  .presu-resumen :global(.fila) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--linea);
+  }
+  .presu-resumen :global(dt) {
+    color: var(--gris);
+  }
+  .presu-resumen :global(dd) {
+    grid-column: 1;
+  }
+  .presu-resumen :global(.editar) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    min-height: 2.75rem;
+    border: 0;
+    background: none;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+  .presu-rgpd {
+    font-size: var(--paso--2);
+    color: var(--gris);
+    padding: var(--espacio-s);
+    border: 1px solid var(--linea);
+  }
+  .cf-turnstile {
+    min-height: 65px;
+  }
+  .trampa {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .presu-estado:empty {
+    display: none;
+  }
+  .presu-estado {
+    padding: var(--espacio-xs) var(--espacio-s);
+    border-left: 2px solid #a3341f;
+    background: var(--blanco);
+    font-size: var(--paso--1);
+  }
+  .presu-navegacion {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--espacio-xs);
+    padding: var(--espacio-s) 0 calc(var(--espacio-s) + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--piedra) 75%, transparent);
+  }
+  .presu-navegacion .boton {
+    min-height: 3.25rem;
+  }
+  .presu-siguiente,
+  .presu-enviar {
+    margin-left: auto;
+  }
+  .presu-atajo {
+    display: none;
+    font-size: var(--paso--2);
+    color: var(--gris);
+    text-align: right;
+  }
+  .presu-atajo kbd {
+    font-family: inherit;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--linea-fuerte);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .presu-atajo {
+      display: block;
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .presu {
+      grid-template-columns: minmax(18rem, 4fr) 8fr;
+    }
+    .presu-lateral {
+      position: sticky;
+      top: var(--alto-header);
+      height: calc(100svh - var(--alto-header));
+      padding: var(--espacio-xl) var(--espacio-l);
+      align-content: start;
+    }
+    .presu-garantias {
+      display: grid;
+    }
+    .presu-principal {
+      padding: var(--espacio-xl) var(--espacio-l) var(--espacio-2xl);
+    }
+  }
+</style>

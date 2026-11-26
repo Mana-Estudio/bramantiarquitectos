@@ -1,0 +1,156 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Migas from '../Migas.astro';
+import Icono from '../Icono.astro';
+import Faqs from '../Faqs.astro';
+import FormularioPresupuesto from '../FormularioPresupuesto.astro';
+import { UI, RUTAS } from '../../lib/i18n';
+import { SITIO, whatsapp, TEXTO_WHATSAPP, type Idioma } from '../../lib/sitio';
+import { migas as migasLd, preguntas } from '../../lib/jsonld';
+
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const es = idioma === 'es';
+const t = UI[idioma];
+const r = RUTAS[idioma];
+const migas = [
+  { nombre: t.inicio, url: r.inicio },
+  { nombre: t.contacto, url: r.contacto },
+];
+const todas = (await getCollection('faqs')).sort((a, b) => a.data.orden - b.data.orden);
+const faqs = es ? [...todas.filter((f) => f.data.ambitos.includes('contacto')), ...todas.filter((f) => f.data.ambitos.includes('general'))] : [];
+---
+
+<Base
+  idioma={idioma}
+  titulo={es ? 'Contacto y presupuesto' : 'Contact and enquiries'}
+  descripcion={es
+    ? 'Cuéntanos tu proyecto de reforma integral, interiorismo u obra nueva en Madrid. Formulario, WhatsApp, teléfono y showroom en Calle de Alcalá, 229.'
+    : 'Tell us about your full renovation, interior design or new-build project in Madrid. Form, WhatsApp, phone and our showroom at Calle de Alcalá 229.'}
+  jsonld={[migasLd(migas), ...(faqs.length ? [preguntas(faqs.map((f) => ({ pregunta: f.data.pregunta, respuesta: f.data.respuesta })))] : [])]}
+>
+  <section class="contenedor contacto-cabecera">
+    <Migas items={migas} idioma={idioma} />
+    <div class="contacto-intro">
+      <h1>{es ? <>Cuéntanos <em>tu proyecto.</em></> : <>Tell us about <em>your project.</em></>}</h1>
+      <p class="entradilla">
+        {es
+          ? 'Revisamos la vivienda, lo que quieres cambiar y la inversión prevista para comprobar si el proyecto encaja y explicarte con claridad cómo empezar.'
+          : 'We look at the home, what you want to change and your expected budget to check whether the project is a good fit and explain clearly how to begin.'}
+      </p>
+    </div>
+  </section>
+
+  <section class="contenedor contacto-cuerpo" id="presupuesto" aria-labelledby="presupuesto-titulo">
+    <div class="contacto-form">
+      <h2 id="presupuesto-titulo" class="etiqueta">{es ? 'Pedir valoración' : 'Request a consultation'}</h2>
+      <FormularioPresupuesto idioma={idioma} />
+    </div>
+
+    <aside class="contacto-directo" aria-label={es ? 'Contacto directo' : 'Direct contact'}>
+      {es && (
+        <div class="bloque fondo-tinta guiado">
+          <h2 class="etiqueta sin-linea">Presupuestador guiado</h2>
+          <p>¿Reforma, interiorismo u obra nueva? Responde unas preguntas rápidas y adjunta planos o fotos: llegamos a la primera reunión con tu proyecto entendido.</p>
+          <a class="boton" href={r.valoracion} data-evento="presupuesto" data-evento-detalle="contacto-guiado">Empezar en 3 minutos</a>
+        </div>
+      )}
+      <div class="bloque">
+        <h2 class="etiqueta sin-linea">{es ? '¿Prefieres hablar ya?' : 'Prefer to talk now?'}</h2>
+        <a class="boton" href={whatsapp(TEXTO_WHATSAPP[idioma])} data-evento="whatsapp" data-evento-detalle="contacto"><Icono nombre="whatsapp" /> {es ? 'Escríbenos por WhatsApp' : 'Message us on WhatsApp'}</a>
+        <ul role="list" class="lista-contacto">
+          <li><Icono nombre="telefono" /><a href={SITIO.telefonoHref} data-evento="llamar" data-evento-detalle="contacto">{SITIO.telefono}</a></li>
+          <li><Icono nombre="correo" /><a href={`mailto:${SITIO.email}`} data-evento="email" data-evento-detalle="contacto">{SITIO.email}</a></li>
+        </ul>
+      </div>
+      <div class="bloque fondo-lino direccion">
+        <h2 class="etiqueta sin-linea">{es ? 'Estudio y showroom' : 'Studio and showroom'}</h2>
+        <address class="titulo">
+          {SITIO.direccion.calle}<br />
+          {SITIO.direccion.cp} {SITIO.direccion.ciudad}
+        </address>
+        <a class="boton boton-linea" href={SITIO.comoLlegar} rel="noopener" target="_blank" data-evento="como-llegar"><Icono nombre="mapa" /> {es ? 'Cómo llegar' : 'Get directions'}</a>
+      </div>
+    </aside>
+  </section>
+
+  <Faqs faqs={faqs} id="preguntas" titulo={es ? 'Antes de escribirnos' : 'Before you write'} etiqueta={es ? 'Preguntas frecuentes' : 'FAQ'} />
+</Base>
+
+<style>
+  .contacto-cabecera {
+    padding-block: var(--espacio-m) var(--espacio-xl);
+  }
+  .contacto-intro {
+    display: grid;
+    gap: var(--espacio-m);
+    margin-top: var(--espacio-l);
+    align-items: end;
+  }
+  @media (min-width: 60rem) {
+    .contacto-intro {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+  .contacto-cuerpo {
+    display: grid;
+    gap: var(--espacio-2xl) var(--espacio-xl);
+    padding-bottom: var(--espacio-3xl);
+  }
+  .contacto-form {
+    display: grid;
+    gap: var(--espacio-m);
+    align-content: start;
+  }
+  .contacto-directo {
+    display: grid;
+    gap: var(--separacion);
+    align-content: start;
+  }
+  .bloque {
+    display: grid;
+    gap: var(--espacio-s);
+    justify-items: start;
+    padding: var(--espacio-m);
+    border: 1px solid var(--linea);
+  }
+  .direccion,
+  .guiado {
+    border: 0;
+  }
+  .guiado p {
+    color: inherit;
+    opacity: 0.85;
+  }
+  .direccion address {
+    font-style: normal;
+    font-size: var(--paso-3);
+    line-height: 1.15;
+  }
+  .lista-contacto {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .lista-contacto li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .lista-contacto a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  @media (min-width: 60rem) {
+    .contacto-cuerpo {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    }
+    .contacto-directo {
+      position: sticky;
+      top: calc(var(--alto-header-compacto) + var(--espacio-l));
+    }
+  }
+</style>
