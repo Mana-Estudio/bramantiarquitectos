@@ -191,6 +191,9 @@ const videos = defineCollection({
         servicios: z.array(z.enum(TIPOS)).default([]),
         paginas: z.array(z.string()).default([]),
         testimonio: z.boolean().default(false),
+        /** Clip propio sin sonido: se reproduce solo, en bucle, mientras está a la vista. */
+        previa: z.boolean().default(false),
+        render: z.boolean().default(false),
         destacado: z.boolean().default(false),
         orden: z.number(),
       })

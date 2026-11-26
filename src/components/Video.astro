@@ -33,6 +33,7 @@ const etiquetaPlay = es ? `Reproducir: ${titulo}` : `Play: ${titulo}`;
       data-youtube={v.youtube}
       data-titulo={titulo}
       aria-label={etiquetaPlay}
+      data-cursor={es ? 'Reproducir' : 'Play'}
       data-evento="video"
       data-evento-detalle={video.id}
       rel="noopener"
@@ -43,6 +44,18 @@ const etiquetaPlay = es ? `Reproducir: ${titulo}` : `Play: ${titulo}`;
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
       </span>
     </a>
+  ) : v.previa ? (
+    <div class="video-marco foto previa" data-previa>
+      <video muted loop playsinline preload="none" poster={poster?.src} width={vertical ? 720 : 1280} height={vertical ? 1280 : 720} aria-label={titulo}>
+        <source src={v.archivo} type="video/mp4" />
+      </video>
+      <button type="button" class="previa-control" data-previa-control aria-pressed="false" data-etiqueta-pausa={es ? 'Pausar video' : 'Pause video'} data-etiqueta-play={es ? 'Reproducir video' : 'Play video'}>
+        <span class="visualmente-oculto">{es ? 'Pausar video' : 'Pause video'}</span>
+        <svg class="icono-pausa" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /></svg>
+        <svg class="icono-play" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+      </button>
+      {v.render && <span class="chip video-chip">Render</span>}
+    </div>
   ) : (
     <div class="video-marco foto">
       <video controls preload="none" playsinline poster={poster?.src} width={vertical ? 720 : 1280} height={vertical ? 1280 : 720} aria-label={titulo}>
@@ -116,6 +129,63 @@ const etiquetaPlay = es ? `Reproducir: ${titulo}` : `Play: ${titulo}`;
   }
   .video-play svg {
     margin-left: 3px;
+  }
+  /* Microinteracción: un pulso suave alrededor del botón de reproducir. */
+  @media (prefers-reduced-motion: no-preference) {
+    .video-play::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid var(--piedra);
+      animation: pulso 2.4s var(--curva) infinite;
+    }
+  }
+  @keyframes pulso {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.7);
+      opacity: 0;
+    }
+  }
+  .previa-control {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(244 241 236 / 0.92);
+    color: var(--tinta);
+    transition: transform var(--t-rapida) var(--curva);
+  }
+  .previa-control:hover {
+    transform: scale(1.08);
+  }
+  .previa-control:active {
+    transform: scale(0.94);
+  }
+  .previa-control .icono-play,
+  .previa-control[aria-pressed='true'] .icono-pausa {
+    display: none;
+  }
+  .previa-control[aria-pressed='true'] .icono-play {
+    display: block;
+  }
+  .video-chip {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 2;
+    background: var(--piedra);
+    color: var(--tinta);
   }
   .video-marco :global(iframe),
   .video-marco video {

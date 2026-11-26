@@ -1,5 +1,23 @@
 [
   {
+    "id": "casa-felipe-ii-recorrido",
+    "youtube": "BT0QgJDruTE",
+    "titulo": "Casa Felipe II, recorrido",
+    "tituloEn": "Casa Felipe II, walkthrough",
+    "descripcion": "Un paseo cinematográfico por la vivienda clásica actualizada en Retiro.",
+    "descripcionEn": "A cinematic walk through the updated classic home in Retiro.",
+    "poster": "../assets/videos/casa-felipe-ii-recorrido.jpg",
+    "posterAlt": "Salón de Casa Felipe II con chimenea y molduras",
+    "posterAltEn": "Living room at Casa Felipe II with a fireplace and mouldings",
+    "formato": "horizontal",
+    "proyecto": "casa-felipe-ii-reforma-integral-retiro-madrid",
+    "servicios": [
+      "reforma-integral"
+    ],
+    "destacado": true,
+    "orden": 0.5
+  },
+  {
     "id": "casa-werlyb-proyecto",
     "youtube": "750hsBAzjW0",
     "titulo": "Casa Werlyb, el proyecto",
@@ -11,9 +29,28 @@
     "posterAltEn": "Open living room and kitchen at Casa Werlyb with a dark island",
     "formato": "horizontal",
     "proyecto": "casa-werlyb-reforma-integral-madrid",
-    "servicios": ["reforma-integral"],
+    "servicios": [
+      "reforma-integral"
+    ],
     "destacado": true,
     "orden": 1
+  },
+  {
+    "id": "casa-elara-clip",
+    "archivo": "/videos/casa-elara-clip.mp4",
+    "titulo": "Casa Elara, de la obra al resultado",
+    "tituloEn": "Casa Elara, from works to result",
+    "descripcion": "La fachada de Alcalá 124, la obra y la vivienda terminada en 17 segundos.",
+    "descripcionEn": "The Alcalá 124 façade, the works and the finished home in 17 seconds.",
+    "poster": "../assets/videos/casa-elara-clip.jpg",
+    "posterAlt": "Cocina de Casa Elara con mesa de madera y estantería abierta",
+    "posterAltEn": "Kitchen at Casa Elara with a wooden table and open shelving",
+    "formato": "vertical",
+    "duracion": "0:17",
+    "previa": true,
+    "proyecto": "casa-elara-reforma-barrio-salamanca",
+    "destacado": true,
+    "orden": 1.5
   },
   {
     "id": "casa-elara-short",
@@ -27,9 +64,31 @@
     "posterAltEn": "Kitchen at Casa Elara with a stone island and pendant lights",
     "formato": "vertical",
     "proyecto": "casa-elara-reforma-barrio-salamanca",
-    "servicios": ["reforma-integral"],
-    "destacado": true,
+    "servicios": [
+      "reforma-integral"
+    ],
+    "destacado": false,
     "orden": 2
+  },
+  {
+    "id": "obra-nueva-render",
+    "archivo": "/videos/obra-nueva-render.mp4",
+    "titulo": "Vivienda unifamiliar de obra nueva",
+    "tituloEn": "New-build detached house",
+    "descripcion": "Recorrido en render: exterior, escalera, interiores y piscina.",
+    "descripcionEn": "Render walkthrough: exterior, staircase, interiors and pool.",
+    "poster": "../assets/videos/obra-nueva-render.jpg",
+    "posterAlt": "Render exterior de una vivienda unifamiliar contemporánea al atardecer",
+    "posterAltEn": "Exterior render of a contemporary detached house at dusk",
+    "formato": "horizontal",
+    "duracion": "0:20",
+    "previa": true,
+    "render": true,
+    "servicios": [
+      "obra-nueva"
+    ],
+    "destacado": true,
+    "orden": 2.5
   },
   {
     "id": "real-fabrica-de-tapices",
@@ -43,8 +102,12 @@
     "posterAltEn": "Craftswoman working at a loom at the Real Fábrica de Tapices",
     "formato": "horizontal",
     "articulo": "arquitectura-artesania-diseno-medida-real-fabrica-tapices",
-    "servicios": ["interiorismo"],
-    "paginas": ["estudio"],
+    "servicios": [
+      "interiorismo"
+    ],
+    "paginas": [
+      "estudio"
+    ],
     "destacado": true,
     "orden": 3
   },
@@ -109,7 +172,9 @@
     "posterAltEn": "Render of the kitchen with island at Los Satélites",
     "formato": "horizontal",
     "promocion": "los-satelites",
-    "servicios": ["obra-nueva"],
+    "servicios": [
+      "obra-nueva"
+    ],
     "destacado": false,
     "orden": 7
   },
@@ -125,7 +190,9 @@
     "posterAltEn": "Exterior render of the Proyecto Omega house",
     "formato": "horizontal",
     "promocion": "proyecto-omega",
-    "servicios": ["obra-nueva"],
+    "servicios": [
+      "obra-nueva"
+    ],
     "destacado": false,
     "orden": 8
   }
