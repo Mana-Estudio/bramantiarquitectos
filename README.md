@@ -197,6 +197,13 @@ El sitio se publica como Worker con assets estáticos (`wrangler.jsonc`: assets 
   ```
   Los valores van en Bitwarden, no en este repo ni en el cerebro.
 
+## Demo en Vercel
+
+Además de Cloudflare (el destino real), hay una demo para mostrar en Vercel que se publica sola desde `main`. `vercel.json` la configura: build de Astro estático, barras finales, las mismas cabeceras de seguridad de `public/_headers` y las mismas redirecciones de `public/_redirects`, más `X-Robots-Tag: noindex, nofollow` **siempre**, para que Google no indexe una copia de la web del cliente.
+
+- Si cambian `_headers` o `_redirects`, hay que actualizar también `vercel.json`.
+- En Vercel no corre el Worker: el formulario de contacto y el presupuestador se ven y se pueden recorrer, pero **no envían** (no existe `/api/*`). Los envíos reales solo funcionan en Cloudflare.
+
 ## Medición
 
 Todos los CTA llevan `data-evento` (`whatsapp`, `llamar`, `email`, `presupuesto`, `formulario-enviado`…). `src/lib/track.ts` está vacío a propósito, listo para conectar la herramienta que elija el cliente. Cloudflare Web Analytics no usa cookies, así que no hace falta banner.
