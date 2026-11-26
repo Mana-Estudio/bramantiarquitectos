@@ -124,7 +124,7 @@
       "statusCode": 301
     },
     {
-      "source": "/category/:ruta*",
+      "source": "/category/(.*)",
       "destination": "/blog/",
       "statusCode": 301
     },
