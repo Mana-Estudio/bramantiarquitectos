@@ -47,11 +47,13 @@ src/
   components/         Piezas reutilizables · components/paginas/ = páginas completas en es/en
   layouts/Base.astro  <head>, SEO, JSON-LD, header, footer y barra móvil
   lib/                Datos del estudio (sitio.ts), textos de interfaz (i18n.ts), rutas es↔en,
-                      JSON-LD, validación del formulario, envío de mail y medición
+                      JSON-LD, validación del formulario, preguntas del presupuestador
+                      (valoracion.ts), envío de mail y medición
   pages/              Rutas. Las URLs de la web actual se mantienen tal cual
-  scripts/            JS de cliente (vanilla): menú, filtros, lightbox, antes/después, formulario
+  scripts/            JS de cliente: menú, filtros, lightbox, antes/después, formulario, presupuestador,
+                      hero, carruseles, animaciones (Motion) y microinteracciones
   styles/global.css   Tokens, tipografía y utilidades
-worker/index.ts       Worker de Cloudflare: POST /api/contacto (Turnstile + mail)
+worker/index.ts       Worker de Cloudflare: POST /api/contacto y POST /api/valoracion (Turnstile + mail con adjuntos)
 public/               _headers (CSP y seguridad), _redirects (301), favicon, videos/ (mp4 propios)
 scripts/              migrar-wp.mjs y verificar-urls.mjs
 ```
@@ -129,8 +131,32 @@ Los videos viven en `src/content/videos.json`. Cada uno aparece solo en las pág
 - `formato`: `horizontal` o `vertical` (shorts y videos grabados con el móvil).
 - Relación: `proyecto`, `promocion` o `articulo` (el slug), `servicios` (sale en esas páginas de servicio), `paginas: ["estudio"]`, `testimonio: true` (va en el bloque "Lo cuenta quien vive aquí" de la ficha) y `destacado: true` (sale en la home).
 - Para un video propio en lugar de YouTube: subir el `.mp4` a `public/videos/` (máximo 25 MB por archivo en Cloudflare) y usar `"archivo": "/videos/nombre.mp4"` en lugar de `"youtube"`.
+- `"previa": true` (solo mp4 propios, cortos y sin sonido importante): el clip arranca en silencio y en bucle cuando entra en pantalla, con un botón de pausa. Es lo que se usa en el carrusel "Casas en movimiento" de la home. Conviene que pese menos de 7 MB.
+- `"render": true`: muestra la etiqueta "Render" sobre el video.
 
 Los videos de YouTube se muestran con la portada propia y el reproductor (`youtube-nocookie.com`) se carga recién al pulsar reproducir: la página no le pide nada a YouTube hasta entonces. Sin JS, la portada enlaza al video en YouTube.
+
+**Excepción, la home:** las dos tarjetas grandes de "Creaciones recientes" (Casa Felipe II y Casa Werlyb) reproducen su video de YouTube en silencio, de fondo, como en la web actual. Solo en ordenador (pantalla de 60 rem o más con ratón), sin "ahorro de datos" ni "reducir movimiento", y solo cuando la tarjeta entra en pantalla. Se apaga con `VISTAS_PREVIAS_YOUTUBE = false` en `src/components/paginas/Inicio.astro` (ver PENDIENTES, revisión legal).
+
+## Presupuestador (/pedir-valoracion/)
+
+Sustituye al formulario de Tally de la web actual con las mismas preguntas, dentro del sitio y con la estética de la marca. Todos los botones "Pedir valoración" en español llevan aquí (en inglés, al formulario de contacto).
+
+- **Preguntas:** `src/lib/valoracion.ts` es la única fuente. Define los pasos (`PASOS`), en qué camino aparece cada uno (`caminos`: `reforma`, `interiorismo`, `obra-nueva`), los campos (texto, email, teléfono, número, contador −/+, opción única, múltiple, archivos, casilla) y las preguntas condicionales (`si: { campo, valores }`). El componente, el script y el Worker leen de ahí, así que agregar o cambiar una pregunta es tocar solo ese archivo.
+- **Cómo funciona:** un paso por pantalla con barra de progreso, avance automático en preguntas de una sola opción, Enter para seguir, errores en línea, resumen editable antes de enviar y borrador guardado en el navegador (14 días). Turnstile se carga recién en el último paso. Sin JS se ofrece el formulario de contacto.
+- **Precarga:** `/pedir-valoracion/?servicio=reforma-integral` (o `interiorismo`, `obra-nueva`) elige el camino; `?proyecto=<slug>` se adjunta como referencia.
+- **Envío:** `POST /api/valoracion` valida otra vez todo en el Worker (mismas reglas), comprueba Turnstile, honeypot y adjuntos (hasta 5 archivos, 8 MB en total, PDF o imágenes) y manda un mail ordenado por pasos con los archivos adjuntos y `reply-to` del cliente. Asunto: `Valoración web · <interés> · <nombre>`.
+
+## Hero, animaciones y microinteracciones
+
+- **Hero:** `src/components/HeroCarrusel.astro`. Carrusel a pantalla completa con el texto encima, pie con el proyecto de cada foto, puntos con barra de progreso y botón de pausa (se pausa solo fuera de pantalla o con la pestaña oculta; con "reducir movimiento" no avanza). Las diapositivas se eligen en `Inicio.astro` (`diapositivas`). La primera foto es la que carga con prioridad (LCP).
+- **Animaciones:** [Motion](https://motion.dev) (`animateMini`, `inView`, `scroll`; ~4 KB gzip). Se activan con atributos en el HTML, sin tocar JS:
+  - `data-anim="subir"` (aparece subiendo), `data-anim="escalonar"` (los hijos aparecen en cascada), `data-anim="imagen"` (la imagen se descubre).
+  - `data-contar` en un número: cuenta desde 0 al entrar en pantalla.
+  - `data-parallax` en una imagen: se desplaza suave con el scroll.
+  - `data-progreso`: barra de lectura (scroll de la página).
+- **Microinteracciones:** botones magnéticos y con "presión" al pulsar, subrayados animados en enlaces y menú, etiqueta que sigue al cursor sobre proyectos y videos (`data-cursor="Ver proyecto"`), copiar al portapapeles (`data-copiar="texto"`).
+- Todo respeta `prefers-reduced-motion`: sin JS o con movimiento reducido, el contenido se ve completo y quieto.
 
 ## Cómo editar textos
 
@@ -144,6 +170,8 @@ Los videos de YouTube se muestran con la portada propia y el reproductor (`youtu
 | Reseñas | `src/content/resenas.json` |
 | Textos legales | `src/content/legales/*.md` |
 | Opciones del formulario (tipos, plazos, franjas de inversión) | `src/lib/contacto.ts` |
+| Preguntas del presupuestador | `src/lib/valoracion.ts` |
+| Fotos del hero de la home | `src/components/paginas/Inicio.astro` (`diapositivas`) |
 | Menú, botones y etiquetas de interfaz | `src/lib/i18n.ts` |
 | Videos | `src/content/videos.json` y portadas en `src/assets/videos/` |
 | Tipografías (Archivo para títulos, la familia del logotipo; Manrope para texto) | `astro.config.mjs` (`fonts`) y escala en `src/styles/global.css` |
@@ -175,8 +203,9 @@ Todos los CTA llevan `data-evento` (`whatsapp`, `llamar`, `email`, `presupuesto`
 
 ## Calidad (último control, 2026-11-25)
 
-- `npm run build` y `astro check`: sin errores, warnings ni hints.
+- `npm run build` y `astro check`: sin errores, warnings ni hints. `npx tsc -p worker/tsconfig.json`: limpio.
 - `verificar-urls`: las 76 URLs del sitemap actual existen (63) o tienen 301 (13).
-- Lighthouse móvil (contra `astro preview`): Inicio 99/100/100/100, ficha de Casa Felipe II 99/100/100/100, Contacto 100/100/100/100. CLS 0 en las tres. LCP 2,1 s con el throttling "Slow 4G" de Lighthouse (1,6 Mbps); en 4G normal queda por debajo de 2 s.
-- JS propio por página: 3–5 KB gzip. En Contacto, Turnstile (≈ 28 KB) se carga solo al empezar a completar el formulario.
-- WCAG 2.2 AA: skip link, foco visible, todo usable con teclado (menú y submenú con `<details>`, filtros, lightbox con `<dialog>`, slider con `<input type="range">`), contraste AA verificado, objetivos de 44 px.
+- Lighthouse móvil (contra `wrangler dev`, con el Worker y los `_headers` reales): Inicio 99/100/100, Pedir valoración 100/100/100, ficha de Casa Felipe II 98/100/100, Contacto 100/100/100 (rendimiento/accesibilidad/buenas prácticas). CLS 0 en todas; LCP de la home 1,4 s. El SEO marca 61–69 solo porque el build de staging manda `X-Robots-Tag: noindex` (a propósito); en producción ese punto desaparece.
+- JS propio por página: Motion (`animateMini` + `inView` + `scroll`) suma unos 4 KB gzip; la home queda en ~14 KB gzip en total. Turnstile (≈ 28 KB) se carga solo al empezar el formulario de contacto o en el último paso del presupuestador.
+- Presupuestador probado de punta a punta en `wrangler dev` (camino de reforma, validación por paso, adjunto PDF, Turnstile de prueba, mail simulado y redirección a /gracias/).
+- WCAG 2.2 AA: skip link, foco visible, todo usable con teclado (menú y submenú con `<details>`, filtros, lightbox con `<dialog>`, slider con `<input type="range">`, carruseles con flechas y teclado), contraste AA verificado, objetivos de 44 px. El hero y los clips en movimiento tienen botón de pausa (2.2.2) y todo respeta `prefers-reduced-motion`.

@@ -33,11 +33,20 @@ Lo que falta para pasar de la demo a producción. Donde no había un dato, la de
 - [ ] **Videos nuevos:** cualquier video nuevo se suma en `src/content/videos.json` (ver README). Si tienen versiones en mejor calidad o portadas propias, mejor que las fotos de proyecto que se usan hoy como portada.
 - [ ] **Reseñas:** la web actual no guarda el enlace de cada reseña; todas enlazan a la ficha de Google del estudio. Confirmar que se pueden mostrar con nombre.
 - [ ] **Journal:** hay artículos con datos fechados (2024, "otoño 2025", ayudas del Plan Rehabilita). Revisar cuáles actualizar. Las categorías se simplificaron a Arquitectura, Construcción e Interiorismo.
+- [ ] **Video de Casa Felipe II:** la miniatura de YouTube lleva la marca de agua "Veo" (herramienta de video con IA de Google) y el video tiene subtítulos incrustados. Confirmar si es un video generado o retocado con IA; si lo es, conviene indicarlo o sustituirlo por un recorrido real. En la web se usa con portada propia y, en la home, como vista previa silenciosa.
+- [ ] **Video "render" de obra nueva** (`obra-nueva-render.mp4`, migrado de la web actual): no se sabe de qué proyecto es. Se muestra con la etiqueta "Render" en la home y en Obra nueva. Confirmar proyecto y si es render o grabación.
+- [ ] **Fotos del hero:** el carrusel de la home usa salón de Felipe II, salón de Werlyb, salón de Santos Dumont, cocina de Elara y cocina de Goya. La foto "Salon1_Alcala124" de la web actual parece un render y no se usó. Confirmar la selección (idealmente con los originales en alta).
+- [ ] **Presupuestador (sustituye a Tally):** replica las preguntas del formulario de Tally (https://tally.so/r/9q7DyY) con caminos por interés (reforma, interiorismo, obra nueva). Revisar:
+  - Las **franjas de inversión** del presupuestador son las de Tally (15.000–50.000 €, 50.000–80.000 €, 80.000–150.000 €, más de 150.000 €) y no coinciden con las del formulario de contacto ni con la FAQ (ver punto anterior). Unificar.
+  - El aviso de privacidad de Tally nombra un domicilio distinto (C/ Azcona 20, 3º B) al de la web (Calle de Alcalá, 229). Confirmar cuál es el domicilio del responsable del tratamiento.
+  - Cuando la web nueva esté en producción, **desactivar el formulario de Tally** o cambiar sus enlaces (Instagram, Google, firmas de mail) por `/pedir-valoracion/`.
+  - En inglés no hay presupuestador: el botón lleva al formulario de contacto. Decidir si se traduce.
 - [ ] **Newsletter "Ecos de Bramanti":** la web actual tiene un botón; no se migró. ¿Sigue activa?
 - [ ] **Redes:** la página de Facebook sigue con el nombre de la marca anterior y por eso no se enlaza. Existe también la cuenta de Instagram anterior. Conviene renombrarlas o cerrarlas.
 
 ### Legal
-- [ ] **Revisión legal** de la política de privacidad (se reescribió la sección 6: encargados Cloudflare y proveedor de mail, sin cookies de Google) y de la política de cookies (reescrita: la web nueva no usa cookies de terceros). Revisar también el criterio para YouTube: el reproductor solo se carga cuando la persona pulsa reproducir, y la web lo avisa debajo de cada bloque de videos.
+- [ ] **Revisión legal** de la política de privacidad (se reescribió la sección 6: encargados Cloudflare y proveedor de mail, sin cookies de Google) y de la política de cookies (reescrita: la web nueva no usa cookies de terceros). Revisar también el criterio para YouTube: en general el reproductor solo se carga cuando la persona pulsa reproducir (la web lo avisa debajo de cada bloque de videos), **salvo las vistas previas silenciosas de Casa Felipe II y Casa Werlyb en la home**, que en ordenador cargan `youtube-nocookie.com` al entrar en pantalla, sin clic ni banner. Las políticas ya lo explican, pero hay que validar que no requiera consentimiento previo; si lo requiere, poner `VISTAS_PREVIAS_YOUTUBE = false` en `src/components/paginas/Inicio.astro` y quedan las fotos.
+- [ ] El **presupuestador** guarda un borrador en el `localStorage` del navegador (14 días, se borra al enviar) y admite adjuntos (planos y fotos, hasta 5 archivos y 8 MB) que llegan por mail. Está explicado en cookies y privacidad; validarlo en la revisión legal.
 - [ ] Confirmar el **proveedor de envío de mail** para nombrarlo en la política (por defecto, Resend).
 - [ ] Aviso legal y términos: se migraron tal cual. Verificar datos registrales.
 
@@ -48,6 +57,7 @@ Lo que falta para pasar de la demo a producción. Donde no había un dato, la de
 - [ ] **Resend:** cuenta, verificar el dominio `bramantiarquitectos.com` (SPF/DKIM en DNS), `npx wrangler secret put RESEND_API_KEY` y ajustar `MAIL_FROM` en `wrangler.jsonc`. Claves en Bitwarden.
 - [ ] **Cloudflare Web Analytics:** token en `PUBLIC_CF_ANALYTICS_TOKEN`.
 - [ ] Conectar `src/lib/track.ts` con la herramienta de medición que elija el cliente (si quiere algo más que Web Analytics).
+- [ ] **Resend y adjuntos:** el presupuestador manda los planos como adjuntos (hasta 8 MB en total, por debajo del límite de 40 MB de Resend). Probar un envío real con archivos al conectar Resend.
 - [ ] Repetir **Lighthouse** sobre staging real (detrás de Access) y con las fotos definitivas.
 - [ ] **Producción:** dominio a nombre del cliente, DNS en Cloudflare, build con `ENTORNO=produccion` (quita el noindex), SSL, alta en UptimeRobot, enviar el sitemap nuevo a Search Console y vigilar los 301 las primeras semanas.
 - [ ] La plantilla `mana-template-astro` no existía: esta base (Astro 7 + Workers + `_headers` + noindex de staging) puede servir para crearla.
