@@ -8,8 +8,10 @@ interface Props {
   idioma: Idioma;
   alternativa: string | null;
   whatsappTexto: string;
+  /** En la home: el header arranca transparente sobre el hero a pantalla completa. */
+  sobreHero?: boolean;
 }
-const { idioma, alternativa, whatsappTexto } = Astro.props;
+const { idioma, alternativa, whatsappTexto, sobreHero = false } = Astro.props;
 const t = UI[idioma];
 const r = RUTAS[idioma];
 const ruta = Astro.url.pathname;
@@ -30,14 +32,21 @@ const servicios = (Object.keys(TIPOS) as (keyof typeof TIPOS)[]).map((k) => ({ h
 const enServicios = servicios.some((s) => ruta.startsWith(s.href));
 const otroIdioma = idioma === 'es' ? 'en' : 'es';
 const hrefOtro = alternativa ?? RUTAS[otroIdioma].inicio;
-const contacto = `${r.contacto}#presupuesto`;
+const contacto = r.valoracion;
 ---
 
-<div class="header-espacio" aria-hidden="true"></div>
-<header class="header" data-header>
+{!sobreHero && <div class="header-espacio" aria-hidden="true"></div>}
+<header class:list={['header', { 'sobre-hero': sobreHero }]} data-header>
   <div class="contenedor header-fila">
     <a href={r.inicio} class="header-logo" aria-label={`${SITIO.nombre}, ${t.inicio.toLowerCase()}`}>
-      <Logo eager />
+      {sobreHero ? (
+        <>
+          <span class="logo-claro"><Logo variante="blanco" eager /></span>
+          <span class="logo-oscuro"><Logo eager /></span>
+        </>
+      ) : (
+        <Logo eager />
+      )}
     </a>
 
     <nav class="nav-escritorio" aria-label={t.navPrincipal}>
@@ -119,6 +128,50 @@ const contacto = `${r.contacto}#presupuesto`;
   .header.compacto .header-fila {
     transform: translateY(calc((var(--alto-header) - var(--alto-header-compacto)) / 2));
   }
+  .header.sobre-hero:not(.compacto) {
+    background: transparent;
+    color: var(--piedra);
+  }
+  .header.sobre-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -2.5rem;
+    background: linear-gradient(to bottom, rgb(20 18 16 / 0.55), transparent);
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity var(--t-media) var(--curva);
+  }
+  .header.sobre-hero.compacto::before,
+  .header.sobre-hero:has(.menu-movil[open])::before {
+    opacity: 0;
+  }
+  .header.sobre-hero:has(.menu-movil[open]) {
+    background: var(--piedra);
+    color: var(--tinta);
+  }
+  .header.sobre-hero .logo-claro,
+  .header.sobre-hero .logo-oscuro {
+    display: block;
+  }
+  .header.sobre-hero:not(.compacto):not(:has(.menu-movil[open])) .logo-oscuro,
+  .header.sobre-hero.compacto .logo-claro,
+  .header.sobre-hero:has(.menu-movil[open]) .logo-claro {
+    display: none;
+  }
+  .header.sobre-hero:not(.compacto) .header-cta {
+    --fondo: var(--piedra);
+    --color: var(--tinta);
+  }
+  .header.sobre-hero:not(.compacto) :focus-visible {
+    outline-color: var(--piedra);
+  }
+  .header.sobre-hero .submenu ul,
+  .header.sobre-hero .menu-movil-panel {
+    color: var(--tinta);
+  }
+  .header-fila {
+    position: relative;
+  }
   .header-logo {
     display: block;
     flex: none;
@@ -143,6 +196,7 @@ const contacto = `${r.contacto}#presupuesto`;
   }
   .nav-escritorio a,
   .submenu summary {
+    position: relative;
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
@@ -150,15 +204,26 @@ const contacto = `${r.contacto}#presupuesto`;
     font-weight: 500;
     letter-spacing: 0.02em;
     text-decoration: none;
-    border-bottom: 1px solid transparent;
   }
-  .nav-escritorio a:hover,
-  .submenu summary:hover {
-    border-bottom-color: var(--linea-fuerte);
+  .nav-escritorio > ul > li > a::after,
+  .submenu summary::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.55rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 450ms var(--curva);
   }
-  .nav-escritorio a[aria-current='page'],
-  .submenu summary.activo {
-    border-bottom-color: var(--tinta);
+  .nav-escritorio > ul > li > a:hover::after,
+  .submenu summary:hover::before,
+  .nav-escritorio a[aria-current='page']::after,
+  .submenu summary.activo::before {
+    transform: scaleX(1);
+    transform-origin: left;
   }
   .submenu {
     position: relative;

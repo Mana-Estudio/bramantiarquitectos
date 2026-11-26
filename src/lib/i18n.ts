@@ -96,6 +96,7 @@ export const RUTAS = {
     promociones: '/promociones/',
     journal: '/blog/',
     contacto: '/contacto/',
+    valoracion: '/pedir-valoracion/',
     gracias: '/gracias/',
   },
   en: {
@@ -106,6 +107,7 @@ export const RUTAS = {
     promociones: '/promociones/',
     journal: '/blog/',
     contacto: '/en/contact/',
+    valoracion: '/en/contact/#presupuesto',
     gracias: '/en/thank-you/',
   },
 } as const;

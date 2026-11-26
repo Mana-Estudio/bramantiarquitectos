@@ -24,6 +24,10 @@ interface Props {
   whatsappTexto?: string;
   /** Si el título ya trae la marca o es muy largo, no se agrega " · Bramanti Arquitectos". */
   tituloCompleto?: boolean;
+  /** Home: header transparente sobre el hero a pantalla completa. */
+  sobreHero?: boolean;
+  /** Presupuestador: sin la barra fija de abajo en móvil (tiene su propia navegación). */
+  sinBarraMovil?: boolean;
 }
 
 const {
@@ -36,6 +40,8 @@ const {
   jsonld = [],
   whatsappTexto = TEXTO_WHATSAPP[idioma],
   tituloCompleto = false,
+  sobreHero = false,
+  sinBarraMovil = false,
 } = Astro.props;
 
 const t = UI[idioma];
@@ -104,16 +110,18 @@ const analytics = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
   </head>
   <body>
     <a class="saltar" href="#contenido">{t.saltar}</a>
-    <Header idioma={idioma} alternativa={alternativa} whatsappTexto={whatsappTexto} />
+    <Header idioma={idioma} alternativa={alternativa} whatsappTexto={whatsappTexto} sobreHero={sobreHero} />
     <main id="contenido" tabindex="-1">
       <slot />
     </main>
     <Footer idioma={idioma} whatsappTexto={whatsappTexto} />
-    <BarraMovil idioma={idioma} whatsappTexto={whatsappTexto} />
+    {!sinBarraMovil && <BarraMovil idioma={idioma} whatsappTexto={whatsappTexto} />}
 
     {analytics && <script defer is:inline src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: analytics })} />}
     <script>
       import '../scripts/base';
+      import '../scripts/animaciones';
+      import '../scripts/micro';
     </script>
   </body>
 </html>
